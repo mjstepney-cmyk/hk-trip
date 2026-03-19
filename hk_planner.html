@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0051)file:///C:/Users/stepn/Downloads/hk_planner_27.html -->
+<!-- saved from url=(0051)file:///C:/Users/stepn/Downloads/hk_planner_28.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -43,12 +43,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .btn-mode{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);color:#fff;padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;transition:background 0.15s}
 .btn-mode.active{background:rgba(255,255,255,0.35)}
 .btn-mode:hover{background:rgba(255,255,255,0.3)}
+@media(max-width:700px){
+  .app-header{padding:7px 12px}
+  .app-header-title{font-size:14px;font-weight:600}
+  .app-header .subtitle{display:none}
+  .btn-mode{padding:4px 9px;font-size:11px;gap:3px}
+  .header-actions{gap:5px}
+}
 
 /* ── TABS ── */
 .tabs{display:flex;background:var(--bg-secondary);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;position:sticky;top:53px;z-index:99}
 .tabs::-webkit-scrollbar{display:none}
 .tab{padding:10px 14px;font-size:13px;cursor:pointer;white-space:nowrap;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.15s;flex-shrink:0}
 .tab.active{color:var(--red);border-bottom-color:var(--red);font-weight:500}
+@media(max-width:700px){
+  .tabs{top:43px}
+  .tab{padding:7px 10px;font-size:11px}
+}
 .tab.today-tab{background:var(--red-light);color:var(--red);font-weight:600}
 .tab.today-tab.active{background:var(--red-light)}
 
@@ -127,6 +138,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .activity-card.is-finish{border-left:3px solid var(--red-mid);background:linear-gradient(to right,#FFF0EE,var(--bg))}
 .badge-finish{background:var(--red-light);color:var(--red)}
 .zone-badge{font-size:9px;padding:2px 6px;border-radius:10px;white-space:nowrap;flex-shrink:0;font-weight:600;letter-spacing:0.3px}
+.zone-0{background:#E3F2FD;color:#0277BD}
 .zone-1{background:#E8F5E9;color:#2E7D32}
 .zone-2{background:#E3F2FD;color:#1565C0}
 .zone-3{background:#FFF3E0;color:#E65100}
@@ -236,21 +248,28 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 
 <div class="app-header">
   <div>
-    <div class="app-header h1" style="font-size:17px;font-weight:600">Hong Kong Trip</div>
+    <div class="app-header-title" style="font-size:17px;font-weight:600;color:#fff">Hong Kong Trip</div>
     <div class="subtitle">14-day planner</div>
   </div>
   <div class="header-actions">
-    <button class="btn-mode" onclick="exportPlans()" title="Save your day plans as a backup file">💾 Export</button>
-    <button class="btn-mode" onclick="document.getElementById(&#39;import-input&#39;).click()" title="Restore plans from a backup file">📂 Import</button>
+    <button class="btn-mode" onclick="exportPlans()" title="Save your day plans as a backup file">💾 Save</button>
+    <button class="btn-mode" onclick="document.getElementById(&#39;import-input&#39;).click()" title="Restore plans from a backup file">📂 Load</button>
     <button class="btn-mode active" id="btn-day" onclick="setView(&#39;day&#39;)">Days</button>
     <button class="btn-mode" id="btn-overview" onclick="setView(&#39;overview&#39;)">Overview</button>
   </div>
 </div>
 <input type="file" id="import-input" accept=".json" style="display:none" onchange="importPlans(this)">
-<div id="toast" style="display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgb(26, 26, 46); color: rgb(255, 255, 255); padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; opacity: 0;">⚠️ Route capped at 9 stops — 3 stops omitted. Split into separate slots.</div>
+<div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)"></div>
 
 <div id="day-view-root">
-  <div class="tabs" id="day-tabs"><div class="tab active"><div style="display:flex;align-items:center;gap:3px;font-weight:600">Day 1<span class="tab-dot tab-dot-has">10</span></div><div style="font-size:10px;color:var(--red);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 2<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 3<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 4<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 5<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 6<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 7<span class="tab-dot tab-dot-has">4</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 8<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 9<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 10<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 11<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 12<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 13<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 14<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div></div>
+  <div id="sync-bar" style="display:none;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:4px 12px;font-size:11px;color:var(--text-hint);display:flex;align-items:center;justify-content:space-between">
+  <span id="sync-status">Last auto-saved 18:05 on Thu 19 Mar</span>
+  <span style="display:flex;gap:10px">
+    <button onclick="exportPlans()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">💾 Save backup</button>
+    <button onclick="document.getElementById(&#39;import-input&#39;).click()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">📂 Load backup</button>
+  </span>
+</div>
+<div class="tabs" id="day-tabs"><div class="tab active"><div style="display:flex;align-items:center;gap:3px;font-weight:600">Day 1<span class="tab-dot tab-dot-has">4</span></div><div style="font-size:10px;color:var(--red);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 2<span class="tab-dot tab-dot-has">10</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 3<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 4<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 5<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 6<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 7<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 8<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 9<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 10<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 11<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 12<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 13<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 14<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div></div>
   <div class="split-layout">
     <div class="planner-pane" id="planner-pane"><div class="day-view"><div class="hotel-note"><span>🏨</span> Conrad Hotel, Pacific Place, Admiralty — Executive Lounge available evenings
     <div style="display:flex;gap:6px;margin-left:auto">
@@ -270,10 +289,10 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
   </div><div class="route-bar">
       <span style="font-size:11px;color:var(--text-hint);font-weight:500">Walking routes:</span>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Star%20Ferry%20Central%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Star%20Ferry%20Central%20Hong%20Kong|Granville%20Road%20Tsim%20Sha%20Tsui%20Hong%20Kong|Avenue%20of%20Stars%20Tsim%20Sha%20Tsui%20Hong%20Kong|K11%20Musea%20Tsim%20Sha%20Tsui%20Hong%20Kong" target="_blank">🌅 Morning</a>
-        <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Maxims%20Palace%20City%20Hall%20Edinburgh%20Place%20Central%20Hong%20Kong|Fook%20Ming%20Tong%20Tea%20Shop%20Hong%20Kong|Hak%20Dei%20PMQ%20Aberdeen%20Street%20Central%20Hong%20Kong|GOD%20Goods%20of%20Desire%20PMQ%20Central%20Hong%20Kong|PMQ%2035%20Aberdeen%20Street%20Central%20Hong%20Kong" target="_blank">☀️ Afternoon</a>
+        <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=IFC%20Mall%20Central%20Hong%20Kong|GOD%20Goods%20of%20Desire%20PMQ%20Central%20Hong%20Kong|Li%20Yuen%20Street%20East%20Central%20Hong%20Kong|Bowrington%20Road%20Cooked%20Food%20Centre%20Wan%20Chai%20Hong%20Kong" target="_blank">🌅 Morning</a>
+        <a class="btn-route" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">☀️ Afternoon</a>
         <a class="btn-route" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">🌙 Evening</a>
-        <a class="btn-route-day" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Hak%20Dei%20PMQ%20Aberdeen%20Street%20Central%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Star%20Ferry%20Central%20Hong%20Kong|Granville%20Road%20Tsim%20Sha%20Tsui%20Hong%20Kong|Avenue%20of%20Stars%20Tsim%20Sha%20Tsui%20Hong%20Kong|K11%20Musea%20Tsim%20Sha%20Tsui%20Hong%20Kong|Star%20Ferry%20Central%20Hong%20Kong|Maxims%20Palace%20City%20Hall%20Edinburgh%20Place%20Central%20Hong%20Kong|Fook%20Ming%20Tong%20Tea%20Shop%20Hong%20Kong" target="_blank">🗺 Full day route</a>
+        <a class="btn-route-day" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=IFC%20Mall%20Central%20Hong%20Kong|GOD%20Goods%20of%20Desire%20PMQ%20Central%20Hong%20Kong|Li%20Yuen%20Street%20East%20Central%20Hong%20Kong|Bowrington%20Road%20Cooked%20Food%20Centre%20Wan%20Chai%20Hong%20Kong" target="_blank">🗺 Full day route</a>
       </div>
     </div><div class="slot anchor">
       <div class="slot-header" onclick="toggleSlot(&#39;1-anchor&#39;)">
@@ -282,8 +301,8 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
           <a class="btn-route" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">🗺 Walk route</a>
           <span class="slot-toggle" onclick="toggleSlot(&#39;1-anchor&#39;)">▲</span>
         </div>
-      </div><div class="slot-body"><div class="activity-card is-start" id="card-mmwj56e7sm74kukmrx">
-      <button class="activity-delete" onclick="deleteActivity(1,&#39;anchor&#39;,&#39;mmwj56e7sm74kukmrx&#39;)" title="Remove start point">×</button>
+      </div><div class="slot-body"><div class="activity-card is-start" id="card-mmwjq3fipjgbu79dq8">
+      <button class="activity-delete" onclick="deleteActivity(1,&#39;anchor&#39;,&#39;mmwjq3fipjgbu79dq8&#39;)" title="Remove start point">×</button>
       <div class="activity-top">
         <div class="activity-name" style="color:#2E7D32">📍 Conrad Hotel (Start Point)</div>
         <span class="activity-type-badge badge-start">Start</span>
@@ -322,109 +341,101 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
       <div class="slot-header" onclick="toggleSlot(&#39;1-morning&#39;)">
         <div class="slot-label"><span class="slot-icon">🌅</span>Morning<span class="slot-count">5</span></div>
         <div class="slot-header-right" onclick="event.stopPropagation()">
-          <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Star%20Ferry%20Central%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Star%20Ferry%20Central%20Hong%20Kong|Granville%20Road%20Tsim%20Sha%20Tsui%20Hong%20Kong|Avenue%20of%20Stars%20Tsim%20Sha%20Tsui%20Hong%20Kong|K11%20Musea%20Tsim%20Sha%20Tsui%20Hong%20Kong" target="_blank">🗺 Walk route</a>
+          <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=IFC%20Mall%20Central%20Hong%20Kong|GOD%20Goods%20of%20Desire%20PMQ%20Central%20Hong%20Kong|Li%20Yuen%20Street%20East%20Central%20Hong%20Kong|Bowrington%20Road%20Cooked%20Food%20Centre%20Wan%20Chai%20Hong%20Kong" target="_blank">🗺 Walk route</a>
           <span class="slot-toggle" onclick="toggleSlot(&#39;1-morning&#39;)">▲</span>
         </div>
-      </div><div class="slot-body"><div class="zone-warning">⚠️ This slot mixes HK Island and Kowloon stops — walking between them is not possible. Check your route.</div><div class="activity-card" id="card-mmv3nxzncxkzclo06le">
+      </div><div class="slot-body"><div class="activity-card" id="card-mmwit9xxiuehfrp1eh">
     <div class="reorder-btns">
     <span style="display:block;height:16px"></span>
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmv3nxzncxkzclo06le&#39;,1)" title="Move down">▼</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmwit9xxiuehfrp1eh&#39;,1)" title="Move down">▼</button>
   </div>
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmv3nxzncxkzclo06le&#39;)" title="Remove">×</button>
+    <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmwit9xxiuehfrp1eh&#39;)" title="Remove">×</button>
     <div class="activity-top">
-      <div class="activity-name">Star Ferry</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="activity-type-badge badge-activity">Activity</span></div>
+      <div class="activity-name">ifc mall</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-splurge" title="Splurge — HK$500pp+">$$$</span><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-shopping">Shopping</span></div>
     </div>
-    <div class="activity-tip">$3-4 HKD — one of the world's great travel bargains; evening crossing highly recommended</div>
-    <div class="activity-meta">
-      <span class="activity-hours">6:30am–11:30pm</span>
-      <a class="activity-map" href="https://maps.google.com/?q=Star+Ferry+Central+Hong+Kong" target="_blank">📍 Maps</a>
-      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmv3nxzncxkzclo06le&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
-        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
-      </select>
-    </div>
-    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmv3nxzncxkzclo06le&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
-  </div><div class="activity-card" id="card-mmv5tg3kn1xzjx91fqh">
-    <div class="reorder-btns">
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmv5tg3kn1xzjx91fqh&#39;,-1)" title="Move up">▲</button>
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmv5tg3kn1xzjx91fqh&#39;,1)" title="Move down">▼</button>
-  </div>
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmv5tg3kn1xzjx91fqh&#39;)" title="Remove">×</button>
-    <div class="activity-top">
-      <div class="activity-name">Granville Road / Carnarvon Rd</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="zone-badge zone-3">Kowloon</span><span class="activity-type-badge badge-shopping">Shopping</span></div>
-    </div>
-    <div class="activity-tip">Local fashion bargains, Kimberley St area for independent shops; TST backstreets between Nathan Rd and waterfront</div>
-    <div class="activity-meta">
-      <span class="activity-hours">11am–9pm</span>
-      <a class="activity-map" href="https://maps.google.com/?q=Granville+Road+Tsim+Sha+Tsui+Hong+Kong" target="_blank">📍 Maps</a>
-      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmv5tg3kn1xzjx91fqh&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
-        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
-      </select>
-    </div>
-    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmv5tg3kn1xzjx91fqh&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
-  </div><div class="activity-card" id="card-mmv4z81fx0v0kcz9pj">
-    <div class="reorder-btns">
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmv4z81fx0v0kcz9pj&#39;,-1)" title="Move up">▲</button>
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmv4z81fx0v0kcz9pj&#39;,1)" title="Move down">▼</button>
-  </div>
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmv4z81fx0v0kcz9pj&#39;)" title="Remove">×</button>
-    <div class="activity-top">
-      <div class="activity-name">Avenue of Stars</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="zone-badge zone-3">Kowloon</span><span class="activity-type-badge badge-sight">Sight</span></div>
-    </div>
-    <div class="activity-tip">HK cinema walk of fame; handprints of HK legends; best viewpoint for Symphony of Lights</div>
-    <div class="activity-meta">
-      <span class="activity-hours">All day; best at dusk</span>
-      <a class="activity-map" href="https://maps.google.com/?q=Avenue+of+Stars+Tsim+Sha+Tsui+Hong+Kong" target="_blank">📍 Maps</a>
-      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmv4z81fx0v0kcz9pj&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
-        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
-      </select>
-    </div>
-    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmv4z81fx0v0kcz9pj&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
-  </div><div class="activity-card" id="card-mmv5smlmm3ry8nqr94k">
-    <div class="reorder-btns">
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmv5smlmm3ry8nqr94k&#39;,-1)" title="Move up">▲</button>
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmv5smlmm3ry8nqr94k&#39;,1)" title="Move down">▼</button>
-  </div>
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmv5smlmm3ry8nqr94k&#39;)" title="Remove">×</button>
-    <div class="activity-top">
-      <div class="activity-name">K11 Musea</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="zone-badge zone-3">Kowloon</span><span class="activity-type-badge badge-shopping">Shopping</span></div>
-    </div>
-    <div class="activity-tip">Arts and retail hybrid on TST waterfront; independent and regional brands; beautifully designed; Day 4 stop</div>
+    <div class="activity-tip">Apple Store, luxury brands, Michelin restaurants; stunning waterfront location in Central</div>
     <div class="activity-meta">
       <span class="activity-hours">10am–10pm</span>
-      <a class="activity-map" href="https://maps.google.com/?q=K11+Musea+Tsim+Sha+Tsui+Hong+Kong" target="_blank">📍 Maps</a>
-      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmv5smlmm3ry8nqr94k&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+      <a class="activity-map" href="https://maps.google.com/?q=IFC+Mall+Central+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmwit9xxiuehfrp1eh&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
         <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
       </select>
     </div>
-    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmv5smlmm3ry8nqr94k&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
-  </div><div class="activity-card" id="card-mmv4zihisbgegjbjma">
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmwit9xxiuehfrp1eh&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmwitk6maj1s6fux65">
     <div class="reorder-btns">
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmv4zihisbgegjbjma&#39;,-1)" title="Move up">▲</button>
-    <span style="display:block;height:16px"></span>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmwitk6maj1s6fux65&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmwitk6maj1s6fux65&#39;,1)" title="Move down">▼</button>
   </div>
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmv4zihisbgegjbjma&#39;)" title="Remove">×</button>
+    <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmwitk6maj1s6fux65&#39;)" title="Remove">×</button>
     <div class="activity-top">
-      <div class="activity-name">Star Ferry</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-activity">Activity</span></div>
+      <div class="activity-name">G.O.D. (Goods of Desire)</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-mid" title="Mid-range — HK$150–500pp">$$</span><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-shopping">Shopping</span></div>
     </div>
-    <div class="activity-tip">$3-4 HKD — one of the world's great travel bargains; evening crossing highly recommended</div>
+    <div class="activity-tip">HK-designed homeware, clothing, gifts; iconic "Delay No More" tees (phonetically rude in Cantonese!)</div>
     <div class="activity-meta">
-      <span class="activity-hours">6:30am–11:30pm</span>
-      <a class="activity-map" href="https://maps.google.com/?q=Star+Ferry+Central+Hong+Kong" target="_blank">📍 Maps</a>
-      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmv4zihisbgegjbjma&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+      <span class="activity-hours">Noon–8pm</span>
+      <a class="activity-map" href="https://maps.google.com/?q=GOD+Goods+of+Desire+PMQ+Central+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmwitk6maj1s6fux65&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
         <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
       </select>
     </div>
-    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmv4zihisbgegjbjma&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
-  </div><div class="add-area">
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmwitk6maj1s6fux65&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmwiuwh2notnhi37uh">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmwiuwh2notnhi37uh&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmwiuwh2notnhi37uh&#39;,1)" title="Move down">▼</button>
+  </div>
+    <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmwiuwh2notnhi37uh&#39;)" title="Remove">×</button>
+    <div class="activity-top">
+      <div class="activity-name">Li Yuen St E &amp; W (The Lanes)</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-budget" title="Budget — under HK$150pp">$</span><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-shopping">Shopping</span></div>
+    </div>
+    <div class="activity-tip">Narrow covered alleys in Central; cheap fashion, costume jewellery, accessories</div>
+    <div class="activity-meta">
+      <span class="activity-hours">10am–7pm Mon–Sat</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Li+Yuen+Street+East+Central+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmwiuwh2notnhi37uh&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmwiuwh2notnhi37uh&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmwiv73ugr7g4ycchkn">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmwiv73ugr7g4ycchkn&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmwiv73ugr7g4ycchkn&#39;,1)" title="Move down">▼</button>
+  </div>
+    <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmwiv73ugr7g4ycchkn&#39;)" title="Remove">×</button>
+    <div class="activity-top">
+      <div class="activity-name">Bowrington Rd Cooked Food Ctr</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-budget" title="Budget — under HK$150pp">$</span><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-food">Food &amp; Drink</span></div>
+    </div>
+    <div class="activity-tip">Hawker-style cooked food centre; Wing Kee beef brisket noodles. Bowrington Rd, Wan Chai. Cash only.</div>
+    <div class="activity-meta">
+      <span class="activity-hours">Noon–10pm</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Bowrington+Road+Cooked+Food+Centre+Wan+Chai+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmwiv73ugr7g4ycchkn&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmwiv73ugr7g4ycchkn&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card is-finish" id="card-mmwjokscqaaii5p1e3r">
+      <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmwjokscqaaii5p1e3r&#39;)" title="Remove end point">×</button>
+      <div class="activity-top">
+        <div class="activity-name" style="color:var(--red)">🏁 Conrad Hotel (Return)</div>
+        <span class="activity-type-badge badge-finish">Finish</span>
+      </div>
+      <div class="activity-tip" style="color:#555">Pacific Place, 88 Queensway, Admiralty. Delete this if not returning to hotel.</div>
+      <div class="activity-meta">
+        <a class="activity-map" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">📍 Maps</a>
+        <span style="font-size:10px;color:var(--text-hint)">Route destination — delete if not returning to hotel</span>
+      </div>
+    </div><div class="add-area">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">
           <div class="add-toggle" onclick="toggleAddForm(&#39;1-morning&#39;)" style="flex:1"><span style="font-size:14px">＋</span> Add activity</div>
           <button onclick="addConradStart(1,&#39;morning&#39;)" style="font-size:11px;background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;padding:4px 9px;border-radius:var(--radius);cursor:pointer;white-space:nowrap">📍 Start: Conrad</button>
-          <button onclick="addConradFinish(1,&#39;morning&#39;)" style="font-size:11px;background:var(--red-light);color:var(--red);border:1px solid rgba(192,57,43,0.3);padding:4px 9px;border-radius:var(--radius);cursor:pointer;white-space:nowrap">🏁 Return: Conrad</button>
+          
         </div>
         <div class="add-form" id="addform-1-morning">
           <input type="text" placeholder="Name / Place" id="add-name-1-morning">
@@ -447,122 +458,16 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
         </div>
       </div></div></div><div class="slot afternoon">
       <div class="slot-header" onclick="toggleSlot(&#39;1-afternoon&#39;)">
-        <div class="slot-label"><span class="slot-icon">☀️</span>Afternoon<span class="slot-count">6</span></div>
+        <div class="slot-label"><span class="slot-icon">☀️</span>Afternoon<span class="slot-count">0</span></div>
         <div class="slot-header-right" onclick="event.stopPropagation()">
-          <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Maxims%20Palace%20City%20Hall%20Edinburgh%20Place%20Central%20Hong%20Kong|Fook%20Ming%20Tong%20Tea%20Shop%20Hong%20Kong|Hak%20Dei%20PMQ%20Aberdeen%20Street%20Central%20Hong%20Kong|GOD%20Goods%20of%20Desire%20PMQ%20Central%20Hong%20Kong|PMQ%2035%20Aberdeen%20Street%20Central%20Hong%20Kong" target="_blank">🗺 Walk route</a>
+          
           <span class="slot-toggle" onclick="toggleSlot(&#39;1-afternoon&#39;)">▲</span>
         </div>
-      </div><div class="slot-body"><div class="activity-card" id="card-mmv5ujq4cjt9dz1scrg">
-    <div class="reorder-btns">
-    <span style="display:block;height:16px"></span>
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmv5ujq4cjt9dz1scrg&#39;,1)" title="Move down">▼</button>
-  </div>
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmv5ujq4cjt9dz1scrg&#39;)" title="Remove">×</button>
-    <div class="activity-top">
-      <div class="activity-name">Maxim's Palace Dim Sum</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-food">Food &amp; Drink</span></div>
-    </div>
-    <div class="activity-tip">Iconic trolley dim sum in palatial room; City Hall Low Block, Edinburgh Place, Central. Book ahead.</div>
-    <div class="activity-meta">
-      <span class="activity-hours">11am–3pm wkdays; 9am wknds</span>
-      <a class="activity-map" href="https://maps.google.com/?q=Maxims+Palace+City+Hall+Edinburgh+Place+Central+Hong+Kong" target="_blank">📍 Maps</a>
-      <select class="move-slot" onchange="moveActivity(1,&#39;afternoon&#39;,&#39;mmv5ujq4cjt9dz1scrg&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
-        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="morning">Morning</option><option value="evening">Evening</option>
-      </select>
-    </div>
-    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;afternoon&#39;,&#39;mmv5ujq4cjt9dz1scrg&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
-  </div><div class="activity-card" id="card-mmv5uypzdstkqc51jjp">
-    <div class="reorder-btns">
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmv5uypzdstkqc51jjp&#39;,-1)" title="Move up">▲</button>
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmv5uypzdstkqc51jjp&#39;,1)" title="Move down">▼</button>
-  </div>
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmv5uypzdstkqc51jjp&#39;)" title="Remove">×</button>
-    <div class="activity-top">
-      <div class="activity-name">Fook Ming Tong Tea Shop</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-shopping">Shopping</span></div>
-    </div>
-    <div class="activity-tip">Premium Chinese teas with beautiful gift packaging; English-speaking staff; ifc mall branch handy</div>
-    <div class="activity-meta">
-      <span class="activity-hours">10am–8pm</span>
-      <a class="activity-map" href="https://maps.google.com/?q=Fook+Ming+Tong+Tea+Shop+Hong+Kong" target="_blank">📍 Maps</a>
-      <select class="move-slot" onchange="moveActivity(1,&#39;afternoon&#39;,&#39;mmv5uypzdstkqc51jjp&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
-        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="morning">Morning</option><option value="evening">Evening</option>
-      </select>
-    </div>
-    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;afternoon&#39;,&#39;mmv5uypzdstkqc51jjp&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
-  </div><div class="activity-card" id="card-mmv5v1xx2g4u0s4iw14">
-    <div class="reorder-btns">
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmv5v1xx2g4u0s4iw14&#39;,-1)" title="Move up">▲</button>
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmv5v1xx2g4u0s4iw14&#39;,1)" title="Move down">▼</button>
-  </div>
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmv5v1xx2g4u0s4iw14&#39;)" title="Remove">×</button>
-    <div class="activity-top">
-      <div class="activity-name">Hak Dei (Ceramics)</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-shopping">Shopping</span></div>
-    </div>
-    <div class="activity-tip">Handmade retro HK ceramics — tea flasks, cups, bowls; beautiful gifts; at PMQ</div>
-    <div class="activity-meta">
-      <span class="activity-hours">Noon–8pm Wed–Mon</span>
-      <a class="activity-map" href="https://maps.google.com/?q=Hak+Dei+PMQ+Aberdeen+Street+Central+Hong+Kong" target="_blank">📍 Maps</a>
-      <select class="move-slot" onchange="moveActivity(1,&#39;afternoon&#39;,&#39;mmv5v1xx2g4u0s4iw14&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
-        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="morning">Morning</option><option value="evening">Evening</option>
-      </select>
-    </div>
-    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;afternoon&#39;,&#39;mmv5v1xx2g4u0s4iw14&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
-  </div><div class="activity-card" id="card-mmv5v3ktjp0v88nqf9">
-    <div class="reorder-btns">
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmv5v3ktjp0v88nqf9&#39;,-1)" title="Move up">▲</button>
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmv5v3ktjp0v88nqf9&#39;,1)" title="Move down">▼</button>
-  </div>
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmv5v3ktjp0v88nqf9&#39;)" title="Remove">×</button>
-    <div class="activity-top">
-      <div class="activity-name">G.O.D. (Goods of Desire)</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-shopping">Shopping</span></div>
-    </div>
-    <div class="activity-tip">HK-designed homeware, clothing, gifts; iconic "Delay No More" tees (phonetically rude in Cantonese!)</div>
-    <div class="activity-meta">
-      <span class="activity-hours">Noon–8pm</span>
-      <a class="activity-map" href="https://maps.google.com/?q=GOD+Goods+of+Desire+PMQ+Central+Hong+Kong" target="_blank">📍 Maps</a>
-      <select class="move-slot" onchange="moveActivity(1,&#39;afternoon&#39;,&#39;mmv5v3ktjp0v88nqf9&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
-        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="morning">Morning</option><option value="evening">Evening</option>
-      </select>
-    </div>
-    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;afternoon&#39;,&#39;mmv5v3ktjp0v88nqf9&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
-  </div><div class="activity-card" id="card-mmv5v53esiwymtmy4s">
-    <div class="reorder-btns">
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmv5v53esiwymtmy4s&#39;,-1)" title="Move up">▲</button>
-    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmv5v53esiwymtmy4s&#39;,1)" title="Move down">▼</button>
-  </div>
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmv5v53esiwymtmy4s&#39;)" title="Remove">×</button>
-    <div class="activity-top">
-      <div class="activity-name">PMQ Creative Hub</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-shopping">Shopping</span></div>
-    </div>
-    <div class="activity-tip">35 Aberdeen St, Central; 100+ local designer boutiques across 8 floors of a historic building</div>
-    <div class="activity-meta">
-      <span class="activity-hours">Noon–8pm</span>
-      <a class="activity-map" href="https://maps.google.com/?q=PMQ+35+Aberdeen+Street+Central+Hong+Kong" target="_blank">📍 Maps</a>
-      <select class="move-slot" onchange="moveActivity(1,&#39;afternoon&#39;,&#39;mmv5v53esiwymtmy4s&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
-        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="morning">Morning</option><option value="evening">Evening</option>
-      </select>
-    </div>
-    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;afternoon&#39;,&#39;mmv5v53esiwymtmy4s&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
-  </div><div class="activity-card is-finish" id="card-mmv6e2y5xw5r96gkych">
-      <button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmv6e2y5xw5r96gkych&#39;)" title="Remove end point">×</button>
-      <div class="activity-top">
-        <div class="activity-name" style="color:var(--red)">🏁 Conrad Hotel (Return)</div>
-        <span class="activity-type-badge badge-finish">Finish</span>
-      </div>
-      <div class="activity-tip" style="color:#555">Pacific Place, 88 Queensway, Admiralty. Delete this if not returning to hotel.</div>
-      <div class="activity-meta">
-        <a class="activity-map" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">📍 Maps</a>
-        <span style="font-size:10px;color:var(--text-hint)">Route destination — delete if not returning to hotel</span>
-      </div>
-    </div><div class="add-area">
+      </div><div class="slot-body"><div class="add-area">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">
           <div class="add-toggle" onclick="toggleAddForm(&#39;1-afternoon&#39;)" style="flex:1"><span style="font-size:14px">＋</span> Add activity</div>
           <button onclick="addConradStart(1,&#39;afternoon&#39;)" style="font-size:11px;background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;padding:4px 9px;border-radius:var(--radius);cursor:pointer;white-space:nowrap">📍 Start: Conrad</button>
-          
+          <button onclick="addConradFinish(1,&#39;afternoon&#39;)" style="font-size:11px;background:var(--red-light);color:var(--red);border:1px solid rgba(192,57,43,0.3);padding:4px 9px;border-radius:var(--radius);cursor:pointer;white-space:nowrap">🏁 Return: Conrad</button>
         </div>
         <div class="add-form" id="addform-1-afternoon">
           <input type="text" placeholder="Name / Place" id="add-name-1-afternoon">
@@ -621,6 +526,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
       <div style="padding:6px 8px;border-bottom:1px solid var(--border);background:var(--bg-tertiary)">
         <div style="font-size:9px;color:var(--text-hint);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Filter by zone</div>
         <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px">
+          <button class="ref-filter-btn zone-filter" data-zone="0" onclick="toggleFilter(&#39;zone&#39;,&#39;0&#39;)" style="background:#E3F2FD;color:#0277BD;border:1px solid #81D4FA;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:600">Harbour</button>
           <button class="ref-filter-btn zone-filter" data-zone="1" onclick="toggleFilter(&#39;zone&#39;,&#39;1&#39;)" style="background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:600">HKI Core</button>
           <button class="ref-filter-btn zone-filter" data-zone="2" onclick="toggleFilter(&#39;zone&#39;,&#39;2&#39;)" style="background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:600">HKI Other</button>
           <button class="ref-filter-btn zone-filter" data-zone="3" onclick="toggleFilter(&#39;zone&#39;,&#39;3&#39;)" style="background:#FFF3E0;color:#E65100;border:1px solid #FFCC80;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:600">Kowloon</button>
@@ -768,12 +674,12 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
             </select>
             <button class="ref-item-add" onclick="addFromRef({&quot;name&quot;:&quot;Hong Kong Park&quot;,&quot;zone&quot;:1,&quot;cost&quot;:0,&quot;type&quot;:&quot;sight&quot;,&quot;hours&quot;:&quot;6am–11pm daily&quot;,&quot;tip&quot;:&quot;Free; lovely gardens right beside the hotel on Supreme Court Rd; good route to Peak Tram terminus&quot;,&quot;map&quot;:&quot;https://maps.google.com/?q=Hong+Kong+Park+Supreme+Court+Road+Admiralty&quot;},document.getElementById(&#39;ref-slot-5&#39;).value)">Add</button>
           </div>
-        </div><div class="ref-item" data-search="star ferry activity $3-4 hkd — one of the world&#39;s great travel bargains; evening crossing highly recommended" data-zone="1" data-type="activity" data-cost="0">
+        </div><div class="ref-item" data-search="star ferry activity $3-4 hkd — one of the world&#39;s great travel bargains; evening crossing highly recommended" data-zone="" data-type="activity" data-cost="0">
           <div class="ref-item-text">
             <div class="ref-item-name" onclick="toggleRefInfo(&#39;refinfo-6&#39;)">Star Ferry</div>
-            <div class="ref-item-sub">6:30am–11:30pm &nbsp;<span class="ref-zone-1">HKI Core</span>&nbsp;<span class="cost-badge cost-free" title="Free — no entry cost">Free</span></div>
+            <div class="ref-item-sub">6:30am–11:30pm&nbsp;<span class="cost-badge cost-free" title="Free — no entry cost">Free</span></div>
             <div class="ref-info-popup" id="refinfo-6">
-              <div class="ref-info-title">Star Ferry <span class="zone-badge zone-1" style="font-size:9px">HK Island — Core</span>&nbsp;<span class="cost-badge cost-free" title="Free — no entry cost">Free</span></div>
+              <div class="ref-info-title">Star Ferry&nbsp;<span class="cost-badge cost-free" title="Free — no entry cost">Free</span></div>
               <div class="ref-info-hours">6:30am–11:30pm</div>
               <div class="ref-info-tip">$3-4 HKD — one of the world's great travel bargains; evening crossing highly recommended</div>
               <a class="ref-info-map" href="https://maps.google.com/?q=Star+Ferry+Central+Hong+Kong" target="_blank">📍 Open in Maps</a>
@@ -786,7 +692,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
               <option value="evening">Evening</option>
               <option value="anchor">Anchor</option>
             </select>
-            <button class="ref-item-add" onclick="addFromRef({&quot;name&quot;:&quot;Star Ferry&quot;,&quot;zone&quot;:1,&quot;cost&quot;:0,&quot;type&quot;:&quot;activity&quot;,&quot;hours&quot;:&quot;6:30am–11:30pm&quot;,&quot;tip&quot;:&quot;$3-4 HKD — one of the world&#39;s great travel bargains; evening crossing highly recommended&quot;,&quot;map&quot;:&quot;https://maps.google.com/?q=Star+Ferry+Central+Hong+Kong&quot;},document.getElementById(&#39;ref-slot-6&#39;).value)">Add</button>
+            <button class="ref-item-add" onclick="addFromRef({&quot;name&quot;:&quot;Star Ferry&quot;,&quot;zone&quot;:0,&quot;cost&quot;:0,&quot;type&quot;:&quot;activity&quot;,&quot;hours&quot;:&quot;6:30am–11:30pm&quot;,&quot;tip&quot;:&quot;$3-4 HKD — one of the world&#39;s great travel bargains; evening crossing highly recommended&quot;,&quot;map&quot;:&quot;https://maps.google.com/?q=Star+Ferry+Central+Hong+Kong&quot;},document.getElementById(&#39;ref-slot-6&#39;).value)">Add</button>
           </div>
         </div><div class="ref-item" data-search="symphony of lights sight free; best viewed from tst east promenade avenue of stars; also good from star ferry" data-zone="3" data-type="sight" data-cost="0">
           <div class="ref-item-text">
@@ -848,12 +754,12 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
             </select>
             <button class="ref-item-add" onclick="addFromRef({&quot;name&quot;:&quot;Avenue of Stars&quot;,&quot;zone&quot;:3,&quot;cost&quot;:0,&quot;type&quot;:&quot;sight&quot;,&quot;hours&quot;:&quot;All day; best at dusk&quot;,&quot;tip&quot;:&quot;HK cinema walk of fame; handprints of HK legends; best viewpoint for Symphony of Lights&quot;,&quot;map&quot;:&quot;https://maps.google.com/?q=Avenue+of+Stars+Tsim+Sha+Tsui+Hong+Kong&quot;},document.getElementById(&#39;ref-slot-9&#39;).value)">Add</button>
           </div>
-        </div><div class="ref-item" data-search="aqua luna junk cruise activity book ahead; departs tst and central pier 9; includes 1 free drink; ~45 mins" data-zone="1" data-type="activity" data-cost="2">
+        </div><div class="ref-item" data-search="aqua luna junk cruise activity book ahead; departs tst and central pier 9; includes 1 free drink; ~45 mins" data-zone="" data-type="activity" data-cost="2">
           <div class="ref-item-text">
             <div class="ref-item-name" onclick="toggleRefInfo(&#39;refinfo-10&#39;)">Aqua Luna Junk Cruise</div>
-            <div class="ref-item-sub">Multiple daily sailings &nbsp;<span class="ref-zone-1">HKI Core</span>&nbsp;<span class="cost-badge cost-mid" title="Mid-range — HK$150–500pp">$$</span></div>
+            <div class="ref-item-sub">Multiple daily sailings&nbsp;<span class="cost-badge cost-mid" title="Mid-range — HK$150–500pp">$$</span></div>
             <div class="ref-info-popup" id="refinfo-10">
-              <div class="ref-info-title">Aqua Luna Junk Cruise <span class="zone-badge zone-1" style="font-size:9px">HK Island — Core</span>&nbsp;<span class="cost-badge cost-mid" title="Mid-range — HK$150–500pp">$$</span></div>
+              <div class="ref-info-title">Aqua Luna Junk Cruise&nbsp;<span class="cost-badge cost-mid" title="Mid-range — HK$150–500pp">$$</span></div>
               <div class="ref-info-hours">Multiple daily sailings</div>
               <div class="ref-info-tip">Book ahead; departs TST and Central Pier 9; includes 1 free drink; ~45 mins</div>
               <a class="ref-info-map" href="https://maps.google.com/?q=Aqua+Luna+Tsim+Sha+Tsui+Hong+Kong" target="_blank">📍 Open in Maps</a>
@@ -866,7 +772,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
               <option value="evening">Evening</option>
               <option value="anchor">Anchor</option>
             </select>
-            <button class="ref-item-add" onclick="addFromRef({&quot;name&quot;:&quot;Aqua Luna Junk Cruise&quot;,&quot;zone&quot;:1,&quot;cost&quot;:2,&quot;type&quot;:&quot;activity&quot;,&quot;hours&quot;:&quot;Multiple daily sailings&quot;,&quot;tip&quot;:&quot;Book ahead; departs TST and Central Pier 9; includes 1 free drink; ~45 mins&quot;,&quot;map&quot;:&quot;https://maps.google.com/?q=Aqua+Luna+Tsim+Sha+Tsui+Hong+Kong&quot;},document.getElementById(&#39;ref-slot-10&#39;).value)">Add</button>
+            <button class="ref-item-add" onclick="addFromRef({&quot;name&quot;:&quot;Aqua Luna Junk Cruise&quot;,&quot;zone&quot;:0,&quot;cost&quot;:2,&quot;type&quot;:&quot;activity&quot;,&quot;hours&quot;:&quot;Multiple daily sailings&quot;,&quot;tip&quot;:&quot;Book ahead; departs TST and Central Pier 9; includes 1 free drink; ~45 mins&quot;,&quot;map&quot;:&quot;https://maps.google.com/?q=Aqua+Luna+Tsim+Sha+Tsui+Hong+Kong&quot;},document.getElementById(&#39;ref-slot-10&#39;).value)">Add</button>
           </div>
         </div><div class="ref-item" data-search="happy valley racing activity free entry with passport; take the tram; first race ~7:30pm; incredible atmosphere under floodlights" data-zone="1" data-type="activity" data-cost="1">
           <div class="ref-item-text">
@@ -2771,6 +2677,7 @@ const TYPES = ['sight','market','shopping','food','bar','activity','anchor','sta
 const TYPE_LABELS = {sight:'Sight',market:'Market',shopping:'Shopping',food:'Food & Drink',bar:'Bar',activity:'Activity',anchor:'Anchor',start:'Start',finish:'Finish'};
 
 const ZONES = {
+  0: {label:'Harbour / Crossing',desc:'Star Ferry, Aqua Luna — spans both sides of the harbour',short:'Harbour'},
   1: {label:'HK Island — Core',desc:'Central / Admiralty / Wan Chai / Causeway Bay',short:'HKI Core'},
   2: {label:'HK Island — Other',desc:'Sheung Wan / Aberdeen / Stanley / North Point etc.',short:'HKI Other'},
   3: {label:'Kowloon',desc:'TST / Mong Kok / Jordan / Yau Ma Tei / Sham Shui Po',short:'Kowloon'},
@@ -2785,11 +2692,11 @@ const GUIDE_ITEMS = [
     {name:'Peak Galleria & Sky Terrace 428',zone:1,cost:1,type:'sight',hours:'7am–11pm; Sky Terrace paid entry',tip:'Free terrace first for views; Sky Terrace 428 gives full 360° panorama; touristy but worth it',map:'https://maps.google.com/?q=Peak+Galleria+Hong+Kong'},
     {name:'Peak Circle Walk',zone:1,cost:0,type:'activity',hours:'All day (avoid midday heat)',tip:'Easy flat 3.5km loop around mountaintop through trees; about 1 hour at leisurely pace; free',map:'https://maps.google.com/?q=Peak+Circle+Walk+Hong+Kong'},
     {name:'Hong Kong Park',zone:1,cost:0,type:'sight',hours:'6am–11pm daily',tip:'Free; lovely gardens right beside the hotel on Supreme Court Rd; good route to Peak Tram terminus',map:'https://maps.google.com/?q=Hong+Kong+Park+Supreme+Court+Road+Admiralty'},
-    {name:'Star Ferry',zone:1,cost:0,type:'activity',hours:'6:30am–11:30pm',tip:'$3-4 HKD — one of the world\'s great travel bargains; evening crossing highly recommended',map:'https://maps.google.com/?q=Star+Ferry+Central+Hong+Kong'},
+    {name:'Star Ferry',zone:0,cost:0,type:'activity',hours:'6:30am–11:30pm',tip:'$3-4 HKD — one of the world\'s great travel bargains; evening crossing highly recommended',map:'https://maps.google.com/?q=Star+Ferry+Central+Hong+Kong'},
     {name:'Symphony of Lights',zone:3,cost:0,type:'sight',hours:'8pm nightly (~13 mins)',tip:'Free; best viewed from TST East Promenade Avenue of Stars; also good from Star Ferry',map:'https://maps.google.com/?q=Avenue+of+Stars+Tsim+Sha+Tsui+Hong+Kong'},
     {name:'TST East Promenade',zone:3,cost:0,type:'sight',hours:'All day; dusk–9pm best',tip:'Arrive at sunset for golden hour then stay for 8pm Symphony of Lights laser show',map:'https://maps.google.com/?q=Tsim+Sha+Tsui+East+Promenade+Hong+Kong'},
     {name:'Avenue of Stars',zone:3,cost:0,type:'sight',hours:'All day; best at dusk',tip:'HK cinema walk of fame; handprints of HK legends; best viewpoint for Symphony of Lights',map:'https://maps.google.com/?q=Avenue+of+Stars+Tsim+Sha+Tsui+Hong+Kong'},
-    {name:'Aqua Luna Junk Cruise',zone:1,cost:2,type:'activity',hours:'Multiple daily sailings',tip:'Book ahead; departs TST and Central Pier 9; includes 1 free drink; ~45 mins',map:'https://maps.google.com/?q=Aqua+Luna+Tsim+Sha+Tsui+Hong+Kong'},
+    {name:'Aqua Luna Junk Cruise',zone:0,cost:2,type:'activity',hours:'Multiple daily sailings',tip:'Book ahead; departs TST and Central Pier 9; includes 1 free drink; ~45 mins',map:'https://maps.google.com/?q=Aqua+Luna+Tsim+Sha+Tsui+Hong+Kong'},
     {name:'Happy Valley Racing',zone:1,cost:1,type:'activity',hours:'Wed evenings Sep–Jun; gates ~6pm',tip:'Free entry with passport; take the tram; first race ~7:30pm; incredible atmosphere under floodlights',map:'https://maps.google.com/?q=Happy+Valley+Racecourse+Hong+Kong'},
     {name:'Sky100 Observation Deck',zone:3,cost:2,type:'sight',hours:'10am–9pm daily',tip:'100th floor of ICC — HK\'s tallest building; panoramic views across both island and Kowloon; paid entry',map:'https://maps.google.com/?q=Sky100+ICC+Tower+Kowloon+Hong+Kong'},
     {name:'West Kowloon Cultural District',zone:3,cost:0,type:'sight',hours:'All day; promenade always open',tip:'Wide pleasant harbourfront promenade; excellent unobstructed views back to HK Island; very photogenic',map:'https://maps.google.com/?q=West+Kowloon+Cultural+District+Hong+Kong'},
@@ -2968,7 +2875,19 @@ function migrateData(){
 }
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2)}
-function save(){localStorage.setItem('hk_trip_v1',JSON.stringify(tripData))}
+function save(){
+  localStorage.setItem('hk_trip_v1',JSON.stringify(tripData));
+  const now=new Date();
+  const timeStr=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const dateStr=now.toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'});
+  localStorage.setItem('hk_last_saved', now.toISOString());
+  const bar=document.getElementById('sync-bar');
+  const status=document.getElementById('sync-status');
+  if(bar&&status){
+    bar.style.display='flex';
+    status.textContent=`Auto-saved ${timeStr} on ${dateStr} — remember to export backup before switching device`;
+  }
+}
 
 function renderTabs(){
   const tabs = document.getElementById('day-tabs');
@@ -3053,11 +2972,11 @@ function renderDay(){
     if(isOpen){
       html+=`<div class="slot-body">`;
       // Zone warning: flag if slot mixes HKI and Kowloon (zones 1/2 mixed with zone 3)
-      const slotZones=new Set(items.filter(i=>i.zone).map(i=>i.zone));
+      const slotZones=new Set(items.filter(i=>i.zone&&i.zone!==0).map(i=>i.zone));
       const hasHKI=slotZones.has(1)||slotZones.has(2);
       const hasKowloon=slotZones.has(3);
       if(hasHKI&&hasKowloon){
-        html+=`<div class="zone-warning">⚠️ This slot mixes HK Island and Kowloon stops — walking between them is not possible. Check your route.</div>`;
+        html+=`<div class="zone-warning">⚠️ This slot mixes HK Island and Kowloon stops — walking between them is not possible. Use the Star Ferry or MTR to connect them.</div>`;
       }
       for(const item of items){
         html+=renderActivityCard(item,currentDay,slot,items.indexOf(item),items.length);
@@ -3274,15 +3193,34 @@ function exportPlans(){
     label:'HK Trip Planner — Day Plans Backup',
     tripData
   };
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+
+  // On iPhone/iOS Safari — use Web Share API for direct share sheet (Files, OneDrive, AirDrop etc)
+  const isMobile=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if(isMobile && navigator.share && navigator.canShare){
+    const file=new File([blob],'HK_Live_Plan.json',{type:'application/json'});
+    if(navigator.canShare({files:[file]})){
+      navigator.share({
+        files:[file],
+        title:'HK Trip Plans',
+        text:'Hong Kong trip day plans backup'
+      }).then(()=>showToast('✅ Plans ready to save — choose OneDrive or Files'))
+        .catch(e=>{ if(e.name!=='AbortError') fallbackDownload(blob); });
+      return;
+    }
+  }
+  fallbackDownload(blob);
+}
+
+function fallbackDownload(blob){
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  const date=new Date().toISOString().slice(0,10);
   a.href=url;
-  a.download=`HK_Trip_Plans_${date}.json`;
+  a.download='HK_Live_Plan.json';
   a.click();
   URL.revokeObjectURL(url);
-  showToast('✅ Plans exported — save the file to OneDrive');
+  showToast('✅ Saved as HK_Live_Plan.json — move to your OneDrive Daily Planner folder');
 }
 
 function importPlans(input){
@@ -3293,19 +3231,23 @@ function importPlans(input){
     try{
       const data=JSON.parse(e.target.result);
       if(!data.tripData) throw new Error('Invalid backup file');
-      // Validate it looks like trip data
       if(!data.tripData[1]||!data.tripData[1].slots) throw new Error('Unrecognised format');
-      if(!confirm(`This will replace your current plans with the backup from ${data.exported?data.exported.slice(0,10):'unknown date'}.\n\nYour current plans will be overwritten. Continue?`)){
+      const exportedDate=data.exported?data.exported.slice(0,10):'unknown date';
+      const exportedTime=data.exported?data.exported.slice(11,16):'';
+      if(!confirm(`Load plans from backup?\n\nFile: ${file.name}\nSaved: ${exportedDate} ${exportedTime}\n\nYour current plans on this device will be replaced. Continue?`)){
         input.value='';
         return;
       }
       tripData=data.tripData;
+      migrateData();
       save();
       renderTabs();
       renderDay();
-      showToast('✅ Plans restored from backup');
+      showToast(`✅ Plans loaded from ${exportedDate}`);
+      // Remember filename hint for next time
+      try{ localStorage.setItem('hk_last_backup_name', file.name); }catch(e){}
     } catch(err){
-      showToast('❌ Could not read backup file — is it a valid HK planner export?');
+      showToast('❌ Could not read file — make sure it is a HK planner backup (.json)');
     }
     input.value='';
   };
@@ -3512,7 +3454,7 @@ function renderOverview(){
     const day=tripData[d];
     const all=[...day.slots.anchor,...day.slots.morning,...day.slots.afternoon,...day.slots.evening]
       .filter(i=>!(i.type==='anchor'&&i.name.indexOf('Conrad')!==-1));
-    const dayZones=[...new Set(all.filter(i=>i.zone).map(i=>i.zone))].sort();
+    const dayZones=[...new Set(all.filter(i=>i.zone&&i.zone!==0).map(i=>i.zone))].sort();
     const zoneChips=dayZones.map(z=>{
       const zc={1:'#2E7D32',2:'#1565C0',3:'#E65100',4:'#6A1B9A'}[z]||'#888';
       const zl={1:'#E8F5E9',2:'#E3F2FD',3:'#FFF3E0',4:'#F3E5F5'}[z]||'#f5f5f5';
@@ -3616,19 +3558,25 @@ function addFromRef(item,slot){
   renderRefPanel();
 }
 
-const activeFilters={zone:null,type:null,cost:null};
+const activeFilters={zone:null,type:null,cost:new Set()};
 
 function toggleFilter(dimension,value){
-  if(activeFilters[dimension]===value){
-    activeFilters[dimension]=null;
+  if(dimension==='cost'){
+    // Cost is multi-select — toggle in/out of Set
+    if(activeFilters.cost.has(value)){
+      activeFilters.cost.delete(value);
+    } else {
+      activeFilters.cost.add(value);
+    }
   } else {
-    activeFilters[dimension]=value;
+    // Zone and type remain single-select
+    activeFilters[dimension]=activeFilters[dimension]===value?null:value;
   }
   // Update button visual states
   document.querySelectorAll('.ref-filter-btn').forEach(btn=>{
     const dim=btn.classList.contains('zone-filter')?'zone':btn.classList.contains('cost-filter')?'cost':'type';
     const val=btn.dataset.zone||btn.dataset.cost||btn.dataset.type;
-    const isActive=activeFilters[dim]===val;
+    const isActive=dim==='cost'?activeFilters.cost.has(val):activeFilters[dim]===val;
     btn.style.opacity=isActive?'1':'0.45';
     btn.style.fontWeight=isActive?'700':'600';
     btn.style.boxShadow=isActive?'0 0 0 2px currentColor':'none';
@@ -3639,7 +3587,7 @@ function toggleFilter(dimension,value){
 function clearFilters(){
   activeFilters.zone=null;
   activeFilters.type=null;
-  activeFilters.cost=null;
+  activeFilters.cost=new Set();
   document.querySelectorAll('.ref-filter-btn').forEach(btn=>{
     btn.style.opacity='1';
     btn.style.fontWeight='600';
@@ -3663,7 +3611,7 @@ function applyFilters(){
     const matchesQuery=!query||s.includes(query);
     const matchesZone=!zoneFilter||z===zoneFilter;
     const matchesType=!typeFilter||t===typeFilter;
-    const matchesCost=!costFilter||c===costFilter;
+    const matchesCost=costFilter.size===0||costFilter.has(c);
     const show=matchesQuery&&matchesZone&&matchesType&&matchesCost;
     el.style.display=show?'':'none';
     if(show) visibleItems++;
@@ -3687,6 +3635,19 @@ initData();
 renderTabs();
 renderDay();
 renderRefPanel();
+// Show last saved time on load
+try{
+  const lastSaved=localStorage.getItem('hk_last_saved');
+  const bar=document.getElementById('sync-bar');
+  const status=document.getElementById('sync-status');
+  if(lastSaved&&bar&&status){
+    const d=new Date(lastSaved);
+    const timeStr=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const dateStr=d.toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'});
+    bar.style.display='flex';
+    status.textContent=`Last auto-saved ${timeStr} on ${dateStr}`;
+  }
+}catch(e){}
 </script>
 
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0051)file:///C:/Users/stepn/Downloads/hk_planner_34.html -->
+<!-- saved from url=(0051)file:///C:/Users/stepn/Downloads/hk_planner_35.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -120,6 +120,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .tab-dot-empty{background:var(--bg-tertiary);color:var(--text-hint)}
 .tab-dot-has{background:var(--red);color:#fff}
 .zone-warning{font-size:10px;background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;border-radius:var(--radius);padding:4px 8px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+
+/* ── TODAY MODE ── */
+#today-root{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;overflow-y:auto}
+.today-header{background:var(--red);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.today-header h2{font-size:17px;font-weight:600;margin:0}
+.today-header .today-sub{font-size:11px;opacity:0.85;margin-top:2px}
+.btn-exit-today{background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.4);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:500}
+.btn-exit-today:hover{background:rgba(255,255,255,0.4)}
+.today-body{max-width:680px;margin:0 auto;padding:12px 14px 40px}
+.today-slot{border-radius:var(--radius-lg);border:1px solid var(--border);margin-bottom:14px;overflow:hidden}
+.today-slot-header{padding:10px 14px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.today-slot-body{padding:8px 12px}
+.today-card{background:var(--bg-secondary);border-radius:var(--radius);padding:10px 12px;margin-bottom:8px;border-left:3px solid var(--border)}
+.today-card:last-child{margin-bottom:0}
+.today-card-name{font-size:15px;font-weight:600;margin-bottom:3px;color:var(--text)}
+.today-card-tip{font-size:12px;color:var(--text-muted);margin-bottom:6px;line-height:1.5}
+.today-card-note{font-size:12px;color:var(--blue);font-style:italic;margin-bottom:6px}
+.today-card-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.today-map-btn{font-size:12px;background:var(--blue);color:#fff;border:none;padding:6px 14px;border-radius:20px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-weight:500}
+.today-map-btn:hover{background:#0d4f8a}
+.today-route-bar{padding:10px 14px;background:var(--bg-secondary);border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap}
+.today-route-btn{font-size:13px;padding:8px 16px;border-radius:20px;border:none;cursor:pointer;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.today-route-walk{background:var(--blue);color:#fff}
+.today-route-walk:hover{background:#0d4f8a}
+.today-route-cm{background:#00D068;color:#fff}
+.today-route-cm:hover{background:#00A050}
+.today-anchor{border-left-color:var(--red);background:rgba(192,57,43,0.06)}
+.today-empty{font-size:13px;color:var(--text-hint);font-style:italic;padding:8px 0}
+.today-day-nav{display:flex;gap:8px}
+.today-day-nav button{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);color:#fff;padding:5px 12px;border-radius:var(--radius);font-size:13px;cursor:pointer}
+.today-day-nav button:hover{background:rgba(255,255,255,0.35)}
 .cost-free{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7}
 .cost-budget{background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9}
 .cost-mid{background:#FFF3E0;color:#E65100;border:1px solid #FFCC80}
@@ -262,9 +293,13 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
     <button class="btn-mode" onclick="document.getElementById(&#39;import-input&#39;).click()" title="Restore plans from a backup file">📂 Load</button>
     <button class="btn-mode active" id="btn-day" onclick="setView(&#39;day&#39;)">Days</button>
     <button class="btn-mode" id="btn-overview" onclick="setView(&#39;overview&#39;)">Overview</button>
+    <button class="btn-mode" id="btn-today" onclick="enterTodayMode()" title="Clean view for use on the day">📍 Today</button>
   </div>
 </div>
 <input type="file" id="import-input" accept=".json" style="display:none" onchange="importPlans(this)">
+
+<!-- TODAY MODE OVERLAY -->
+<div id="today-root"></div>
 <div id="toast" style="display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgb(26, 26, 46); color: rgb(255, 255, 255); padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; opacity: 0;">⚠️ Route capped at 9 stops — 4 stops omitted. Split into separate slots.</div>
 
 <div id="day-view-root">
@@ -5460,6 +5495,7 @@ function setView(v){
   document.getElementById('overview-root').style.display=v==='overview'?'':'none';
   document.getElementById('btn-day').classList.toggle('active',v==='day');
   document.getElementById('btn-overview').classList.toggle('active',v==='overview');
+  document.getElementById('btn-today').classList.toggle('active',false);
   if(v==='overview') renderOverview();
 }
 
@@ -5644,6 +5680,116 @@ function applyFilters(){
 
 // Keep filterRef as alias for backwards compatibility
 function filterRef(q){ applyFilters(); }
+
+function enterTodayMode(){
+  document.getElementById('btn-today').classList.add('active');
+  renderTodayMode(currentDay);
+  document.getElementById('today-root').style.display='block';
+  document.getElementById('today-root').scrollTop=0;
+  window.scrollTo(0,0);
+}
+
+function exitTodayMode(){
+  document.getElementById('today-root').style.display='none';
+  document.getElementById('btn-today').classList.remove('active');
+}
+
+function todayPrevDay(){
+  if(currentDay>1){ currentDay--; renderTodayMode(currentDay); }
+}
+function todayNextDay(){
+  if(currentDay<DAYS){ currentDay++; renderTodayMode(currentDay); }
+}
+
+function renderTodayMode(day){
+  const d=tripData[day];
+  const title=d.title||'Day '+day;
+  const SLOT_DEFS=[
+    {key:'anchor', label:'🍳 Breakfast', colour:'var(--red)'},
+    {key:'morning', label:'🌅 Morning', colour:'#185FA5'},
+    {key:'afternoon', label:'☀️ Afternoon', colour:'#E65100'},
+    {key:'evening', label:'🌙 Evening', colour:'#0F6E56'},
+  ];
+
+  let html=`<div class="today-header">
+    <div>
+      <div class="today-day-nav" style="display:inline-flex;margin-bottom:4px">
+        <button onclick="todayPrevDay()" ${day<=1?'disabled':''}>◀</button>
+        <button onclick="todayNextDay()" ${day>=DAYS?'disabled':''}>▶</button>
+      </div>
+      <h2 style="margin:0">Day ${day} — ${esc(title)}</h2>
+      ${d.area?`<div class="today-sub">📍 ${esc(d.area)}</div>`:''}
+    </div>
+    <button class="btn-exit-today" onclick="exitTodayMode()">✕ Exit</button>
+  </div>
+  <div class="today-body">`;
+
+  for(const {key, label, colour} of SLOT_DEFS){
+    const items=(d.slots[key]||[]);
+    const visItems=items.filter(i=>i.type!=='start'&&i.type!=='finish');
+    if(key==='anchor'&&visItems.length===0) continue;
+
+    const routeUrl=key!=='anchor'?buildRouteUrl([key],day):null;
+    const cmItems=items.filter(i=>i.map&&i.type!=='anchor');
+    const hasCm=cmItems.length>=2;
+
+    html+=`<div class="today-slot">
+      <div class="today-slot-header" style="background:${colour}15;border-bottom-color:${colour}30">
+        <span style="color:${colour};font-size:18px">${label.split(' ')[0]}</span>
+        <span style="color:${colour}">${label.split(' ').slice(1).join(' ')}</span>
+      </div>
+      <div class="today-slot-body">`;
+
+    if(visItems.length===0){
+      html+=`<div class="today-empty">Nothing planned yet</div>`;
+    } else {
+      for(const item of visItems){
+        if(item.type==='anchor'){
+          html+=`<div class="today-card today-anchor">
+            <div class="today-card-name">${esc(item.name)}</div>
+            ${item.hours?`<div style="font-size:11px;color:var(--text-hint)">${esc(item.hours)}</div>`:''}
+          </div>`;
+          continue;
+        }
+        const costBadgeHtml=item.cost!==undefined?costBadge(item.cost):'';
+        const zoneHtml=item.zone&&ZONES[item.zone]?`<span class="zone-badge zone-${item.zone}" style="font-size:10px">${ZONES[item.zone].short}</span>`:'';
+        html+=`<div class="today-card" style="border-left-color:${colour}">
+          <div class="today-card-name">${esc(item.name)}</div>
+          ${item.tip?`<div class="today-card-tip">${esc(item.tip)}</div>`:''}
+          ${item.notes?`<div class="today-card-note">📝 ${esc(item.notes)}</div>`:''}
+          <div class="today-card-meta">
+            ${item.hours?`<span style="font-size:11px;color:var(--text-hint)">🕐 ${esc(item.hours)}</span>`:''}
+            ${costBadgeHtml}${zoneHtml}
+            ${item.map?`<a class="today-map-btn" href="${item.map}" target="_blank">📍 Maps</a>`:''}
+          </div>
+        </div>`;
+      }
+    }
+
+    html+='</div>'; // today-slot-body
+
+    // Route bar for non-anchor slots
+    if(key!=='anchor'&&(routeUrl||hasCm)){
+      const savedTime=(tripData[day]['_cm_time_'+key])||'';
+      const savedType=(tripData[day]['_cm_type_'+key])||'depart';
+      html+=`<div class="today-route-bar">
+        ${routeUrl?`<a class="today-route-btn today-route-walk" href="${routeUrl}" target="_blank">🗺 Walk route</a>`:''}
+        ${hasCm?`<button class="today-route-btn today-route-cm" onclick="openCitymapper('${key}',${day})">🚇 Citymapper</button>`:''}
+        ${hasCm?`<span style="font-size:10px;color:var(--text-muted)">
+          <select id="cm-type-${day}-${key}" onchange="saveCmPref(${day},'${key}')" style="font-size:10px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;background:var(--bg)">
+            <option value="depart" ${savedType==='depart'?'selected':''}>Depart at</option>
+            <option value="arrive" ${savedType==='arrive'?'selected':''}>Arrive by</option>
+          </select>
+          <input type="time" id="cm-time-${day}-${key}" value="${savedTime}" onchange="saveCmPref(${day},'${key}')" style="font-size:10px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;width:90px;background:var(--bg);color:var(--text)">
+        </span>`:''}
+      </div>`;
+    }
+    html+='</div>'; // today-slot
+  }
+
+  html+='</div>'; // today-body
+  document.getElementById('today-root').innerHTML=html;
+}
 
 function esc(s){
   if(!s) return '';

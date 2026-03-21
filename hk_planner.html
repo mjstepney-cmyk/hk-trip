@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0051)file:///C:/Users/stepn/Downloads/hk_planner_31.html -->
+<!-- saved from url=(0051)file:///C:/Users/stepn/Downloads/hk_planner_32.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -152,7 +152,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .activity-hours{font-size:11px;color:var(--text-hint);background:var(--bg-tertiary);padding:2px 7px;border-radius:10px}
 .activity-map{font-size:11px;background:var(--blue-light);color:var(--blue);padding:3px 10px;border-radius:10px;text-decoration:none;border:1px solid rgba(24,95,165,0.2)}
 .activity-map:hover{background:var(--blue);color:#fff}
-.activity-delete{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--text-hint);font-size:15px;cursor:pointer;padding:2px 5px;border-radius:4px;line-height:1}
+.activity-delete{background:none;border:none;color:var(--text-hint);font-size:15px;cursor:pointer;padding:2px 4px;border-radius:4px;line-height:1;flex-shrink:0;margin-left:2px}
 .activity-delete:hover{background:var(--red-light);color:var(--red)}
 .move-slot{font-size:11px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted);padding:2px 5px;border-radius:var(--radius);cursor:pointer;max-width:110px}
 .move-slot:hover{border-color:var(--border-strong)}
@@ -259,22 +259,22 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
   </div>
 </div>
 <input type="file" id="import-input" accept=".json" style="display:none" onchange="importPlans(this)">
-<div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)"></div>
+<div id="toast" style="display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgb(26, 26, 46); color: rgb(255, 255, 255); padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; opacity: 0;">⚠️ Route capped at 9 stops — 4 stops omitted. Split into separate slots.</div>
 
 <div id="day-view-root">
   <div id="sync-bar" style="display:none;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:4px 12px;font-size:11px;color:var(--text-hint);display:flex;align-items:center;justify-content:space-between">
-  <span id="sync-status">Last auto-saved 07:54 on Sat 21 Mar</span>
+  <span id="sync-status">Last auto-saved 17:48 on Sat 21 Mar</span>
   <span style="display:flex;gap:10px">
     <button onclick="exportPlans()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">💾 Save backup</button>
     <button onclick="document.getElementById(&#39;import-input&#39;).click()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">📂 Load backup</button>
   </span>
 </div>
-<div class="tabs" id="day-tabs"><div class="tab active"><div style="display:flex;align-items:center;gap:3px;font-weight:600">Day 1<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--red);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 2<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 3<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 4<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 5<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 6<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 7<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 8<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 9<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 10<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 11<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 12<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 13<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 14<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div></div>
+<div class="tabs" id="day-tabs"><div class="tab active"><div style="display:flex;align-items:center;gap:3px;font-weight:600">Day 1<span class="tab-dot tab-dot-has">10</span></div><div style="font-size:10px;color:var(--red);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 2<span class="tab-dot tab-dot-has">10</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 3<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 4<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 5<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 6<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 7<span class="tab-dot tab-dot-has">4</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 8<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 9<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 10<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 11<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 12<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 13<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 14<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div></div>
   <div class="split-layout">
     <div class="planner-pane" id="planner-pane"><div class="day-view"><div class="hotel-note"><span>🏨</span> Conrad Hotel, Pacific Place, Admiralty — Executive Lounge available evenings
     <div style="display:flex;gap:6px;margin-left:auto">
       
-      <button onclick="addConradFinish(1,&#39;evening&#39;)" style="font-size:10px;background:var(--red);color:#fff;border:none;padding:3px 8px;border-radius:var(--radius);cursor:pointer;white-space:nowrap">🏁 Add return</button>
+      
     </div>
   </div><div class="day-header"><h2>Day 1<span class="current-day-label" style="font-size:11px;background:var(--red);color:#fff;padding:2px 7px;border-radius:10px;margin-left:8px;font-weight:400">Hong Kong</span></h2><div class="day-nav"><button onclick="prevDay()">←</button><button onclick="nextDay()">→</button></div></div><div class="move-day-wrap">
     <label>Move this day plan to:</label>
@@ -289,29 +289,28 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
   </div><div class="route-bar">
       <span style="font-size:11px;color:var(--text-hint);font-weight:500">Walking routes:</span>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <a class="btn-route" href="https://maps.google.com/?q=Your+Hotel+Name" target="_blank">🌅 Morning</a>
-        <a class="btn-route" href="https://maps.google.com/?q=Your+Hotel+Name" target="_blank">☀️ Afternoon</a>
-        <a class="btn-route" href="https://maps.google.com/?q=Your+Hotel+Name" target="_blank">🌙 Evening</a>
-        
+        <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Star%20Ferry%20Central%20Hong%20Kong|Tsim%20Sha%20Tsui%20East%20Promenade%20Hong%20Kong|Sky100%20ICC%20Tower%20Kowloon%20Hong%20Kong|M%20Museum%20West%20Kowloon%20Hong%20Kong|Star%20Ferry%20Central%20Hong%20Kong" target="_blank">🌅 Morning</a>
+        <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Happy%20Valley%20Racecourse%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Hong%20Kong%20Park%20Supreme%20Court%20Road%20Admiralty|Peak%20Tram%20Upper%20Terminus%20Victoria%20Peak%20Hong%20Kong|Peak%20Circle%20Walk%20Hong%20Kong|Peak%20Tram%20Upper%20Terminus%20Victoria%20Peak%20Hong%20Kong" target="_blank">☀️ Afternoon</a>
+        <a class="btn-route" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">🌙 Evening</a>
+        <a class="btn-route-day" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Hong%20Kong%20Park%20Supreme%20Court%20Road%20Admiralty&amp;travelmode=walking&amp;waypoints=Star%20Ferry%20Central%20Hong%20Kong|Tsim%20Sha%20Tsui%20East%20Promenade%20Hong%20Kong|Sky100%20ICC%20Tower%20Kowloon%20Hong%20Kong|M%20Museum%20West%20Kowloon%20Hong%20Kong|Star%20Ferry%20Central%20Hong%20Kong|Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong|Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong" target="_blank">🗺 Full day route</a>
       </div>
     </div><div class="slot anchor">
       <div class="slot-header" onclick="toggleSlot(&#39;1-anchor&#39;)">
         <div class="slot-label"><span class="slot-icon">📌</span>Fixed / Anchor<span class="slot-count">1</span></div>
         <div class="slot-header-right" onclick="event.stopPropagation()">
-          <a class="btn-route" href="https://maps.google.com/?q=Your+Hotel+Name" target="_blank">🗺 Walk route</a>
+          <a class="btn-route" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">🗺 Walk route</a>
           <span class="slot-toggle" onclick="toggleSlot(&#39;1-anchor&#39;)">▲</span>
         </div>
-      </div><div class="slot-body"><div class="activity-card is-anchor" id="card-mmy1hl2cfpbzy09wehu">
+      </div><div class="slot-body"><div class="activity-card is-anchor" id="card-mmtsmaff59s8c257qjn">
     
-    <button class="activity-delete" onclick="deleteActivity(1,&#39;anchor&#39;,&#39;mmy1hl2cfpbzy09wehu&#39;)" title="Remove">×</button>
     <div class="activity-top">
-      <div class="activity-name">Breakfast at [Your Hotel Name]</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="activity-type-badge badge-anchor">Anchor</span></div>
+      <div class="activity-name">Breakfast at Conrad (Executive Lounge or restaurant)</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="activity-type-badge badge-anchor">Anchor</span><button class="activity-delete" onclick="deleteActivity(1,&#39;anchor&#39;,&#39;mmtsmaff59s8c257qjn&#39;)" title="Remove">×</button></div>
     </div>
-    <div class="activity-tip">Your base for the trip. Edit with check-in details, breakfast times etc.</div>
+    <div class="activity-tip">Included with stay. Executive Lounge available — use ~50% of evenings too.</div>
     <div class="activity-meta">
-      
-      <a class="activity-map" href="https://maps.google.com/?q=Your+Hotel+Name" target="_blank">📍 Maps</a>
+      <span class="activity-hours">7am–10:30am</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+Admiralty+Hong+Kong" target="_blank">📍 Maps</a>
       
     </div>
     
@@ -342,27 +341,128 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
         </div>
       </div></div></div><div class="slot morning">
       <div class="slot-header" onclick="toggleSlot(&#39;1-morning&#39;)">
-        <div class="slot-label"><span class="slot-icon">🌅</span>Morning<span class="slot-count">1</span></div>
+        <div class="slot-label"><span class="slot-icon">🌅</span>Morning<span class="slot-count">7</span></div>
         <div class="slot-header-right" onclick="event.stopPropagation()">
-          <a class="btn-route" href="https://maps.google.com/?q=Your+Hotel+Name" target="_blank">🗺 Walk route</a>
+          <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Star%20Ferry%20Central%20Hong%20Kong|Tsim%20Sha%20Tsui%20East%20Promenade%20Hong%20Kong|Sky100%20ICC%20Tower%20Kowloon%20Hong%20Kong|M%20Museum%20West%20Kowloon%20Hong%20Kong|Star%20Ferry%20Central%20Hong%20Kong" target="_blank">🗺 Walk route</a>
           <span class="slot-toggle" onclick="toggleSlot(&#39;1-morning&#39;)">▲</span>
         </div>
-      </div><div class="slot-body"><div class="activity-card is-start" id="card-mmy1hl2cxhs4t5m5fvf">
-      <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmy1hl2cxhs4t5m5fvf&#39;)" title="Remove start point">×</button>
+      </div><div class="slot-body"><div class="activity-card is-start" id="card-mmxt1v7d8hf3k7lu9in">
+      <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmxt1v7d8hf3k7lu9in&#39;)" title="Remove start point">×</button>
       <div class="activity-top">
-        <div class="activity-name" style="color:#2E7D32">📍 [Your Hotel Name] (Start Point)</div>
+        <div class="activity-name" style="color:#2E7D32">📍 Conrad Hotel (Start Point)</div>
         <span class="activity-type-badge badge-start">Start</span>
       </div>
-      <div class="activity-tip" style="color:#555">Your hotel. Delete this if your day does not start from here.</div>
+      <div class="activity-tip" style="color:#555">Pacific Place, 88 Queensway, Admiralty. Delete this if not starting from the hotel.</div>
       <div class="activity-meta">
-        <a class="activity-map" href="https://maps.google.com/?q=Your+Hotel+Name" target="_blank">📍 Maps</a>
+        <a class="activity-map" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">📍 Maps</a>
         <span style="font-size:10px;color:var(--text-hint)">Route origin — delete if not starting from hotel</span>
+      </div>
+    </div><div class="activity-card" id="card-mmxt2494eyg91atz6bw">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmxt2494eyg91atz6bw&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmxt2494eyg91atz6bw&#39;,1)" title="Move down">▼</button>
+  </div>
+    <div class="activity-top">
+      <div class="activity-name">Star Ferry</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-free" title="Free — no entry cost">Free</span><span class="activity-type-badge badge-activity">Activity</span><button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmxt2494eyg91atz6bw&#39;)" title="Remove">×</button></div>
+    </div>
+    <div class="activity-tip">$3-4 HKD — one of the world's great travel bargains; evening crossing highly recommended</div>
+    <div class="activity-meta">
+      <span class="activity-hours">6:30am–11:30pm</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Star+Ferry+Central+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmxt2494eyg91atz6bw&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmxt2494eyg91atz6bw&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmxt2bd0du5r76uuh9v">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmxt2bd0du5r76uuh9v&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmxt2bd0du5r76uuh9v&#39;,1)" title="Move down">▼</button>
+  </div>
+    <div class="activity-top">
+      <div class="activity-name">TST East Promenade</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-free" title="Free — no entry cost">Free</span><span class="zone-badge zone-3">Kowloon</span><span class="activity-type-badge badge-sight">Sight</span><button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmxt2bd0du5r76uuh9v&#39;)" title="Remove">×</button></div>
+    </div>
+    <div class="activity-tip">Arrive at sunset for golden hour then stay for 8pm Symphony of Lights laser show</div>
+    <div class="activity-meta">
+      <span class="activity-hours">All day; dusk–9pm best</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Tsim+Sha+Tsui+East+Promenade+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmxt2bd0du5r76uuh9v&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmxt2bd0du5r76uuh9v&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmxt2gdik6fb5kmnxfq">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmxt2gdik6fb5kmnxfq&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmxt2gdik6fb5kmnxfq&#39;,1)" title="Move down">▼</button>
+  </div>
+    <div class="activity-top">
+      <div class="activity-name">Sky100 Observation Deck</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-mid" title="Mid-range — HK$150–500pp">$$</span><span class="zone-badge zone-3">Kowloon</span><span class="activity-type-badge badge-sight">Sight</span><button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmxt2gdik6fb5kmnxfq&#39;)" title="Remove">×</button></div>
+    </div>
+    <div class="activity-tip">100th floor of ICC — HK's tallest building; panoramic views across both island and Kowloon; paid entry</div>
+    <div class="activity-meta">
+      <span class="activity-hours">10am–9pm daily</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Sky100+ICC+Tower+Kowloon+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmxt2gdik6fb5kmnxfq&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmxt2gdik6fb5kmnxfq&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmxt2pvpebf9rjktsli">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmxt2pvpebf9rjktsli&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmxt2pvpebf9rjktsli&#39;,1)" title="Move down">▼</button>
+  </div>
+    <div class="activity-top">
+      <div class="activity-name">M+ Museum</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-budget" title="Budget — under HK$150pp">$</span><span class="zone-badge zone-3">Kowloon</span><span class="activity-type-badge badge-sight">Sight</span><button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmxt2pvpebf9rjktsli&#39;)" title="Remove">×</button></div>
+    </div>
+    <div class="activity-tip">World-class contemporary art &amp; design museum; spectacular building; budget 1–2 hrs; paid entry</div>
+    <div class="activity-meta">
+      <span class="activity-hours">10am–6pm Tue–Sun; closed Mon</span>
+      <a class="activity-map" href="https://maps.google.com/?q=M+Museum+West+Kowloon+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmxt2pvpebf9rjktsli&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmxt2pvpebf9rjktsli&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmxt2tjsk2rhbuw0ivd">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmxt2tjsk2rhbuw0ivd&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;morning&#39;,&#39;mmxt2tjsk2rhbuw0ivd&#39;,1)" title="Move down">▼</button>
+  </div>
+    <div class="activity-top">
+      <div class="activity-name">Star Ferry</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-free" title="Free — no entry cost">Free</span><span class="activity-type-badge badge-activity">Activity</span><button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmxt2tjsk2rhbuw0ivd&#39;)" title="Remove">×</button></div>
+    </div>
+    <div class="activity-tip">$3-4 HKD — one of the world's great travel bargains; evening crossing highly recommended</div>
+    <div class="activity-meta">
+      <span class="activity-hours">6:30am–11:30pm</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Star+Ferry+Central+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;morning&#39;,&#39;mmxt2tjsk2rhbuw0ivd&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;morning&#39;,&#39;mmxt2tjsk2rhbuw0ivd&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card is-finish" id="card-mmxt2wls69x78euqwij">
+      <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmxt2wls69x78euqwij&#39;)" title="Remove end point">×</button>
+      <div class="activity-top">
+        <div class="activity-name" style="color:var(--red)">🏁 Conrad Hotel (Return)</div>
+        <span class="activity-type-badge badge-finish">Finish</span>
+      </div>
+      <div class="activity-tip" style="color:#555">Pacific Place, 88 Queensway, Admiralty. Delete this if not returning to hotel.</div>
+      <div class="activity-meta">
+        <a class="activity-map" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">📍 Maps</a>
+        <span style="font-size:10px;color:var(--text-hint)">Route destination — delete if not returning to hotel</span>
       </div>
     </div><div class="add-area">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">
           <div class="add-toggle" onclick="toggleAddForm(&#39;1-morning&#39;)" style="flex:1"><span style="font-size:14px">＋</span> Add activity</div>
           
-          <button onclick="addConradFinish(1,&#39;morning&#39;)" style="font-size:11px;background:var(--red-light);color:var(--red);border:1px solid rgba(192,57,43,0.3);padding:4px 9px;border-radius:var(--radius);cursor:pointer;white-space:nowrap">🏁 Return: Conrad</button>
+          
         </div>
         <div class="add-form" id="addform-1-morning">
           <input type="text" placeholder="Name / Place" id="add-name-1-morning">
@@ -385,15 +485,116 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
         </div>
       </div></div></div><div class="slot afternoon">
       <div class="slot-header" onclick="toggleSlot(&#39;1-afternoon&#39;)">
-        <div class="slot-label"><span class="slot-icon">☀️</span>Afternoon<span class="slot-count">0</span></div>
+        <div class="slot-label"><span class="slot-icon">☀️</span>Afternoon<span class="slot-count">6</span></div>
         <div class="slot-header-right" onclick="event.stopPropagation()">
-          
+          <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Happy%20Valley%20Racecourse%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Hong%20Kong%20Park%20Supreme%20Court%20Road%20Admiralty|Peak%20Tram%20Upper%20Terminus%20Victoria%20Peak%20Hong%20Kong|Peak%20Circle%20Walk%20Hong%20Kong|Peak%20Tram%20Upper%20Terminus%20Victoria%20Peak%20Hong%20Kong" target="_blank">🗺 Walk route</a>
           <span class="slot-toggle" onclick="toggleSlot(&#39;1-afternoon&#39;)">▲</span>
         </div>
-      </div><div class="slot-body"><div class="add-area">
+      </div><div class="slot-body"><div class="activity-card is-start" id="card-mmxt3jzxc62nw0nk106">
+      <button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmxt3jzxc62nw0nk106&#39;)" title="Remove start point">×</button>
+      <div class="activity-top">
+        <div class="activity-name" style="color:#2E7D32">📍 Conrad Hotel (Start Point)</div>
+        <span class="activity-type-badge badge-start">Start</span>
+      </div>
+      <div class="activity-tip" style="color:#555">Pacific Place, 88 Queensway, Admiralty. Delete this if not starting from the hotel.</div>
+      <div class="activity-meta">
+        <a class="activity-map" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">📍 Maps</a>
+        <span style="font-size:10px;color:var(--text-hint)">Route origin — delete if not starting from hotel</span>
+      </div>
+    </div><div class="activity-card" id="card-mmxt3qze36n6eiombdd">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmxt3qze36n6eiombdd&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmxt3qze36n6eiombdd&#39;,1)" title="Move down">▼</button>
+  </div>
+    <div class="activity-top">
+      <div class="activity-name">Hong Kong Park</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-free" title="Free — no entry cost">Free</span><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-sight">Sight</span><button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmxt3qze36n6eiombdd&#39;)" title="Remove">×</button></div>
+    </div>
+    <div class="activity-tip">Free; lovely gardens right beside the hotel on Supreme Court Rd; good route to Peak Tram terminus</div>
+    <div class="activity-meta">
+      <span class="activity-hours">6am–11pm daily</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Hong+Kong+Park+Supreme+Court+Road+Admiralty" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;afternoon&#39;,&#39;mmxt3qze36n6eiombdd&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="morning">Morning</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;afternoon&#39;,&#39;mmxt3qze36n6eiombdd&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmxt3t9f4rwytfhuh9v">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmxt3t9f4rwytfhuh9v&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmxt3t9f4rwytfhuh9v&#39;,1)" title="Move down">▼</button>
+  </div>
+    <div class="activity-top">
+      <div class="activity-name">Peak Tram — Upper Terminal (The Peak)</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-free" title="Free — no entry cost">Free</span><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-activity">Activity</span><button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmxt3t9f4rwytfhuh9v&#39;)" title="Remove">×</button></div>
+    </div>
+    <div class="activity-tip">Arrive here after the 8-min tram ride. Start the Peak Circle Walk from here, or head to Peak Galleria terrace for views.</div>
+    <div class="activity-meta">
+      <span class="activity-hours">7am–11pm daily</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Peak+Tram+Upper+Terminus+Victoria+Peak+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;afternoon&#39;,&#39;mmxt3t9f4rwytfhuh9v&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="morning">Morning</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;afternoon&#39;,&#39;mmxt3t9f4rwytfhuh9v&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmxt3uj9mo8isnu5f8">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmxt3uj9mo8isnu5f8&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmxt3uj9mo8isnu5f8&#39;,1)" title="Move down">▼</button>
+  </div>
+    <div class="activity-top">
+      <div class="activity-name">Peak Circle Walk</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-free" title="Free — no entry cost">Free</span><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-activity">Activity</span><button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmxt3uj9mo8isnu5f8&#39;)" title="Remove">×</button></div>
+    </div>
+    <div class="activity-tip">Easy flat 3.5km loop around mountaintop through trees; about 1 hour at leisurely pace; free</div>
+    <div class="activity-meta">
+      <span class="activity-hours">All day (avoid midday heat)</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Peak+Circle+Walk+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;afternoon&#39;,&#39;mmxt3uj9mo8isnu5f8&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="morning">Morning</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;afternoon&#39;,&#39;mmxt3uj9mo8isnu5f8&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmxt3waf1uqunipdgxi">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmxt3waf1uqunipdgxi&#39;,-1)" title="Move up">▲</button>
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmxt3waf1uqunipdgxi&#39;,1)" title="Move down">▼</button>
+  </div>
+    <div class="activity-top">
+      <div class="activity-name">Peak Tram — Upper Terminal (The Peak)</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-free" title="Free — no entry cost">Free</span><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-activity">Activity</span><button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmxt3waf1uqunipdgxi&#39;)" title="Remove">×</button></div>
+    </div>
+    <div class="activity-tip">Arrive here after the 8-min tram ride. Start the Peak Circle Walk from here, or head to Peak Galleria terrace for views.</div>
+    <div class="activity-meta">
+      <span class="activity-hours">7am–11pm daily</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Peak+Tram+Upper+Terminus+Victoria+Peak+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;afternoon&#39;,&#39;mmxt3waf1uqunipdgxi&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="morning">Morning</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;afternoon&#39;,&#39;mmxt3waf1uqunipdgxi&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="activity-card" id="card-mmxt48a9p55gevdd6p">
+    <div class="reorder-btns">
+    <button class="reorder-btn" onclick="reorderActivity(1,&#39;afternoon&#39;,&#39;mmxt48a9p55gevdd6p&#39;,-1)" title="Move up">▲</button>
+    <span style="display:block;height:16px"></span>
+  </div>
+    <div class="activity-top">
+      <div class="activity-name">Happy Valley Racing</div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0"><span class="cost-badge cost-budget" title="Budget — under HK$150pp">$</span><span class="zone-badge zone-1">HKI Core</span><span class="activity-type-badge badge-activity">Activity</span><button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmxt48a9p55gevdd6p&#39;)" title="Remove">×</button></div>
+    </div>
+    <div class="activity-tip">Free entry with passport; take the tram; first race ~7:30pm; incredible atmosphere under floodlights</div>
+    <div class="activity-meta">
+      <span class="activity-hours">Wed evenings Sep–Jun; gates ~6pm</span>
+      <a class="activity-map" href="https://maps.google.com/?q=Happy+Valley+Racecourse+Hong+Kong" target="_blank">📍 Maps</a>
+      <select class="move-slot" onchange="moveActivity(1,&#39;afternoon&#39;,&#39;mmxt48a9p55gevdd6p&#39;,this.value);this.value=&#39;&#39;" title="Move to another slot">
+        <option value="">Move to…</option><option value="anchor">Fixed / Anchor</option><option value="morning">Morning</option><option value="evening">Evening</option>
+      </select>
+    </div>
+    <textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(1,&#39;afternoon&#39;,&#39;mmxt48a9p55gevdd6p&#39;,this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1"></textarea>
+  </div><div class="add-area">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">
           <div class="add-toggle" onclick="toggleAddForm(&#39;1-afternoon&#39;)" style="flex:1"><span style="font-size:14px">＋</span> Add activity</div>
-          <button onclick="addConradStart(1,&#39;afternoon&#39;)" style="font-size:11px;background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;padding:4px 9px;border-radius:var(--radius);cursor:pointer;white-space:nowrap">📍 Start: Conrad</button>
+          
           <button onclick="addConradFinish(1,&#39;afternoon&#39;)" style="font-size:11px;background:var(--red-light);color:var(--red);border:1px solid rgba(192,57,43,0.3);padding:4px 9px;border-radius:var(--radius);cursor:pointer;white-space:nowrap">🏁 Return: Conrad</button>
         </div>
         <div class="add-form" id="addform-1-afternoon">
@@ -466,7 +667,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
           <button class="ref-filter-btn type-filter" data-type="shopping" onclick="toggleFilter(&#39;type&#39;,&#39;shopping&#39;)" style="background:var(--purple-light);color:var(--purple);border:1px solid rgba(60,52,137,0.2);font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer">Shopping</button>
           <button class="ref-filter-btn type-filter" data-type="food" onclick="toggleFilter(&#39;type&#39;,&#39;food&#39;)" style="background:var(--amber-light);color:var(--amber);border:1px solid rgba(133,79,11,0.2);font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer">Food</button>
           <button class="ref-filter-btn type-filter" data-type="bar" onclick="toggleFilter(&#39;type&#39;,&#39;bar&#39;)" style="background:var(--teal-light);color:var(--teal);border:1px solid rgba(15,110,86,0.2);font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer">Bars</button>
-          <button class="ref-filter-btn type-filter" data-type="activity" onclick="toggleFilter(&#39;type&#39;,&#39;activity&#39;)" style="background:var(--gray-light);color:var(--gray);border:1px solid rgba(68,68,65,0.2);font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer">Activities</button>
+          <button class="ref-filter-btn type-filter" data-type="activity" onclick="toggleFilter(&#39;type&#39;,&#39;activity&#39;)" style="background:#EEEEEE;color:#333333;border:1px solid #AAAAAA;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:600">Activities</button>
         </div>
         <div style="font-size:9px;color:var(--text-hint);text-transform:uppercase;letter-spacing:0.5px;margin:5px 0 4px">Filter by cost</div>
         <div style="display:flex;flex-wrap:wrap;gap:3px">
@@ -4773,10 +4974,9 @@ function renderActivityCard(item,day,slot,idx,total){
   }
   return `<div class="activity-card${isAnchor?' is-anchor':''}" id="card-${item.id}">
     ${reorderBtns}
-    <button class="activity-delete" onclick="deleteActivity(${day},'${slot}','${item.id}')" title="Remove">×</button>
     <div class="activity-top">
       <div class="activity-name">${esc(item.name)}</div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0">${costBadge(item.cost)}${zoneInfo}<span class="activity-type-badge ${badgeClass}">${TYPE_LABELS[item.type]||item.type}</span></div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0">${costBadge(item.cost)}${zoneInfo}<span class="activity-type-badge ${badgeClass}">${TYPE_LABELS[item.type]||item.type}</span><button class="activity-delete" onclick="deleteActivity(${day},'${slot}','${item.id}')" title="Remove">×</button></div>
     </div>
     ${item.tip?`<div class="activity-tip">${esc(item.tip)}</div>`:''}
     <div class="activity-meta">

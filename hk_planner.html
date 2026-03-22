@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0051)file:///C:/Users/stepn/Downloads/hk_planner_41.html -->
+<!-- saved from url=(0051)file:///C:/Users/stepn/Downloads/hk_planner_42.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -89,12 +89,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .slot-label{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500}
 .slot-header-right{display:flex;align-items:center;gap:8px}
 .btn-route{font-size:10px;background:var(--blue-light);color:var(--blue);border:1px solid rgba(24,95,165,0.25);padding:3px 8px;border-radius:10px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:3px}
-.btn-citymapper{font-size:10px;background:#00D068;color:#fff;border:1px solid #00A050;padding:3px 8px;border-radius:10px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:3px;font-weight:600}
-.btn-citymapper:hover{background:#00A050}
-.citymapper-bar{display:flex;align-items:center;gap:6px;padding:6px 12px 6px;background:var(--bg-secondary);border-top:1px solid var(--border);flex-wrap:wrap}
-.citymapper-bar label{font-size:10px;color:var(--text-muted);white-space:nowrap}
-.citymapper-bar input{font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);width:72px;font-family:inherit}
-.citymapper-bar select{font-size:10px;padding:3px 5px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:inherit}
+
 .btn-route:hover{background:var(--blue);color:#fff}
 .btn-route-day{font-size:11px;background:var(--blue);color:#fff;border:none;padding:6px 14px;border-radius:var(--radius);cursor:pointer;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
 .btn-route-day:hover{background:#0d4f8a}
@@ -159,8 +154,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .today-route-btn{font-size:13px;padding:8px 16px;border-radius:20px;border:none;cursor:pointer;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
 .today-route-walk{background:var(--blue);color:#fff}
 .today-route-walk:hover{background:#0d4f8a}
-.today-route-cm{background:#00D068;color:#fff}
-.today-route-cm:hover{background:#00A050}
+
 .today-anchor{border-left-color:var(--red);background:rgba(192,57,43,0.06)}
 .today-empty{font-size:13px;color:var(--text-hint);font-style:italic;padding:8px 0}
 .today-day-nav{display:flex;gap:8px}
@@ -346,7 +340,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 
 <div id="day-view-root">
   <div id="sync-bar" style="display:none;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:4px 12px;font-size:11px;color:var(--text-hint);display:flex;align-items:center;justify-content:space-between">
-  <span id="sync-status">Last auto-saved 22:42 on Sat 21 Mar</span>
+  <span id="sync-status">Last auto-saved 16:13 on Sun 22 Mar</span>
   <span style="display:flex;gap:10px">
     <button onclick="exportPlans()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">💾 Save backup</button>
     <button onclick="document.getElementById(&#39;import-input&#39;).click()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">📂 Load backup</button>
@@ -382,19 +376,9 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
         <div class="slot-label"><span class="slot-icon">📌</span>Fixed / Anchor<span class="slot-count">1</span></div>
         <div class="slot-header-right" onclick="event.stopPropagation()">
           <a class="btn-route" href="https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong" target="_blank">🗺 Walk</a>
-          <button class="btn-citymapper" onclick="openCitymapper(&#39;anchor&#39;,1)">🚇 Citymapper</button>
           <span class="slot-toggle" onclick="toggleSlot(&#39;1-anchor&#39;)">▲</span>
         </div>
-      </div><div class="slot-body"><div class="citymapper-bar">
-          <label>🚇 Journey time:</label>
-          <select id="cm-type-1-anchor" onchange="saveCmPref(1,&#39;anchor&#39;)" style="font-size:10px">
-            <option value="depart" selected="">Depart at</option>
-            <option value="arrive">Arrive by</option>
-          </select>
-          <input type="time" id="cm-time-1-anchor" value="12:45" onchange="saveCmPref(1,&#39;anchor&#39;)" placeholder="HH:MM">
-          <button class="btn-citymapper" onclick="openCitymapper(&#39;anchor&#39;,1)">🚇 Open in Citymapper</button>
-          <span style="font-size:9px;color:var(--text-hint)">First → last stop in this slot</span>
-        </div><div class="activity-card is-anchor" id="card-mmtsmaff59s8c257qjn">
+      </div><div class="slot-body"><div class="activity-card is-anchor" id="card-mmtsmaff59s8c257qjn">
     
     <div class="activity-top">
       <div class="activity-name">Breakfast at Conrad (Executive Lounge or restaurant)</div>
@@ -437,19 +421,9 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
         <div class="slot-label"><span class="slot-icon">🌅</span>Morning<span class="slot-count">7</span></div>
         <div class="slot-header-right" onclick="event.stopPropagation()">
           <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Star%20Ferry%20Central%20Hong%20Kong|Tsim%20Sha%20Tsui%20East%20Promenade%20Hong%20Kong|Sky100%20ICC%20Tower%20Kowloon%20Hong%20Kong|M%20Museum%20West%20Kowloon%20Hong%20Kong|Star%20Ferry%20Central%20Hong%20Kong" target="_blank">🗺 Walk</a>
-          <button class="btn-citymapper" onclick="openCitymapper(&#39;morning&#39;,1)">🚇 Citymapper</button>
           <span class="slot-toggle" onclick="toggleSlot(&#39;1-morning&#39;)">▲</span>
         </div>
-      </div><div class="slot-body"><div class="citymapper-bar">
-          <label>🚇 Journey time:</label>
-          <select id="cm-type-1-morning" onchange="saveCmPref(1,&#39;morning&#39;)" style="font-size:10px">
-            <option value="depart" selected="">Depart at</option>
-            <option value="arrive">Arrive by</option>
-          </select>
-          <input type="time" id="cm-time-1-morning" value="10:45" onchange="saveCmPref(1,&#39;morning&#39;)" placeholder="HH:MM">
-          <button class="btn-citymapper" onclick="openCitymapper(&#39;morning&#39;,1)">🚇 Open in Citymapper</button>
-          <span style="font-size:9px;color:var(--text-hint)">First → last stop in this slot</span>
-        </div><div class="activity-card is-start" id="card-mmxt1v7d8hf3k7lu9in">
+      </div><div class="slot-body"><div class="activity-card is-start" id="card-mmxt1v7d8hf3k7lu9in">
       <button class="activity-delete" onclick="deleteActivity(1,&#39;morning&#39;,&#39;mmxt1v7d8hf3k7lu9in&#39;)" title="Remove start point">×</button>
       <div class="activity-top">
         <div class="activity-name" style="color:#2E7D32">📍 Conrad Hotel (Start Point)</div>
@@ -591,19 +565,9 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
         <div class="slot-label"><span class="slot-icon">☀️</span>Afternoon<span class="slot-count">6</span></div>
         <div class="slot-header-right" onclick="event.stopPropagation()">
           <a class="btn-route" href="https://www.google.com/maps/dir/?api=1&amp;origin=Conrad%20Hotel%20Pacific%20Place%2088%20Queensway%20Admiralty%20Hong%20Kong&amp;destination=Happy%20Valley%20Racecourse%20Hong%20Kong&amp;travelmode=walking&amp;waypoints=Hong%20Kong%20Park%20Supreme%20Court%20Road%20Admiralty|Peak%20Tram%20Upper%20Terminus%20Victoria%20Peak%20Hong%20Kong|Peak%20Circle%20Walk%20Hong%20Kong|Peak%20Tram%20Upper%20Terminus%20Victoria%20Peak%20Hong%20Kong" target="_blank">🗺 Walk</a>
-          <button class="btn-citymapper" onclick="openCitymapper(&#39;afternoon&#39;,1)">🚇 Citymapper</button>
           <span class="slot-toggle" onclick="toggleSlot(&#39;1-afternoon&#39;)">▲</span>
         </div>
-      </div><div class="slot-body"><div class="citymapper-bar">
-          <label>🚇 Journey time:</label>
-          <select id="cm-type-1-afternoon" onchange="saveCmPref(1,&#39;afternoon&#39;)" style="font-size:10px">
-            <option value="depart" selected="">Depart at</option>
-            <option value="arrive">Arrive by</option>
-          </select>
-          <input type="time" id="cm-time-1-afternoon" value="" onchange="saveCmPref(1,&#39;afternoon&#39;)" placeholder="HH:MM">
-          <button class="btn-citymapper" onclick="openCitymapper(&#39;afternoon&#39;,1)">🚇 Open in Citymapper</button>
-          <span style="font-size:9px;color:var(--text-hint)">First → last stop in this slot</span>
-        </div><div class="activity-card is-start" id="card-mmxt3jzxc62nw0nk106">
+      </div><div class="slot-body"><div class="activity-card is-start" id="card-mmxt3jzxc62nw0nk106">
       <button class="activity-delete" onclick="deleteActivity(1,&#39;afternoon&#39;,&#39;mmxt3jzxc62nw0nk106&#39;)" title="Remove start point">×</button>
       <div class="activity-top">
         <div class="activity-name" style="color:#2E7D32">📍 Conrad Hotel (Start Point)</div>
@@ -733,7 +697,6 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
       <div class="slot-header" onclick="toggleSlot(&#39;1-evening&#39;)">
         <div class="slot-label"><span class="slot-icon">🌙</span>Evening<span class="slot-count">0</span></div>
         <div class="slot-header-right" onclick="event.stopPropagation()">
-          
           
           <span class="slot-toggle" onclick="toggleSlot(&#39;1-evening&#39;)">▲</span>
         </div>
@@ -5296,27 +5259,12 @@ function renderDay(){
         <div class="slot-label"><span class="slot-icon">${SLOT_ICONS[slot]}</span>${SLOT_LABELS[slot]}<span class="slot-count">${items.length}</span></div>
         <div class="slot-header-right" onclick="event.stopPropagation()">
           ${slotHasMaps?`<a class="btn-route" href="${buildRouteUrl([slot],currentDay)}" target="_blank">🗺 Walk</a>`:''}
-          ${slotHasMaps?`<button class="btn-citymapper" onclick="openCitymapper('${slot}',${currentDay})">🚇 Citymapper</button>`:''}
           <span class="slot-toggle" onclick="toggleSlot('${key}')">${isOpen?'▲':'▼'}</span>
         </div>
       </div>`;
     if(isOpen){
       html+=`<div class="slot-body">`;
-      // Citymapper time bar
-      if(slotHasMaps){
-        const savedTime=(tripData[currentDay]['_cm_time_'+slot])||'';
-        const savedType=(tripData[currentDay]['_cm_type_'+slot])||'depart';
-        html+=`<div class="citymapper-bar">
-          <label>🚇 Journey time:</label>
-          <select id="cm-type-${currentDay}-${slot}" onchange="saveCmPref(${currentDay},'${slot}')" style="font-size:10px">
-            <option value="depart" ${savedType==='depart'?'selected':''}>Depart at</option>
-            <option value="arrive" ${savedType==='arrive'?'selected':''}>Arrive by</option>
-          </select>
-          <input type="time" id="cm-time-${currentDay}-${slot}" value="${savedTime}" onchange="saveCmPref(${currentDay},'${slot}')" placeholder="HH:MM">
-          <button class="btn-citymapper" onclick="openCitymapper('${slot}',${currentDay})">🚇 Open in Citymapper</button>
-          <span style="font-size:9px;color:var(--text-hint)">First → last stop in this slot</span>
-        </div>`;
-      }
+
       // Zone warning: flag if slot mixes HKI and Kowloon (zones 1/2 mixed with zone 3)
       const slotZones=new Set(items.filter(i=>i.zone&&i.zone!==0).map(i=>i.zone));
       const hasHKI=slotZones.has(1)||slotZones.has(2);
@@ -5416,46 +5364,6 @@ function renderActivityCard(item,day,slot,idx,total){
     </div>
     ${!isAnchor?`<textarea class="activity-notes" placeholder="Add a personal note, booking ref, time..." onchange="updateNote(${day},'${slot}','${item.id}',this.value)" rows="1" onfocus="this.rows=2" onblur="this.rows=this.value?2:1">${esc(item.notes||'')}</textarea>`:''}
   </div>`;
-}
-
-function buildCitymapperUrl(slot, day){
-  const items = (tripData[day].slots[slot]||[]).filter(i=>i.map && i.type!=='anchor');
-  if(items.length < 1) return null;
-
-  // Origin: first item with a map URL (prefer start type)
-  const origin = items.find(i=>i.type==='start') || items[0];
-  // Destination: last item with a map URL
-  const dest = items[items.length-1];
-  if(!origin || !dest || origin===dest) return null;
-
-  function extractAddress(item){
-    // Use tip as address hint if it has a street address, otherwise use name
-    const tip = item.tip||'';
-    // Try to extract address from tip (look for road/street/floor patterns)
-    const addrMatch = tip.match(/[\d\/FfGg\/]+[^.]+(?:Road|Street|Rd|St|Avenue|Ave|Lane|Row|Terrace|Drive|Way|Square)[^.,]*/i);
-    if(addrMatch) return addrMatch[0].trim() + ', Hong Kong';
-    return item.name + ', Hong Kong';
-  }
-
-  const startAddr = encodeURIComponent(extractAddress(origin));
-  const endAddr   = encodeURIComponent(extractAddress(dest));
-
-  const timeVal  = document.getElementById('cm-time-'+day+'-'+slot)?.value || '';
-  const timeType = document.getElementById('cm-type-'+day+'-'+slot)?.value || 'depart';
-
-  let url = `https://citymapper.com/directions?startaddress=${startAddr}&endaddress=${endAddr}&region=hongkong`;
-  if(timeVal){
-    // Citymapper expects time as HH:MM
-    const t = timeVal.replace('.', ':').replace(/(\d{1,2})[:.]?(\d{2})/, '$1:$2');
-    url += `&time=${encodeURIComponent(t)}&type=${timeType}`;
-  }
-  return url;
-}
-
-function openCitymapper(slot, day){
-  const url = buildCitymapperUrl(slot, day);
-  if(url) window.open(url, '_blank');
-  else showToast('Add at least 2 stops with map links to use Citymapper.');
 }
 
 function buildRouteUrl(slots,day){
@@ -5733,15 +5641,6 @@ function enforceCostForType(type,key){
       freeOpt.textContent='Free';
     }
   }
-}
-
-function saveCmPref(day,slot){
-  const timeEl = document.getElementById('cm-time-'+day+'-'+slot);
-  const typeEl = document.getElementById('cm-type-'+day+'-'+slot);
-  if(!tripData[day]) return;
-  tripData[day]['_cm_time_'+slot] = timeEl?.value||'';
-  tripData[day]['_cm_type_'+slot] = typeEl?.value||'depart';
-  save();
 }
 
 function updateNote(day,slot,id,val){
@@ -6204,9 +6103,6 @@ function renderTodayMode(day){
     if(key==='anchor'&&visItems.length===0) continue;
 
     const routeUrl=key!=='anchor'?buildRouteUrl([key],day):null;
-    const cmItems=items.filter(i=>i.map&&i.type!=='anchor');
-    const hasCm=cmItems.length>=2;
-
     html+=`<div class="today-slot">
       <div class="today-slot-header" style="background:${colour}15;border-bottom-color:${colour}30">
         <span style="color:${colour};font-size:18px">${label.split(' ')[0]}</span>
@@ -6243,19 +6139,9 @@ function renderTodayMode(day){
     html+='</div>'; // today-slot-body
 
     // Route bar for non-anchor slots
-    if(key!=='anchor'&&(routeUrl||hasCm)){
-      const savedTime=(tripData[day]['_cm_time_'+key])||'';
-      const savedType=(tripData[day]['_cm_type_'+key])||'depart';
+    if(key!=='anchor'&&routeUrl){
       html+=`<div class="today-route-bar">
-        ${routeUrl?`<a class="today-route-btn today-route-walk" href="${routeUrl}" target="_blank">🗺 Walk route</a>`:''}
-        ${hasCm?`<button class="today-route-btn today-route-cm" onclick="openCitymapper('${key}',${day})">🚇 Citymapper</button>`:''}
-        ${hasCm?`<span style="font-size:10px;color:var(--text-muted)">
-          <select id="cm-type-${day}-${key}" onchange="saveCmPref(${day},'${key}')" style="font-size:10px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;background:var(--bg)">
-            <option value="depart" ${savedType==='depart'?'selected':''}>Depart at</option>
-            <option value="arrive" ${savedType==='arrive'?'selected':''}>Arrive by</option>
-          </select>
-          <input type="time" id="cm-time-${day}-${key}" value="${savedTime}" onchange="saveCmPref(${day},'${key}')" style="font-size:10px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;width:90px;background:var(--bg);color:var(--text)">
-        </span>`:''}
+        <a class="today-route-btn today-route-walk" href="${routeUrl}" target="_blank">🗺 Walk route</a>
       </div>`;
     }
     html+='</div>'; // today-slot

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- hk-planner v3.1 -->
 <!-- saved from url=(0051)file:///C:/Users/stepn/Downloads/hk_planner_46.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -247,11 +248,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .legend-dot{width:8px;height:8px;border-radius:50%}
 
 /* ── REFERENCE PANEL (desktop) ── */
-.split-layout{display:flex;gap:0;height:calc(100vh - 100px)}.pane-divider{width:8px;cursor:col-resize;flex-shrink:0;background:var(--border);transition:background 0.15s ease;position:relative;z-index:10}.pane-divider:hover,.pane-divider.dragging{background:var(--red)}
+.split-layout{display:flex;gap:0;height:calc(100vh - 100px)}.pane-divider{width:8px;cursor:col-resize;flex-shrink:0;background:var(--border);transition:background 0.15s ease;position:relative;z-index:10}
+@media(max-width:700px){.pane-divider{display:none}}.pane-divider:hover,.pane-divider.dragging{background:var(--red)}
 .split-layout.ref-wide .planner-pane{flex:0 0 33.33%;min-width:0;max-width:33.33%}
 .split-layout.ref-wide .ref-pane{width:66.66%;flex:0 0 66.66%}
 .planner-pane{flex:1;overflow-y:auto;min-width:0}
-.ref-pane{width:300px;min-width:180px;max-width:60vw;background:var(--bg-secondary);overflow-y:auto;flex-shrink:0}
+.ref-pane{width:300px;max-width:60vw;background:var(--bg-secondary);overflow-y:auto;flex-shrink:0}
 .ref-pane-header{padding:10px 12px;font-size:12px;font-weight:600;background:var(--bg-tertiary);border-bottom:1px solid var(--border);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;position:sticky;top:0;z-index:5}
 .ref-category{padding:6px 12px;border-bottom:1px solid var(--border)}
 .ref-cat-header{font-size:12px;font-weight:600;color:var(--text-muted);padding:6px 0 4px;cursor:pointer;display:flex;justify-content:space-between}
@@ -1562,7 +1564,8 @@ function buildPdfContent(days){
   const SLOT_NAMES={anchor:'Breakfast',morning:'Morning',afternoon:'Afternoon',evening:'Evening'};
   const SLOT_COLOURS={anchor:'#C0392B',morning:'#185FA5',afternoon:'#E65100',evening:'#0F6E56'};
 
-  let html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  let html=`<!DOCTYPE html>
+<!-- hk-planner v3.1 --><html><head><meta charset="UTF-8">
   <title>Hong Kong Trip Plan</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}

@@ -1512,14 +1512,20 @@ function toggleRefPane(){
   const pane = document.getElementById('ref-pane');
   const btn  = document.getElementById('ref-expand-btn');
   const isExpanded = pane.classList.contains('expanded');
-  pane.classList.toggle('expanded', !isExpanded);
-  document.body.classList.toggle('ref-expanded', !isExpanded);
-  btn.textContent = isExpanded ? 'Expand ▲' : 'Collapse ▼';
   if(!isExpanded){
+    // Expanding: clear inline styles so fixed-fullscreen CSS takes over
+    pane.style.cssText = '';
+    pane.classList.add('expanded');
+    document.body.classList.add('ref-expanded');
+    btn.textContent = 'Collapse ▼';
     pane.scrollTop = 0;
   } else {
-    // Restore scroll position of page when collapsing
+    // Collapsing: remove class, restore JS-driven mobile styles
+    pane.classList.remove('expanded');
+    document.body.classList.remove('ref-expanded');
+    btn.textContent = 'Expand ▲';
     window.scrollTo(0, 0);
+    applyResponsiveLayout();
   }
 }
 
@@ -1782,7 +1788,7 @@ function applyResponsiveLayout(){
       refPane.style.minHeight = '400px';
       refPane.style.borderLeft = 'none';
       refPane.style.borderTop = '2px solid var(--border)';
-      refPane.style.overflowY = 'visible';
+      refPane.style.overflowY = '';
     }
     if(layout){
       layout.style.overflow = 'visible';

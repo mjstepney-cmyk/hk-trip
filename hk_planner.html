@@ -385,6 +385,47 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .btn-secondary{font-size:11px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted);padding:4px 9px;border-radius:var(--radius);cursor:pointer}
 .btn-secondary:hover{border-color:var(--border-strong)}
 
+
+/* ── Journey Planner ── */
+#journey-root{padding:12px 16px;max-width:900px}
+.journey-section-title{font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.journey-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden}
+.journey-card-header{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;background:var(--bg-secondary)}
+.journey-card-header:hover{background:var(--bg-tertiary)}
+.journey-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center}
+.journey-title{flex:1}
+.journey-name{font-size:13px;font-weight:600;color:var(--text)}
+.journey-summary{font-size:11px;color:var(--text-muted);margin-top:1px}
+.journey-meta{display:flex;gap:8px;flex-shrink:0;align-items:center}
+.journey-time{font-size:11px;font-weight:600;color:var(--red);background:var(--red-light);padding:2px 7px;border-radius:10px}
+.journey-cost{font-size:11px;color:var(--text-hint)}
+.journey-chevron{font-size:11px;color:var(--text-hint);transition:transform 0.2s}
+.journey-chevron.open{transform:rotate(180deg)}
+.journey-body{display:none;padding:12px;border-top:1px solid var(--border)}
+.journey-body.open{display:block}
+.journey-steps{list-style:none;padding:0;margin:0 0 10px}
+.journey-step{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:12px;color:var(--text);line-height:1.5}
+.step-text strong{color:var(--text);font-weight:600}
+.journey-tips{background:var(--bg-secondary);border-radius:var(--radius);padding:8px 10px;font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.5}
+.journey-actions{display:flex;gap:8px;flex-wrap:wrap}
+.journey-map-btn{font-size:11px;background:var(--red-light);color:var(--red);border:1px solid rgba(192,57,43,0.2);padding:4px 10px;border-radius:10px;text-decoration:none;font-weight:600}
+.journey-map-btn:hover{background:var(--red);color:#fff}
+.journey-add-btn{font-size:11px;background:var(--bg-secondary);color:var(--text-muted);border:1px solid var(--border);padding:4px 10px;border-radius:10px;cursor:pointer}
+.journey-add-btn:hover{border-color:var(--border-strong);color:var(--text)}
+/* Zone-to-zone planner */
+.zz-planner{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:16px}
+.zz-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:10px}
+.zz-select{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:7px 8px;font-size:13px;color:var(--text);width:100%}
+.zz-arrow{font-size:16px;color:var(--text-hint);text-align:center}
+.zz-result{background:var(--bg-secondary);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--text);line-height:1.6;min-height:40px}
+.zz-route-badge{display:inline-block;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;margin-right:4px}
+.zz-route-badge.ferry{background:#0F6E56}
+.zz-route-badge.tram{background:#185FA5}
+.zz-route-badge.bus{background:#B8860B}
+.zz-route-badge.walk{background:#666}
+
 </style>
 </head>
 <body>
@@ -400,6 +441,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
     <button class="btn-mode" onclick="showPdfDialog()" title="Print or save a day plan as PDF">🖨 Print</button>
     <button class="btn-mode active" id="btn-day" onclick="setView(&#39;day&#39;)">Days</button>
     <button class="btn-mode" id="btn-overview" onclick="setView(&#39;overview&#39;)">Overview</button>
+    <button class="btn-mode" id="btn-journey" onclick="setView(&#39;journey&#39;)">&#128652; Getting Around</button>
     <button class="btn-mode" id="btn-today" onclick="enterTodayMode()" title="Clean view for use on the day">📍 Today</button>
   </div>
 </div>
@@ -492,6 +534,45 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
   </div>
 </div>
 
+<div id="journey-root" style="display:none">
+
+  <div class="journey-section-title">Zone-to-Zone Route Finder</div>
+  <div class="zz-planner">
+    <div class="zz-row">
+      <select class="zz-select" id="zz-from" onchange="zzRoute()">
+        <option value="">From...</option>
+        <option value="admiralty">Conrad / Admiralty</option>
+        <option value="central">Central / Sheung Wan</option>
+        <option value="wanchai">Wan Chai / Causeway Bay</option>
+        <option value="peak">Victoria Peak</option>
+        <option value="tst">TST / West Kowloon</option>
+        <option value="mongkok">Mong Kok / Jordan / Yau Ma Tei</option>
+        <option value="shamshuipo">Sham Shui Po / Cheung Sha Wan</option>
+        <option value="stanley">Stanley / Repulse Bay</option>
+        <option value="aberdeen">Aberdeen / Horizon Plaza</option>
+      </select>
+      <div class="zz-arrow">&#8594;</div>
+      <select class="zz-select" id="zz-to" onchange="zzRoute()">
+        <option value="">To...</option>
+        <option value="admiralty">Conrad / Admiralty</option>
+        <option value="central">Central / Sheung Wan</option>
+        <option value="wanchai">Wan Chai / Causeway Bay</option>
+        <option value="peak">Victoria Peak</option>
+        <option value="tst">TST / West Kowloon</option>
+        <option value="mongkok">Mong Kok / Jordan / Yau Ma Tei</option>
+        <option value="shamshuipo">Sham Shui Po / Cheung Sha Wan</option>
+        <option value="stanley">Stanley / Repulse Bay</option>
+        <option value="aberdeen">Aberdeen / Horizon Plaza</option>
+        <option value="peak_upper">Ngong Ping / Big Buddha</option>
+      </select>
+    </div>
+    <div class="zz-result" id="zz-result">Select a start and end point above.</div>
+  </div>
+
+  <div class="journey-section-title">Key Journeys — Step by Step</div>
+
+</div>
+
 <div id="overview-root" style="display:none">
   <div class="overview" id="overview-content"></div>
 </div>
@@ -566,6 +647,9 @@ const GUIDE_ITEMS = [
     {name:'Walla-Walla Boat Tour',zone:1,cost:2,type:'activity',hours:'Any time; evenings best',tip:'Traditional motorboat through Causeway Bay typhoon shelter. Pass the Noonday Gun, floating restaurants, Tin Hau Shrine. Genuinely unique.',map:'https://maps.google.com/?q=Causeway+Bay+Typhoon+Shelter+Hong+Kong'},
   
     {name:'Queen\'s Road Central (Jewellers\' Mile)',zone:1,cost:0,type:'sight',hours:'All day; shops 10am–8pm',tip:'HK\'s most concentrated strip of high-end jewellers and watch boutiques — Chow Tai Fook, Luk Fook, Omega, Cartier, Rolex and more. Even window shopping is extraordinary.',map:'https://maps.google.com/?q=Queens+Road+Central+Hong+Kong'},
+
+    {name:'Kowloon Walled City Park',zone:3,cost:0,type:'sight',hours:'6:30am–9pm daily',tip:'Free park on the site of the infamous lawless Walled City (demolished 1994). Excellent museum inside explains the history. Beautiful Jiangnan garden design. Genuinely fascinating — 45 mins. MTR Lok Fu then 10-min walk.',map:'https://maps.google.com/maps?q=Kowloon+Walled+City+Park+Hong+Kong&z=17'},
+    {name:'Wan Chai Blue House Cluster',zone:1,cost:0,type:'sight',hours:'Exterior always; interior tours vary',tip:'Group of preserved 1920s tenement buildings on Stone Nullah Lane painted distinctive blue, yellow and orange. Heritage museum inside. One of the last surviving examples of old Wan Chai street life. Free to walk around.',map:'https://maps.google.com/maps?q=Blue+House+Stone+Nullah+Lane+Wan+Chai+Hong+Kong&z=17'},
     {name:'Lascar Row (Cat Street)',zone:1,cost:1,type:'sight',hours:'10am–6pm (daily)',tip:'Upper Lascar Row — HK\'s antique market street. Curio dealers, jade, ceramics, old coins, Mao memorabilia, colonial-era collectibles. Browse freely; bargaining expected.',map:'https://maps.google.com/?q=Lascar+Row+Upper+Sheung+Wan+Hong+Kong'},
   ]},
   {cat:'Markets',items:[
@@ -585,7 +669,6 @@ const GUIDE_ITEMS = [
     {name:'Aberdeen Market',zone:2,cost:1,type:'market',hours:'7am–10am',tip:'Fresh seafood market; pair with Aberdeen Typhoon Shelter waterfront',map:'https://maps.google.com/?q=Aberdeen+Market+Hong+Kong'},
     {name:'Sham Shui Po Fabric Market',zone:3,cost:1,type:'market',hours:'9am–6pm Mon–Sat (mornings best)',tip:'Textiles, lace, trimmings, buttons, ribbons; wholesale prices; paradise for fabric lovers',map:'https://maps.google.com/?q=Sham+Shui+Po+Fabric+Market+Hong+Kong'},
     {name:'Yau Ma Tei Wholesale Fruit Market',zone:3,cost:1,type:'market',hours:'Midnight–5am',tip:'Wholesale fruit trade in full swing overnight; fascinating spectacle for night owls only',map:'https://maps.google.com/?q=Yau+Ma+Tei+Wholesale+Fruit+Market+Hong+Kong'},
-    {name:'Stanley Market',zone:2,cost:1,type:'market',hours:'10am–6pm (weekday mornings best)',tip:'Arts & crafts, antiques, silk, calligraphy, jewellery; combine with Stanley waterfront & Murray House',map:'https://maps.google.com/?q=Stanley+Market+Hong+Kong'},
     {name:'Tai Yuen Street Toy Market',zone:1,cost:1,type:'market',hours:'10am–7pm',tip:'Entire street of toy stalls — Lego, board games, Barbie, model kits, collectibles; great for kids & collectors; Wan Chai',map:'https://maps.google.com/?q=Tai+Yuen+Street+Wan+Chai+Hong+Kong'},
     {name:'Marble Road Market (North Point)',zone:2,cost:1,type:'market',hours:'9am–6pm',tip:'Clothing and home products at very low prices; genuinely local shopping, very few tourists; near Chun Yeung St',map:'https://maps.google.com/?q=Marble+Road+North+Point+Hong+Kong'},
     {name:'Java Road Market (North Point)',zone:2,cost:1,type:'market',hours:'7am–2pm',tip:'Local wet market near Chun Yeung St; great for atmosphere even if not buying; North Point MTR',map:'https://maps.google.com/?q=Java+Road+Market+North+Point+Hong+Kong'},
@@ -593,18 +676,7 @@ const GUIDE_ITEMS = [
   
 
     {name:'Stanley Market',zone:5,cost:1,type:'market',hours:'10am–6:30pm daily',tip:'Relaxed street market on Stanley New Street — good for Western-sized clothing, silk, original local artwork, jade and souvenirs. Far less frantic than Temple Street. Bus 6/6X/260 from Exchange Square; scenic 45-min ride.',map:'https://maps.google.com/maps?q=Stanley+Market+Stanley+New+Street+Hong+Kong&z=17'},
-    {name:'Repulse Bay Beach',zone:5,cost:0,type:'sight',hours:'All day; lifeguards Apr–Oct',tip:'Crescent-shaped beach with fine white sand and clear water — HK Island\'s best beach. The Pulse complex has restaurants and a rooftop Sunset Beach Club (weekends 5–9pm). Free; bring your own towel.',map:'https://maps.google.com/maps?q=Repulse+Bay+Beach+Hong+Kong&z=17'},
-    {name:'Tin Hau Temple & Longevity Bridge (Repulse Bay)',zone:5,cost:0,type:'sight',hours:'All day',tip:'Colourful temple complex at the beach with statues of Kwun Yam and Tin Hau. Walk across the Longevity Bridge — said to add three days to your life per crossing. Free and unmissable.',map:'https://maps.google.com/maps?q=Tin+Hau+Temple+Repulse+Bay+Hong+Kong&z=17'},
-    {name:'The Verandah Afternoon Tea (Repulse Bay)',zone:5,cost:3,type:'food',hours:'Afternoon tea 3–5:30pm daily',tip:'Legendary colonial-style afternoon tea at The Repulse Bay hotel. Elegant setting, bay views, smart dress required (no beach shorts). Book ahead.',map:'https://maps.google.com/maps?q=The+Repulse+Bay+Hotel+109+Repulse+Bay+Road+Hong+Kong&z=17'},
-    {name:'Murray House & Blake Pier (Stanley)',zone:5,cost:0,type:'sight',hours:'Restaurants open from lunch',tip:'1846 colonial building dismantled stone by stone from Central and rebuilt at Stanley waterfront. Houses restaurants with bay views. Blake Pier alongside is a beautiful Victorian pier relocated from Central in 2007.',map:'https://maps.google.com/maps?q=Murray+House+Stanley+Hong+Kong&z=17'},
-    {name:'Stanley Promenade & Waterfront',zone:5,cost:0,type:'sight',hours:'All day',tip:'Pleasant waterfront walk from the market along the bay to Murray House and Blake Pier. Stanley Plaza has a free outdoor amphitheatre with weekend events. Pak Tai Temple (1805) in the park alongside is worth a detour.',map:'https://maps.google.com/maps?q=Stanley+Promenade+Hong+Kong&z=17'},
-    {name:'Deep Water Bay Beach',zone:5,cost:0,type:'sight',hours:'All day; lifeguards Apr–Oct',tip:'Quieter, less-crowded alternative to Repulse Bay — excellent swimming, gentle waves. A flat 30-min coastal walk along Seaview Promenade connects it to Repulse Bay.',map:'https://maps.google.com/maps?q=Deep+Water+Bay+Beach+Hong+Kong&z=17'},
-    {name:'Aberdeen Harbour & Sampan Ride',zone:5,cost:1,type:'activity',hours:'All day; sampans at the pier',tip:'Traditional fishing village harbour packed with junks and live-aboard houseboats. Take a short sampan ride around the typhoon shelter for a glimpse of old HK. Combine with Horizon Plaza outlet shopping nearby.',map:'https://maps.google.com/maps?q=Aberdeen+Promenade+Aberdeen+Hong+Kong&z=17'},
 
-    {name:'Hong Kong Museum of Art',zone:3,cost:1,type:'sight',hours:'10am–6pm (closed Tue)',tip:'Overlooks Victoria Harbour on the TST waterfront. Contemporary and traditional HK and Asian art. Pairs perfectly with the TST Promenade.',map:'https://maps.google.com/maps?q=Hong+Kong+Museum+of+Art+10+Salisbury+Road+Tsim+Sha+Tsui&z=17'},
-    {name:'Art Lane, Sai Ying Pun',zone:2,cost:0,type:'sight',hours:'All day (outdoor; free)',tip:'Open-air street art gallery around Chung Ching St, Ki Ling Lane and Shek Chan Lane. Giant murals by local and international artists. Relaxed neighbourhood feel.',map:'https://maps.google.com/maps?q=Chung+Ching+Street+Sai+Ying+Pun+Hong+Kong&z=17'},
-    {name:'Sik Sik Yuen Wong Tai Sin Temple',zone:4,cost:0,type:'sight',hours:'7am–5pm (daily)',tip:'One of HK\'s most visited temples. Famous for kau cim fortune telling — devotees shake bamboo sticks to receive predictions. Colourful and atmospheric. MTR Wong Tai Sin Exit B2.',map:'https://maps.google.com/maps?q=Wong+Tai+Sin+Temple+Kowloon+Hong+Kong&z=17'},
-    {name:'JCCAC Creative Arts Centre',zone:4,cost:0,type:'sight',hours:'12pm–8pm; weekend markets best',tip:'Former factory turned working artist village in Shek Kip Mei. Live artist studios, galleries, monthly handmade markets. Authentic creative hub — virtually no tourists. MTR Shek Kip Mei Exit B.',map:'https://maps.google.com/maps?q=JCCAC+30+Pak+Tin+Street+Shek+Kip+Mei+Hong+Kong&z=17'},
     {name:'Bird Market (Yuen Po Street)',zone:3,cost:1,type:'market',hours:'7am–8pm (daily; mornings best)',tip:'Local men bring prized songbirds in ornate bamboo cages for a morning social. Ornate carved cages also on sale. Near Flower Market.',map:'https://maps.google.com/?q=Yuen+Po+Street+Bird+Garden+Mong+Kok+Hong+Kong'},
   ]},
   {cat:'Shopping — Malls & Outlets',items:[
@@ -658,6 +730,9 @@ const GUIDE_ITEMS = [
     {name:'Ying Kee Tea House',zone:1,cost:2,type:'shopping',hours:'10am–7pm (daily)',tip:'HK institution since 1881. The best place for loose-leaf jasmine, pu-erh, oolong and Ti Kuan Yin. Staff knowledgeable and helpful. Excellent for gifts and personal buying. Central branch at 151 Queen\'s Road Central.',map:'https://maps.google.com/?q=Ying+Kee+Tea+House+151+Queens+Road+Central+Hong+Kong'},
     {name:'A&M US Groceries',zone:1,cost:2,type:'shopping',hours:'9:30am–8pm (daily)',tip:'American grocery store with 3,500+ US products — cereals, candy, sodas, Reese\'s, Lucky Charms, bulk snacks, cleaning products and more. Hidden gem in Asia Standard Tower basement. Great for a novelty browse.',map:'https://maps.google.com/?q=A%26M+US+Groceries+59+Queens+Road+Central+Hong+Kong'},
     {name:'Cheung Sha Wan Road (Fashion Street)',zone:3,cost:1,type:'shopping',hours:'10am–7pm (Mon–Sat)',tip:'Over 200 wholesale fashion shops selling direct to the public. Factory overruns, accessories, casual clothes at very low prices. Bargaining expected. Between Yen Chow and Wong Chuk Streets. MTR Sham Shui Po Exit A/B.',map:'https://maps.google.com/?q=Cheung+Sha+Wan+Road+Fashion+Street+Sham+Shui+Po+Hong+Kong'},
+
+    {name:'Cheung Sha Wan Wholesale Fashion District',zone:3,cost:1,type:'shopping',hours:'Weekday mornings best (9am–1pm)',tip:'HK\'s wholesale clothing district — serious bargains on fashion, fabrics and accessories. Cheung Sha Wan Rd, Ki Lung St and the surrounding lanes. Weekday mornings when wholesale buyers are there. MTR Cheung Sha Wan Exit A or C.',map:'https://maps.google.com/maps?q=Cheung+Sha+Wan+Road+Fashion+District+Hong+Kong&z=17'},
+    {name:'Milan Station (Designer Consignment)',zone:1,cost:2,type:'shopping',hours:'11am–8pm (daily)',tip:'Best known designer resale chain in HK — Chanel, LV, Hermes at significant discounts. Multiple branches; Causeway Bay (Percival St) and Central (Wellington St) most convenient. Prices in HKD so strong sterling exchange rate works in your favour.',map:'https://maps.google.com/maps?q=Milan+Station+Causeway+Bay+Hong+Kong&z=17'},
     {name:'Yiu Wa Street (Boutiques & Vintage)',zone:1,cost:2,type:'shopping',hours:'12pm–9pm (daily)',tip:'Hidden boutique street just behind Times Square in Causeway Bay. Small vintage stores, independent fashion labels, one-off pieces. Great alternative to the main mall strip for something original.',map:'https://maps.google.com/?q=Yiu+Wa+Street+Causeway+Bay+Hong+Kong'},
     {name:'Hong Kong Reader',zone:1,cost:1,type:'shopping',hours:'12pm–8pm (daily)',tip:'Independent bookshop in Causeway Bay. Good selection of HK-interest books, design books, zines and local publications.',map:'https://maps.google.com/maps?q=Hong+Kong+Reader+Causeway+Bay+Hong+Kong&z=17'},
   ]},
@@ -686,11 +761,20 @@ const GUIDE_ITEMS = [
     {name:'The Diplomat',zone:1,cost:2,type:'bar',hours:'6pm–late (daily)',tip:'Speakeasy in Central with a secret VIP room hidden behind a wall. Creative cocktails and strong atmosphere.',map:'https://maps.google.com/?q=The+Diplomat+Bar+Central+Hong+Kong'},
     {name:'Lan Kwai Fong (LKF)',zone:1,cost:1,type:'bar',hours:'Evenings; best Fri–Sat',tip:'HK\'s famous party district. Dozens of bars from upscale to rough-and-ready. Good for a late-night wander after dinner.',map:'https://maps.google.com/?q=Lan+Kwai+Fong+Central+Hong+Kong'},
     {name:'Lock Cha Tea House',zone:1,cost:2,type:'bar',hours:'10am–8pm (daily)',tip:'Premium tea shop and tea house inside Tai Kwun. Beautiful teaware, tea tastings. Excellent alternative to Fook Ming Tong for tea gifts.',map:'https://maps.google.com/?q=Lock+Cha+Tea+House+Tai+Kwun+Central+Hong+Kong'},
+
+    {name:'Avoca (Mondrian TST)',zone:3,cost:2,type:'bar',hours:'5pm–late daily',tip:'Winner of 2024 Best Cocktail Programme. 38th floor of Mondrian Hong Kong with stunning views of HK Island and Victoria Harbour. Signature cocktails inspired by HK flavours — try the Haam Neng Mung (salted lemonade inspired). Spray-your-own cocktails from perfume vials.',map:'https://maps.google.com/maps?q=Mondrian+Hong+Kong+Tsim+Sha+Tsui&z=17'},
+    {name:'Aqua Spirit Bar (H Zentre TST)',zone:3,cost:2,type:'bar',hours:'3pm–midnight (Sun–Thu); 3pm–1am (Fri–Sat)',tip:'Rooftop terrace at H Zentre, 15 Middle Road TST. Panoramic harbour and Kowloon views. Excellent Sunset Hour deal — cocktails and house spirits for HK$98 (5–8pm daily). Good for pre-dinner drinks with a view.',map:'https://maps.google.com/maps?q=Aqua+H+Zentre+15+Middle+Road+Tsim+Sha+Tsui+Hong+Kong&z=17'},
+    {name:'Eyebar (iSquare, Nathan Road)',zone:3,cost:2,type:'bar',hours:'12pm–midnight daily',tip:'30th floor of iSquare on Nathan Road — prime people-watching spot over Kowloon\'s busiest shopping street. Relaxed atmosphere, solid cocktails, good views without the premium pricing of Ozone. Walk from TST MTR Exit D1.',map:'https://maps.google.com/maps?q=Eyebar+iSquare+63+Nathan+Road+Tsim+Sha+Tsui+Hong+Kong&z=17'},
+    {name:'Bad Coffee & Liquor Club (Jordan)',zone:3,cost:1,type:'bar',hours:'6pm–late (Tue–Sun)',tip:'Hidden speakeasy in an industrial building at 385 Nathan Road, Jordan. Bare-bones interior with a strong 1980s–90s HK nostalgia feel. Great Negroni. Easy to walk past — look for the small sign. Antidote to the polished hotel bar scene.',map:'https://maps.google.com/maps?q=385+Nathan+Road+Yau+Ma+Tei+Hong+Kong&z=17'},
+    {name:'Reflect Rooftop Bar (Mong Kok)',zone:3,cost:1,type:'bar',hours:'5pm–midnight daily',tip:'12th floor rooftop at Mong Kok City Centre, Sai Yeung Choi St S. Less-known alternative to the TST hotel bars — good local crowd, views over Mong Kok rooftops, reasonable prices. 5 mins from MTR Mong Kok.',map:'https://maps.google.com/maps?q=Reflect+Rooftop+Bar+Mongkok+City+Centre+Mong+Kok+Hong+Kong&z=17'},
     {name:'DarkSide',zone:3,cost:3,type:'bar',hours:'5pm–late (daily)',tip:'No.17 Asia\'s 50 Best Bars. Rosewood Hong Kong\'s spectacular bar with Victoria Harbour views. Extraordinary Murano-glass ceiling. Deep rum, whisky and Armagnac list.',map:'https://maps.google.com/?q=DarkSide+Bar+Rosewood+Hong+Kong+Tsim+Sha+Tsui'},
     {name:'Tai Lung Fung',zone:1,cost:2,type:'bar',hours:'6pm–late (daily)',tip:'HK nostalgia bar in Wan Chai. Wong Kar-wai aesthetic — neon, visual relics of pre-2000s HK. An extraordinary piece of design.',map:'https://maps.google.com/?q=Tai+Lung+Fung+Heard+Street+Wan+Chai+Hong+Kong'},
     {name:'Ozone',zone:3,cost:3,type:'bar',hours:'5pm–2am (Fri–Sat); 5pm–1am (Sun–Thu)',tip:'118th floor of ICC Tower, 490m above sea level. One of the highest bars on the planet. Sci-fi interior. The views are unlike anywhere in HK.',map:'https://maps.google.com/?q=Ozone+Bar+ICC+Tower+West+Kowloon+Hong+Kong'},
     {name:'The Peninsula Lobby Bar',zone:3,cost:3,type:'bar',hours:'2pm–7pm (afternoon tea)',tip:'Classic British afternoon tea with a string quartet in HK\'s most storied hotel. An institution since 1928. Book well ahead.',map:'https://maps.google.com/?q=The+Peninsula+Hotel+Salisbury+Road+Tsim+Sha+Tsui+Hong+Kong'},
     {name:'James Suckling Wine Central',zone:1,cost:2,type:'bar',hours:'Noon–late (daily)',tip:'Curated wine bar from world-famous critic James Suckling. Exceptional by-the-glass selection built around his top-rated bottles.',map:'https://maps.google.com/?q=James+Suckling+Wine+Central+Peel+Street+Central+Hong+Kong'},
+
+    {name:'Lockhart Road Bar Strip (Wan Chai)',zone:1,cost:1,type:'bar',hours:'From 5pm; late nights Fri–Sat',tip:'HK\'s most famous bar street. Mix of sports bars, live music venues and local dives between Luard Rd and O\'Brien Rd. Mes Amis, The Pawn rooftop, and Dusk Till Dawn are the highlights. Tram stops right outside.',map:'https://maps.google.com/maps?q=Lockhart+Road+Wan+Chai+Hong+Kong&z=17'},
+    {name:'The Pawn (Wan Chai)',zone:1,cost:2,type:'bar',hours:'12pm–midnight (daily)',tip:'Beautifully restored 1888 pawnshop on Johnston Rd. Rooftop terrace with great Wan Chai views, solid cocktails and British gastropub food. Good for an afternoon drink or pre-dinner.',map:'https://maps.google.com/maps?q=The+Pawn+62+Johnston+Road+Wan+Chai+Hong+Kong&z=17'},
     {name:'Wan Chai Sports Bars',zone:1,cost:1,type:'bar',hours:'All day; evenings best',tip:'HK\'s original expat pub strip. Cold beer, live sport, zero pretension. Carnegie\'s, Dusk Till Dawn and others on Lockhart Road.',map:'https://maps.google.com/?q=Lockhart+Road+Wan+Chai+Hong+Kong+sports+bars'},
   ]},
   {cat:'Restaurants & Dim Sum',items:[
@@ -752,21 +836,30 @@ const GUIDE_ITEMS = [
   
     {name:'Mak Man Kee Noodle Shop',zone:3,cost:1,type:'food',hours:'12pm–12:30am (daily)',tip:'Michelin-starred wonton noodle specialist in Jordan. Famous for tiger prawn wontons and springy duck-egg noodles in a rich broth made without MSG. 60+ year history. Cash only. 51 Parkes Street.',map:'https://maps.google.com/?q=Mak+Man+Kee+Noodle+Shop+51+Parkes+Street+Jordan+Hong+Kong'},
     {name:'Luen Fat (Kowloon City)',zone:3,cost:1,type:'food',hours:'7am–10pm (closed Wed)',tip:'Beloved local cha chaan teng with ties to Australia Dairy Company. Famous for incredibly smooth scrambled eggs and char siu scrambled egg rice. Best char siu egg rice in HK. Cash only. 2-4 Hau Wong Road, Kowloon City.',map:'https://maps.google.com/?q=Luen+Fat+Restaurant+2+Hau+Wong+Road+Kowloon+City+Hong+Kong'},
+
+    {name:'Joy Hing Roast Meat',zone:3,cost:1,type:'food',hours:'11am–9:30pm (closed Sun)',tip:'Legendary cheap roast goose and char siu rice in Jordan. Queue at lunch; eat at communal tables. One of the best value meals in Kowloon. 265-267 Hennessy Rd (also Jordan branch).',map:'https://maps.google.com/maps?q=Joy+Hing+Roasted+Meat+Jordan+Hong+Kong&z=17'},
+    {name:'Kowloon Walled City Park Cafe Area',zone:3,cost:1,type:'food',hours:'6:30am–9pm',tip:'The park itself is free and worth visiting for the history (site of the infamous walled city). Several good cha chaan tengs nearby on Tung Tau Tsuen Rd for a local breakfast or lunch after exploring.',map:'https://maps.google.com/maps?q=Kowloon+Walled+City+Park+Hong+Kong&z=17'},
+    {name:'Tsui Wah Restaurant',zone:1,cost:1,type:'food',hours:'24 hours (some branches)',tip:'Classic HK-style cha chaan teng chain — one of the best. Excellent milk tea, pineapple buns, French toast and congee. Multiple branches; Central branch on Wellington St is most convenient.',map:'https://maps.google.com/maps?q=Tsui+Wah+Restaurant+Wellington+Street+Central+Hong+Kong&z=17'},
+    {name:'Capital Cafe (Cha Chaan Teng)',zone:1,cost:1,type:'food',hours:'7am–8pm (daily)',tip:'Old-school cha chaan teng in Wan Chai on Lockhart Road. Great morning set with HK milk tea, toast and eggs. Regulars read newspapers; ceiling fans; full local atmosphere.',map:'https://maps.google.com/maps?q=Capital+Cafe+Lockhart+Road+Wan+Chai+Hong+Kong&z=17'},
+    {name:'Sing Heung Yuen (Tomato Noodles)',zone:1,cost:1,type:'food',hours:'8am–5pm (Mon–Sat)',tip:'Tiny outdoor dai pai dong in Grahame St market area. Famous for tomato and beef broth instant noodles — sounds simple, tastes incredible. Order the macaroni in soup. Always a queue.',map:'https://maps.google.com/maps?q=Sing+Heung+Yuen+Grahame+Street+Central+Hong+Kong&z=17'},
     {name:'Tung Tat Food Shop',zone:3,cost:1,type:'food',hours:'7am–9pm (daily)',tip:'One of HK\'s most celebrated street food shops on Fa Yuen Street. Famous for spicy fish balls, siu mai, oil residue noodles (yu char meen), and cheung fun. Recommended by the Hong Kong Tourism Board. 172 Fa Yuen Street, Mong Kok.',map:'https://maps.google.com/?q=Tung+Tat+Food+Shop+172+Fa+Yuen+Street+Mong+Kok+Hong+Kong'},
   ]},
   {cat:'Transit — Ferries & Piers',items:[
-    {name:'Star Ferry — Central Pier (Board here)',zone:1,cost:0,type:'transit',hours:'6:30am–11:30pm daily',tip:'Board at Pier 7, Central (near IFC). Cross to TST in 8 mins — HK$3.50 lower deck, HK$4.50 upper. Upper deck for best views. Add this AND the TST arrival pier when routing cross-harbour.',map:'https://maps.google.com/maps?q=Star+Ferry+Pier+Central+Hong+Kong&z=17'},
-    {name:'Star Ferry — TST Pier (Arrive here)',zone:3,cost:0,type:'transit',hours:'6:30am–11:30pm daily',tip:'Arrival pier in Tsim Sha Tsui. Walk left (east) along the promenade for Avenue of Stars and TST East Promenade. Walk straight for Nathan Road and Harbour City.',map:'https://maps.google.com/maps?q=Star+Ferry+Pier+Tsim+Sha+Tsui+Hong+Kong&z=17'},
-    {name:'Star Ferry — Wan Chai Pier (Board here)',zone:1,cost:0,type:'transit',hours:'7:30am–10:50pm daily',tip:'Alternative cross-harbour ferry from Wan Chai to TST. Useful if your day starts in Wan Chai or Causeway Bay.',map:'https://maps.google.com/maps?q=Star+Ferry+Wan+Chai+Pier+Hong+Kong&z=17'},
+    {name:'Star Ferry — Central Pier (Board here)',zone:1,cost:1,type:'transit',hours:'6:30am–11:30pm daily',tip:'Board at Pier 7, Central (near IFC). Cross to TST in 8 mins — HK$3.50 lower deck, HK$4.50 upper. Upper deck for best views. Add this AND the TST arrival pier when routing cross-harbour.',map:'https://maps.google.com/maps?q=Star+Ferry+Pier+Central+Hong+Kong&z=17'},
+    {name:'Star Ferry — Central Pier (Arrive here)',zone:1,cost:1,type:'transit',hours:'6:30am–11:30pm daily',tip:'Arrival pier at Pier 7, Central when returning from TST. Walk straight into the IFC mall or MTR Hong Kong Station. Turn right along the waterfront for the Outlying Islands ferries.',map:'https://maps.google.com/maps?q=Star+Ferry+Pier+Central+Hong+Kong&z=17'},
+    {name:'Star Ferry — TST Pier (Arrive here)',zone:3,cost:1,type:'transit',hours:'6:30am–11:30pm daily',tip:'Arrival pier in Tsim Sha Tsui. Walk left (east) along the promenade for Avenue of Stars and TST East Promenade. Walk straight for Nathan Road and Harbour City.',map:'https://maps.google.com/maps?q=Star+Ferry+Pier+Tsim+Sha+Tsui+Hong+Kong&z=17'},
+    {name:'Star Ferry — TST Pier (Board here)',zone:3,cost:1,type:'transit',hours:'6:30am–11:30pm daily',tip:'Board here at TST for the 8-min crossing back to Central Pier 7. Walk to the pier from the Clock Tower or Avenue of Stars. Upper deck HK$4.50, lower deck HK$3.50. Sit on the left side for the best view of the HK Island skyline.',map:'https://maps.google.com/maps?q=Star+Ferry+Pier+Tsim+Sha+Tsui+Hong+Kong&z=17'},
+    {name:'Star Ferry — Wan Chai Pier (Board here)',zone:1,cost:1,type:'transit',hours:'7:30am–10:50pm daily',tip:'Alternative cross-harbour ferry from Wan Chai to TST. Useful if your day starts in Wan Chai or Causeway Bay.',map:'https://maps.google.com/maps?q=Star+Ferry+Wan+Chai+Pier+Hong+Kong&z=17'},
+    {name:'Star Ferry — Wan Chai Pier (Arrive here)',zone:1,cost:1,type:'transit',hours:'7:30am–10:50pm daily',tip:'Arrival pier in Wan Chai when returning from TST. Exit onto Harbour Rd — 5 mins walk to the tram on Johnston Rd. MTR Wan Chai station is a 10-min walk west.',map:'https://maps.google.com/maps?q=Star+Ferry+Wan+Chai+Pier+Hong+Kong&z=17'},
     {name:'Aqua Luna Junk — Central Pier 9',zone:1,cost:2,type:'transit',hours:'Multiple daily sailings; book ahead',tip:'Departs Central Pier 9. ~45 min harbour cruise on a traditional red-sailed junk. Includes 1 free drink. Book online. Also stops at TST.',map:'https://maps.google.com/maps?q=Central+Pier+9+Hong+Kong&z=17'},
   ]},
   {cat:'Transit — MTR Stations (HK Island)',items:[
-    {name:'MTR: Hong Kong / Central Station',zone:1,cost:0,type:'transit',hours:'6am–1am daily',tip:'Main interchange hub. Exit D → Exchange Square bus terminus for Stanley/Repulse Bay buses. Exit J3 → Star Ferry pier.',map:'https://maps.google.com/maps?q=Central+MTR+Station+Hong+Kong&z=17'},
-    {name:'MTR: Admiralty Station',zone:1,cost:0,type:'transit',hours:'6am–1am daily',tip:'Closest MTR to Conrad Hotel — 5 min walk via Pacific Place. Exit C → Pacific Place / Conrad. Connects Island, Tsuen Wan, South Island lines.',map:'https://maps.google.com/maps?q=Admiralty+MTR+Station+Hong+Kong&z=17'},
-    {name:'MTR: Wan Chai Station',zone:1,cost:0,type:'transit',hours:'6am–1am daily',tip:'Island Line. Exit A3 → Wan Chai market streets and Blue House. Exit B → waterfront. Good for Under Bridge Spicy Crab (Lockhart Rd).',map:'https://maps.google.com/maps?q=Wan+Chai+MTR+Station+Hong+Kong&z=17'},
-    {name:'MTR: Causeway Bay Station',zone:1,cost:0,type:'transit',hours:'6am–1am daily',tip:'Island Line. Exit E → Times Square. Exit F → Fashion Walk / Yiu Wa St boutiques. Exit D4 → Victoria Park.',map:'https://maps.google.com/maps?q=Causeway+Bay+MTR+Station+Hong+Kong&z=17'},
-    {name:'MTR: Sheung Wan Station',zone:2,cost:0,type:'transit',hours:'6am–1am daily',tip:'Island Line. Exit E2 → Hollywood Road antiques and Man Mo Temple. Exit B → Western Market.',map:'https://maps.google.com/maps?q=Sheung+Wan+MTR+Station+Hong+Kong&z=17'},
-    {name:'MTR: Ocean Park Station',zone:5,cost:0,type:'transit',hours:'6am–1am daily',tip:'South Island Line. Closest MTR to Repulse Bay. 10-min taxi to Repulse Bay. Exit C → coastal walk to Deep Water Bay along Seaview Promenade.',map:'https://maps.google.com/maps?q=Ocean+Park+MTR+Station+Hong+Kong&z=17'},
+    {name:'MTR: Hong Kong / Central Station',zone:1,cost:1,type:'transit',hours:'6am–1am daily',tip:'Main interchange hub. Exit D → Exchange Square bus terminus for Stanley/Repulse Bay buses. Exit J3 → Star Ferry pier.',map:'https://maps.google.com/maps?q=Central+MTR+Station+Hong+Kong&z=17'},
+    {name:'MTR: Admiralty Station',zone:1,cost:1,type:'transit',hours:'6am–1am daily',tip:'Closest MTR to Conrad Hotel — 5 min walk via Pacific Place. Exit C → Pacific Place / Conrad. Connects Island, Tsuen Wan, South Island lines.',map:'https://maps.google.com/maps?q=Admiralty+MTR+Station+Hong+Kong&z=17'},
+    {name:'MTR: Wan Chai Station',zone:1,cost:1,type:'transit',hours:'6am–1am daily',tip:'Island Line. Exit A3 → Wan Chai market streets and Blue House. Exit B → waterfront. Good for Under Bridge Spicy Crab (Lockhart Rd).',map:'https://maps.google.com/maps?q=Wan+Chai+MTR+Station+Hong+Kong&z=17'},
+    {name:'MTR: Causeway Bay Station',zone:1,cost:1,type:'transit',hours:'6am–1am daily',tip:'Island Line. Exit E → Times Square. Exit F → Fashion Walk / Yiu Wa St boutiques. Exit D4 → Victoria Park.',map:'https://maps.google.com/maps?q=Causeway+Bay+MTR+Station+Hong+Kong&z=17'},
+    {name:'MTR: Sheung Wan Station',zone:2,cost:1,type:'transit',hours:'6am–1am daily',tip:'Island Line. Exit E2 → Hollywood Road antiques and Man Mo Temple. Exit B → Western Market.',map:'https://maps.google.com/maps?q=Sheung+Wan+MTR+Station+Hong+Kong&z=17'},
+    {name:'MTR: Ocean Park Station',zone:5,cost:1,type:'transit',hours:'6am–1am daily',tip:'South Island Line. Closest MTR to Repulse Bay. 10-min taxi to Repulse Bay. Exit C → coastal walk to Deep Water Bay along Seaview Promenade.',map:'https://maps.google.com/maps?q=Ocean+Park+MTR+Station+Hong+Kong&z=17'},
   ]},
   {cat:'Transit — MTR Stations (Kowloon)',items:[
     {name:'MTR: Tsim Sha Tsui Station',zone:3,cost:0,type:'transit',hours:'6am–1am daily',tip:'Tsuen Wan Line. Exit L6 → Star Ferry Pier. Exit E → Nathan Road / Harbour City. Exit B1 → Peninsula Hotel.',map:'https://maps.google.com/maps?q=Tsim+Sha+Tsui+MTR+Station+Hong+Kong&z=17'},
@@ -788,7 +881,7 @@ const GUIDE_ITEMS = [
     {name:'Bus 6/6X/260 — Exchange Square to Stanley',zone:1,cost:0,type:'transit',hours:'Every 10–15 mins from ~6am',tip:'Board at Exchange Square Bus Terminus, Central (MTR Hong Kong/Central Exit D). Scenic 45–55 min ride to Stanley via Repulse Bay. Sit upper deck right side for views. Octopus card or exact change.',map:'https://maps.google.com/maps?q=Exchange+Square+Bus+Terminus+Central+Hong+Kong&z=17'},
     {name:'Bus Stop — Repulse Bay Beach',zone:5,cost:0,type:'transit',hours:'All day',tip:'Ask driver for Repulse Bay stop on buses 6, 6X or 260 from Central. Alight here for the beach, Tin Hau Temple and The Pulse. Re-board to continue to Stanley.',map:'https://maps.google.com/maps?q=Repulse+Bay+Beach+Bus+Stop+Hong+Kong&z=17'},
     {name:'Bus Stop — Stanley Market',zone:5,cost:0,type:'transit',hours:'All day',tip:'Terminal/end stop for buses 6, 6X and 260 from Central. Alight for Stanley Market, Murray House and Blake Pier. ~50 mins from Central.',map:'https://maps.google.com/maps?q=Stanley+Market+Bus+Stop+Hong+Kong&z=17'},
-    {name:'Minibus 40/40X — Causeway Bay to Stanley',zone:1,cost:0,type:'transit',hours:'From Jardine\'s Bazaar, Causeway Bay',tip:"Faster alternative to bus 6 from Causeway Bay. Minibus 40/40X from Jardine's Bazaar to Stanley via Repulse Bay.",map:'https://maps.google.com/maps?q=Jardines+Bazaar+Causeway+Bay+Hong+Kong&z=17'},
+    {name:'Minibus 40/40X — Causeway Bay to Stanley',zone:1,cost:0,type:'transit',hours:'From Jardine\'s Bazaar, Causeway Bay',tip:"Faster alternative to bus 6 from Causeway Bay. Minibus 40/40X from Jardine\'s Bazaar to Stanley via Repulse Bay.",map:'https://maps.google.com/maps?q=Jardines+Bazaar+Causeway+Bay+Hong+Kong&z=17'},
   ]},
 
 ];
@@ -1322,10 +1415,13 @@ function setView(v){
   currentView=v;
   document.getElementById('day-view-root').style.display=v==='day'?'':'none';
   document.getElementById('overview-root').style.display=v==='overview'?'':'none';
+  document.getElementById('journey-root').style.display=v==='journey'?'':'none';
   document.getElementById('btn-day').classList.toggle('active',v==='day');
   document.getElementById('btn-overview').classList.toggle('active',v==='overview');
+  document.getElementById('btn-journey').classList.toggle('active',v==='journey');
   document.getElementById('btn-today').classList.toggle('active',false);
   if(v==='overview') renderOverview();
+  if(v==='journey') renderJourneyCards();
 }
 
 function renderOverview(){
@@ -1810,6 +1906,281 @@ function applyResponsiveLayout(){
   }
 }
 window.addEventListener('resize', applyResponsiveLayout);
+
+
+// ── JOURNEY PLANNER ──────────────────────────────────────────────────────────
+
+const JOURNEYS = [
+  {
+    id:'star-ferry-central-tst',
+    icon:'⛴',
+    name:'Star Ferry: Central → TST',
+    summary:'Central Pier 7 to Tsim Sha Tsui — 8 mins across the harbour',
+    time:'8 mins',
+    cost:'HK$4.50 upper / $3.50 lower',
+    steps:[
+      {t:'Walk to <strong>Pier 7, Central Star Ferry Terminal</strong> — exit IFC via the harbour-level walkway or walk along Lung Wo Rd. Look for green and white Star Ferry signage.'},
+      {t:'Buy an Octopus card ticket at the turnstile or use your Octopus card directly. <strong>Upper deck</strong>: HK$4.50 — better views. Lower deck: HK$3.50.'},
+      {t:'Ferries depart every 6–12 mins. <strong>Sit on the right (east) side</strong> for the best view of the skyline on the crossing to TST.'},
+      {t:'Arrive at <strong>TST Star Ferry Pier</strong> in approximately 8 mins. Turn left for Avenue of Stars and TST East Promenade. Straight ahead for Nathan Road and Harbour City.'},
+    ],
+    tips:'Evening crossings (after 7pm) are the most dramatic — city lights fully lit and Symphony of Lights starts at 8pm from the promenade. Last ferry ~11:30pm.',
+    mapUrl:'https://maps.google.com/maps?q=Star+Ferry+Pier+Central+Hong+Kong&z=17',
+    returnJourney:'star-ferry-tst-central',
+  },
+  {
+    id:'star-ferry-tst-central',
+    icon:'⛴',
+    name:'Star Ferry: TST → Central',
+    summary:'Return crossing — TST Pier to Central Pier 7',
+    time:'8 mins',
+    cost:'HK$4.50 upper / $3.50 lower',
+    steps:[
+      {t:'From TST, walk toward the waterfront. <strong>Star Ferry Pier is directly on the promenade</strong> — follow signs from the Clock Tower or Avenue of Stars.'},
+      {t:'Use Octopus card or buy a ticket at the turnstile. <strong>Upper deck</strong> gives better views of HK Island skyline on the return.'},
+      {t:'<strong>Sit on the left side</strong> for the best view of the HK Island skyline as you approach Central.'},
+      {t:'Arrive at <strong>Pier 7, Central</strong>. Walk straight into the IFC mall/MTR. Turn right along the waterfront for the Outlying Islands ferries.'},
+    ],
+    tips:'The return crossing gives a spectacular view of the HK Island skyline. Morning crossings (8–9am) are particularly beautiful in clear weather.',
+    mapUrl:'https://maps.google.com/maps?q=Star+Ferry+Pier+Tsim+Sha+Tsui+Hong+Kong&z=17',
+  },
+  {
+    id:'peak-tram',
+    icon:'🚋',
+    name:'Peak Tram: Garden Rd → The Peak',
+    summary:'7-min funicular climb — steepest in HK at 27 degrees',
+    time:'7 mins tram + 15 mins walk',
+    cost:'HK$62 return (adult)',
+    steps:[
+      {t:'From Conrad Hotel: walk through Pacific Place to <strong>Garden Road</strong> and turn right uphill. The <strong>Peak Tram Lower Terminus</strong> is about 5 mins walk at the junction of Garden Rd and Cotton Tree Drive. Alternatively, Bus 15C runs from Central Star Ferry Pier to the lower terminus.'},
+      {t:'<strong>Book tickets online</strong> before you go (hkpeaktram.com.hk) to skip the queue — queues can be 45+ mins at peak times. Return ticket: HK$62. One way: HK$35.'},
+      {t:'Board the funicular tram. <strong>Stand on the right side</strong> for the best views looking back down over the city on the ascent. The tram tilts at up to 27 degrees — hold on.'},
+      {t:'Arrive at <strong>Peak Tower (Upper Terminus)</strong>. Head outside onto the Sky Terrace 428 (free with some tickets) or take the <strong>Peak Circle Walk</strong> — a flat 3.5km loop through trees with harbour glimpses. Free, about 1 hour.'},
+      {t:'Return by tram or <strong>Bus 15</strong> back to Central Exchange Square (more scenic, cheaper at HK$10.60, no queue).'},
+    ],
+    tips:'Go in the evening for the city lights — stunning after 7pm. Morning is clearest for views before haze builds. Avoid weekends and public holidays if possible — massive queues.',
+    mapUrl:'https://maps.google.com/maps?q=Peak+Tram+Lower+Terminus+Garden+Road+Central+Hong+Kong&z=17',
+  },
+  {
+    id:'bus-stanley',
+    icon:'🚌',
+    name:'Bus 6X: Central → Stanley Market',
+    summary:'Exchange Square to Stanley via Repulse Bay — 50 mins scenic ride',
+    time:'50–55 mins',
+    cost:'HK$10.60 (Octopus)',
+    steps:[
+      {t:'From Conrad Hotel: MTR to <strong>Hong Kong/Central Station</strong> or walk 10 mins along Queensway. Exit D → <strong>Exchange Square Bus Terminus</strong> (underground, follow signs).'},
+      {t:'Find <strong>Bus 6X</strong> (or Bus 6 / Bus 260) at the terminus. 6X is express and faster. Buses run every 10–15 mins from ~6am. Pay with Octopus card on boarding.'},
+      {t:'<strong>Sit upper deck, right side</strong> for the best views — the bus climbs over HK Island with spectacular harbour views before descending to the south side.'},
+      {t:'For <strong>Repulse Bay</strong>: alight after ~35 mins when you see the beach. Tell the driver or watch the stops. The Tin Hau Temple and The Pulse are right at the stop.'},
+      {t:'For <strong>Stanley</strong>: stay on to the terminal stop (~50 mins). Alight for Stanley Market, Murray House, Blake Pier and the promenade.'},
+    ],
+    tips:'The bus ride itself is worth doing for the scenery. Return: same buses from Stanley Bus Terminus back to Central. Last bus from Stanley around midnight. Minibus 40/40X from Causeway Bay is faster if starting from that side of the island.',
+    mapUrl:'https://maps.google.com/maps?q=Exchange+Square+Bus+Terminus+Central+Hong+Kong&z=17',
+  },
+  {
+    id:'mtr-admiralty-tst',
+    icon:'🚇',
+    name:'MTR: Admiralty → TST',
+    summary:'Fastest cross-harbour route — 10 mins via Tsuen Wan Line',
+    time:'10–12 mins',
+    cost:'HK$10.10 (Octopus)',
+    steps:[
+      {t:'From Conrad Hotel: 5-min walk to <strong>Admiralty MTR Station</strong> via Pacific Place (Exit C). Follow signs to the Tsuen Wan Line (red line).'},
+      {t:'Take a <strong>Tsuen Wan-bound train</strong>. The cross-harbour section goes under Victoria Harbour — you\'ll pass Wan Chai, Causeway Bay, then enter the tunnel.'},
+      {t:'Alight at <strong>Tsim Sha Tsui Station</strong> (5 stops). Exit <strong>L6</strong> for the Star Ferry Pier and Promenade. Exit <strong>E</strong> for Nathan Road and Harbour City. Exit <strong>B1</strong> for The Peninsula Hotel.'},
+    ],
+    tips:'The MTR is the fastest cross-harbour option. For a more scenic alternative, walk to the Star Ferry instead (30 mins + 8 min crossing). The Tsuen Wan Line serves TST directly — no need to change.',
+    mapUrl:'https://maps.google.com/maps?q=Admiralty+MTR+Station+Hong+Kong&z=17',
+  },
+  {
+    id:'mtr-admiralty-mongkok',
+    icon:'🚇',
+    name:'MTR: Admiralty → Mong Kok',
+    summary:'Direct on Tsuen Wan Line — 17 mins to the heart of Kowloon',
+    time:'17–20 mins',
+    cost:'HK$12.40 (Octopus)',
+    steps:[
+      {t:'From Conrad Hotel: walk to <strong>Admiralty MTR</strong> via Pacific Place (Exit C). Take the <strong>Tsuen Wan Line</strong> (red line) westbound.'},
+      {t:'Ride through TST and Jordan — alight at <strong>Mong Kok Station</strong> (8 stops from Admiralty).'},
+      {t:'Exit choices: <strong>E2</strong> → Ladies\' Market (Tung Choi St). <strong>B3</strong> → Flower Market and Bird Garden. <strong>D3</strong> → Fa Yuen St (Sneaker Street). <strong>C3</strong> → Sai Yeung Choi St electronics.'},
+    ],
+    tips:'Mong Kok is best visited from late afternoon into evening — Ladies\' Market is liveliest after 4pm. Temple Street Night Market (Jordan station) is a separate stop two stations back toward Central.',
+    mapUrl:'https://maps.google.com/maps?q=Mong+Kok+MTR+Station+Hong+Kong&z=17',
+  },
+  {
+    id:'big-buddha',
+    icon:'🪨',
+    name:'Ngong Ping 360 → Big Buddha',
+    summary:'MTR + Cable Car from Tung Chung — allow half a day',
+    time:'45 mins MTR + 25 mins cable car',
+    cost:'HK$28 MTR + HK$235 cable car return',
+    steps:[
+      {t:'From Admiralty MTR, take the <strong>Tung Chung Line</strong> (orange line) from Hong Kong Station. Ride to <strong>Tung Chung Station</strong> — about 28 mins. Fare approx HK$28.'},
+      {t:'Exit Tung Chung Station and follow signs to <strong>Ngong Ping 360 Cable Car Terminal</strong> (5-min walk). <strong>Book tickets online in advance</strong> at np360.com.hk to avoid queues — especially on weekends.'},
+      {t:'Board the cable car for a <strong>25-min ride</strong> over Lantau mountains to Ngong Ping village. Crystal cabin (glass floor) is worth the upgrade — HK$295 return. Standard: HK$235.'},
+      {t:'At Ngong Ping village, walk 5 mins to <strong>Po Lin Monastery</strong> and the <strong>Tian Tan Big Buddha</strong>. Climb 268 steps to the base of the Buddha for panoramic Lantau views. Free to enter.'},
+      {t:'Return the same way, or take <strong>Bus 23</strong> from Ngong Ping back to Tung Chung (HK$6, 30 mins, more scenic via twisty mountain road).'},
+    ],
+    tips:'Allow a full half-day minimum (3–4 hours on site). Go early — the cable car queues build fast and mountaintop mist rolls in by midday. The Po Lin Monastery vegetarian lunch is worth trying (HK$100-150). Weekdays are significantly quieter.',
+    mapUrl:'https://maps.google.com/maps?q=Ngong+Ping+360+Cable+Car+Tung+Chung+Hong+Kong&z=17',
+  },
+  {
+    id:'tram-central-wanchai',
+    icon:'🚃',
+    name:'Tram: Central → Wan Chai → Causeway Bay',
+    summary:'HK$3 flat fare — the classic slow ride along the north shore',
+    time:'20–30 mins (slow but scenic)',
+    cost:'HK$3 flat fare (Octopus)',
+    steps:[
+      {t:'Board any eastbound tram on <strong>Des Voeux Road Central</strong> — stops every 2–3 minutes. Pay HK$3 with Octopus card <strong>on exit</strong> (swipe the reader as you get off at the rear door).'},
+      {t:'<strong>Sit upstairs</strong> for the best street-level views of old shophouses, neon signs and daily HK life along the route.'},
+      {t:'Alight at <strong>Wan Chai</strong> for the Blue House (Stone Nullah Lane), wet market, and Johnston Road food streets. Look for the tram stop near Hennessy Road.'},
+      {t:'Continue east to <strong>Causeway Bay</strong> — alight near Times Square for shopping, or continue to <strong>Victoria Park</strong> stop.'},
+      {t:'For <strong>Happy Valley races</strong>: take the Happy Valley branch tram from Causeway Bay — runs on Wed race evenings, short scenic loop into the valley.'},
+    ],
+    tips:'The tram is slower than the MTR but far more atmospheric. Don\'t take it if you\'re in a hurry. Evening is best for neon-lit street views. Any tram going east from Central will serve this route — destination boards show Happy Valley, North Point, Shau Kei Wan etc.',
+    mapUrl:'https://maps.google.com/maps?q=Des+Voeux+Road+Central+Tram+Stop+Hong+Kong&z=17',
+  },
+  {
+    id:'mtr-admiralty-shamshuipo',
+    icon:'🚇',
+    name:'MTR: Admiralty → Sham Shui Po',
+    summary:'Tsuen Wan Line to the fabric and flea market district',
+    time:'22–25 mins',
+    cost:'HK$13.50 (Octopus)',
+    steps:[
+      {t:'From <strong>Admiralty MTR</strong>, take the <strong>Tsuen Wan Line</strong> (red line) westbound toward Tsuen Wan.'},
+      {t:'Ride through TST, Jordan, Yau Ma Tei, Mong Kok, Prince Edward — alight at <strong>Sham Shui Po Station</strong> (10 stops).'},
+      {t:'Exit choices: <strong>C2</strong> → Apliu Street flea market (electronics, curios, junk). <strong>D2</strong> → Ki Lung/Yu Chau St fabric market and Cheung Sha Wan Rd fashion. <strong>A</strong> → Golden Computer Arcade. <strong>B</strong> → Pei Ho Street market.'},
+    ],
+    tips:'Do Sham Shui Po as a morning visit when the fabric and wholesale markets are most active. Apliu Street flea market runs all day but is best browsed without the afternoon crowds. Combine with Mong Kok (one stop back) for a full Kowloon market day.',
+    mapUrl:'https://maps.google.com/maps?q=Sham+Shui+Po+MTR+Station+Hong+Kong&z=17',
+  },
+];
+
+// Zone-to-zone route logic
+const ZZ_ROUTES = {
+  'admiralty-tst':      {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> Admiralty → Tsim Sha Tsui — 10 mins, HK$10.10. OR <span class="zz-route-badge ferry">Star Ferry</span> walk to Central Pier 7, 8-min crossing — HK$4.50. Star Ferry is slower but far more scenic.'},
+  'tst-admiralty':      {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> TST → Admiralty — 10 mins, HK$10.10. OR <span class="zz-route-badge ferry">Star Ferry</span> TST Pier to Central Pier 7, 8 mins — HK$4.50. Walk from Central Pier to Admiralty ~15 mins.'},
+  'admiralty-central':  {desc:'<span class="zz-route-badge">MTR Island Line</span> 1 stop west, 3 mins, HK$4.40. OR a pleasant 15-min walk along Queensway and Des Voeux Road.'},
+  'central-admiralty':  {desc:'<span class="zz-route-badge">MTR Island Line</span> 1 stop east, 3 mins, HK$4.40. OR walk 15 mins east along Des Voeux Road → Queensway.'},
+  'admiralty-wanchai':  {desc:'<span class="zz-route-badge">MTR Island Line</span> 1 stop east, 3 mins, HK$5.20. OR <span class="zz-route-badge tram">Tram</span> eastbound from Admiralty, 10–15 mins, HK$3. Tram is more atmospheric.'},
+  'wanchai-admiralty':  {desc:'<span class="zz-route-badge">MTR Island Line</span> 1 stop west, 3 mins, HK$5.20. OR <span class="zz-route-badge tram">Tram</span> westbound, 10–15 mins, HK$3.'},
+  'admiralty-peak':     {desc:'<span class="zz-route-badge walk">Walk</span> 5 mins to Garden Road, then <span class="zz-route-badge">Peak Tram</span> 7 mins to the top — HK$62 return. Alternatively walk the steep 45-min Lugard Road approach (free).'},
+  'peak-admiralty':     {desc:'<span class="zz-route-badge">Peak Tram</span> back to Garden Road, then 5-min walk to Conrad/Pacific Place. OR <span class="zz-route-badge bus">Bus 15</span> from The Peak to Exchange Square Central, then MTR/walk — HK$10.60.'},
+  'admiralty-mongkok':  {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> Admiralty → Mong Kok — 17 mins, HK$12.40. Direct on the red line, no changes needed.'},
+  'mongkok-admiralty':  {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> Mong Kok → Admiralty — 17 mins, HK$12.40. Direct, no changes.'},
+  'admiralty-shamshuipo':{desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> Admiralty → Sham Shui Po — 22 mins, HK$13.50.'},
+  'shamshuipo-admiralty':{desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> Sham Shui Po → Admiralty — 22 mins, HK$13.50.'},
+  'admiralty-stanley':  {desc:'Walk or MTR to <strong>Hong Kong/Central Station</strong> (Exit D) → <span class="zz-route-badge bus">Bus 6X</span> from Exchange Square Bus Terminus to Stanley — 50 mins, HK$10.60. Bus 6 and 260 also serve this route.'},
+  'stanley-admiralty':  {desc:'<span class="zz-route-badge bus">Bus 6X/6/260</span> from Stanley Bus Terminus to Exchange Square Central — 50 mins, HK$10.60. Then walk or MTR 1 stop east to Admiralty.'},
+  'admiralty-aberdeen': {desc:'<span class="zz-route-badge bus">Bus 70</span> from Exchange Square Central to Aberdeen — 35 mins, HK$8.60. Alternatively MTR to Admiralty then Bus 7 (30 mins).'},
+  'aberdeen-admiralty': {desc:'<span class="zz-route-badge bus">Bus 70</span> Aberdeen to Exchange Square Central — 35 mins. Then walk/MTR to Admiralty.'},
+  'central-tst':        {desc:'<span class="zz-route-badge ferry">Star Ferry</span> Central Pier 7 to TST — 8 mins, HK$4.50. The classic and most scenic option. OR <span class="zz-route-badge">MTR</span> from Hong Kong Station, change to Tsuen Wan Line at Admiralty, to TST — 12 mins.'},
+  'tst-central':        {desc:'<span class="zz-route-badge ferry">Star Ferry</span> TST Pier to Central Pier 7 — 8 mins, HK$4.50. OR <span class="zz-route-badge">MTR</span> TST → Admiralty/Central — 12 mins.'},
+  'tst-mongkok':        {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> TST → Mong Kok — 8 mins, HK$8.80. Direct, northbound on the red line.'},
+  'mongkok-tst':        {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> Mong Kok → TST — 8 mins, HK$8.80.'},
+  'tst-shamshuipo':     {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> TST → Sham Shui Po — 14 mins, HK$10.10.'},
+  'wanchai-tst':        {desc:'<span class="zz-route-badge ferry">Star Ferry</span> from Wan Chai Pier to TST — 10 mins, HK$4.50. OR <span class="zz-route-badge">MTR</span> westbound to Admiralty, change to Tsuen Wan Line — 12 mins total.'},
+  'tst-wanchai':        {desc:'<span class="zz-route-badge">MTR</span> TST → Admiralty, change to Island Line east to Wan Chai — 12 mins. OR <span class="zz-route-badge ferry">Star Ferry</span> TST Pier to Wan Chai Pier — 10 mins.'},
+  'central-stanley':    {desc:'<span class="zz-route-badge bus">Bus 6X</span> from Exchange Square Bus Terminus to Stanley — 50 mins, HK$10.60. Board at the underground terminus below Exchange Square (MTR Exit D).'},
+  'stanley-central':    {desc:'<span class="zz-route-badge bus">Bus 6X/6/260</span> from Stanley Bus Terminus back to Exchange Square Central — 50 mins, HK$10.60.'},
+  'wanchai-stanley':    {desc:'<span class="zz-route-badge bus">Minibus 40/40X</span> from Jardine\'s Bazaar, Causeway Bay to Stanley via Repulse Bay — 40 mins. Faster than Bus 6 from this side of the island.'},
+  'admiralty-peak_upper':{desc:'Walk to Garden Rd → <span class="zz-route-badge">Peak Tram</span> to Peak Tower — 7 mins, HK$62 return. Then walk or take Cable Car (separate charge) for Ngong Ping/Big Buddha — need to go to Tung Chung first via MTR.'},
+  'central-peak_upper': {desc:'For Ngong Ping/Big Buddha: <span class="zz-route-badge">MTR Tung Chung Line</span> from Hong Kong Station to Tung Chung — 28 mins, HK$28. Then <span class="zz-route-badge">Cable Car</span> Ngong Ping 360 to Ngong Ping village — 25 mins, HK$235 return. Book cable car online in advance.'},
+};
+
+function zzRoute(){
+  const from = document.getElementById('zz-from').value;
+  const to   = document.getElementById('zz-to').value;
+  const el   = document.getElementById('zz-result');
+  if(!from || !to){ el.innerHTML='Select a start and end point above.'; return; }
+  if(from === to){ el.innerHTML='You\'re already there!'; return; }
+  const key = from+'-'+to;
+  const rev = to+'-'+from;
+  const route = ZZ_ROUTES[key] || ZZ_ROUTES[rev];
+  if(route){
+    el.innerHTML = route.desc;
+  } else {
+    // Fallback: suggest MTR as default
+    el.innerHTML = '<span class="zz-route-badge">MTR</span> Check the MTR Journey Planner at mtr.com.hk/en/customer/jp/index.html for this specific route, or tap the Getting Around tab for detailed step-by-step journeys.';
+  }
+}
+
+let journeyCardsRendered = false;
+
+function renderJourneyCards(){
+  if(journeyCardsRendered) return;
+  journeyCardsRendered = true;
+  const root = document.getElementById('journey-root');
+  // Find the section title divs and insert cards after the last one
+  let html = '';
+  JOURNEYS.forEach((j,idx) => {
+    html += `<div class="journey-card">
+      <div class="journey-card-header" onclick="toggleJourneyCard('jbody-${idx}','jchev-${idx}')">
+        <div class="journey-icon">${j.icon}</div>
+        <div class="journey-title">
+          <div class="journey-name">${j.name}</div>
+          <div class="journey-summary">${j.summary}</div>
+        </div>
+        <div class="journey-meta">
+          <span class="journey-time">${j.time}</span>
+          <span class="journey-cost">${j.cost}</span>
+          <span class="journey-chevron" id="jchev-${idx}">&#9660;</span>
+        </div>
+      </div>
+      <div class="journey-body" id="jbody-${idx}">
+        <ol class="journey-steps">
+          ${j.steps.map((s,i) => `<li class="journey-step"><span class="step-num">${i+1}</span><span class="step-text">${s.t}</span></li>`).join('')}
+        </ol>
+        <div class="journey-tips">&#128161; ${j.tips}</div>
+        <div class="journey-actions">
+          <a class="journey-map-btn" href="${j.mapUrl}" target="_blank">&#128205; Open start in Maps</a>
+          <button class="journey-add-btn" onclick="addJourneyToDay(${idx})">+ Add to Day ${currentDay}</button>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Append after the section title
+  const sectionTitle = root.querySelector('.journey-section-title:last-of-type');
+  if(sectionTitle){
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    while(div.firstChild) root.appendChild(div.firstChild);
+  }
+}
+
+function toggleJourneyCard(bodyId, chevId){
+  const body = document.getElementById(bodyId);
+  const chev = document.getElementById(chevId);
+  if(!body) return;
+  const open = body.classList.toggle('open');
+  if(chev) chev.classList.toggle('open', open);
+}
+
+function addJourneyToDay(idx){
+  const j = JOURNEYS[idx];
+  const day = tripData[currentDay];
+  if(!day.packages || day.packages.length === 0){
+    day.packages = [freshPkg('Package 1')];
+  }
+  const pkg = day.packages[day.packages.length - 1];
+  pkg.items.push({
+    id: uid(),
+    name: j.name,
+    type: 'transit',
+    cost: 0,
+    zone: 1,
+    hours: j.time,
+    tip: j.tips,
+    map: j.mapUrl,
+    notes: ''
+  });
+  save();
+  showToast('Added "' + j.name + '" to Day ' + currentDay);
+}
 
 initData();
 renderTabs();

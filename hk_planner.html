@@ -25,7 +25,7 @@
   --slot-morning:#FEF9E7;--slot-afternoon:#E6F1FB;--slot-evening:#F1EFE8;--slot-anchor:#FDECEA;
 }
 @media(prefers-color-scheme:dark){
-  :root{
+  :root:not(.light-mode){
     --text:#f0f0f0;--text-muted:#aaa;--text-hint:#777;
     --border:#333;--border-strong:#444;
     --bg:#1a1a1a;--bg-secondary:#222;--bg-tertiary:#2a2a2a;
@@ -33,6 +33,22 @@
     --gold-light:#2a2008;--red-light:#2e0a0a;--amber-light:#2a1a06;
     --slot-morning:#2a2008;--slot-afternoon:#0a1e35;--slot-evening:#0a2a1a;--slot-anchor:#2e0a0a;
   }
+}
+:root.dark-mode{
+  --text:#f0f0f0;--text-muted:#aaa;--text-hint:#777;
+  --border:#333;--border-strong:#444;
+  --bg:#1a1a1a;--bg-secondary:#222;--bg-tertiary:#2a2a2a;
+  --gray-light:#2a2a2a;--teal-light:#0a2e26;--blue-light:#0a1e35;
+  --gold-light:#2a2008;--red-light:#2e0a0a;--amber-light:#2a1a06;
+  --slot-morning:#2a2008;--slot-afternoon:#0a1e35;--slot-evening:#0a2a1a;--slot-anchor:#2e0a0a;
+}
+:root.light-mode{
+  --text:#1a1a18;--text-muted:#555;--text-hint:#999;
+  --border:#e0dfd8;--border-strong:#bbb;
+  --bg:#fff;--bg-secondary:#f8f7f4;--bg-tertiary:#f0efe8;
+  --gray-light:#f0efe8;--teal-light:#e1f5ee;--blue-light:#e6f1fb;
+  --gold-light:#fef9e7;--red-light:#fdecea;--amber-light:#faeeda;
+  --slot-morning:#FEF9E7;--slot-afternoon:#E6F1FB;--slot-evening:#F1EFE8;--slot-anchor:#FDECEA;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);background:var(--bg);min-height:100vh;font-size:15px;line-height:1.5}
 
@@ -268,8 +284,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .ref-item-done{background:none;border:1px solid #A5D6A7;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;padding:2px 4px;line-height:1;opacity:0.5;flex-shrink:0;transition:all 0.15s;color:#2E7D32}
 .ref-item-done:hover{opacity:1;background:#E8F5E9}
 .ref-item-done.active{opacity:1;background:#E8F5E9;border-color:#2E7D32}
-.ref-item-notes{display:inline-flex;align-items:center;justify-content:center;font-size:13px;text-decoration:none;opacity:0.5;transition:opacity 0.15s;line-height:1;padding:1px}
-.ref-item-notes:hover{opacity:1}
+.ref-item-notes{display:inline-flex;align-items:center;justify-content:center;font-size:11px;text-decoration:none;background:#7B2D8B;color:#fff;border-radius:5px;padding:2px 5px;font-weight:600;letter-spacing:0.2px;transition:background 0.15s;white-space:nowrap}
+.ref-item-notes:hover{background:#5a1f67}
 .ref-item.is-done .ref-item-name{text-decoration:line-through;color:var(--text-hint)}
 .ref-item.is-done{opacity:0.6}
 .badge-mustdo{background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:700}
@@ -448,13 +464,14 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
     <div class="subtitle">14-day planner</div>
   </div>
   <div class="header-actions">
+    <button class="btn-mode" id="btn-theme" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
     <button class="btn-mode" onclick="exportPlans()" title="Save your day plans as a backup file">💾 Save</button>
     <button class="btn-mode" onclick="document.getElementById(&#39;import-input&#39;).click()" title="Restore plans from a backup file">📂 Load</button>
     <button class="btn-mode" onclick="showPdfDialog()" title="Print or save a day plan as PDF">🖨 Print</button>
     <button class="btn-mode active" id="btn-day" onclick="setView(&#39;day&#39;)">Days</button>
     <button class="btn-mode" id="btn-overview" onclick="setView(&#39;overview&#39;)">Overview</button>
     <button class="btn-mode" id="btn-journey" onclick="setView(&#39;journey&#39;)">&#128652; Getting Around</button>
-    <button class="btn-mode" id="btn-mustdo" onclick="setView('mustdo')" title="Must Do remaining list">⭐ Must Do</button>
+    <button class="btn-mode" id="btn-mustdo" onclick="setView('mustdo')" title="Must Do remaining list">⭐</button>
     <button class="btn-mode" id="btn-today" onclick="enterTodayMode()" title="Clean view for use on the day">📍 Today</button>
   </div>
 </div>
@@ -540,7 +557,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
         <div style="font-size:9px;color:var(--text-hint);text-transform:uppercase;letter-spacing:0.5px;margin:5px 0 4px">Filter by status</div>
         <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:4px">
           <button class="ref-filter-btn" id="filter-mustdo-btn" onclick="toggleStatusFilter('mustdo')" style="background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700">⭐ Must Do</button>
-          <button class="ref-filter-btn" id="filter-done-btn" onclick="toggleStatusFilter('done')" style="background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700">✓ Done</button>
+          <button class="ref-filter-btn" id="filter-done-btn" onclick="toggleStatusFilter('done')" style="background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700">✓</button>
         </div>
         <div style="margin-top:5px;text-align:right">
           <button onclick="clearFilters()" style="font-size:9px;color:var(--text-hint);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0">Clear all filters</button>
@@ -1553,7 +1570,7 @@ function renderRefPanel(){
               ${item.map?`<a class="ref-info-map" href="${zoomedMapUrl(item.map)}" target="_blank">&#128205; Open in Maps</a>`:''}
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
+          <div style="display:flex;flex-direction:row;align-items:center;gap:3px;flex-shrink:0;flex-wrap:nowrap">
             <button class="ref-item-star${starredItems[item.name]?' active':''}" onclick="toggleStar('${esc(item.name)}')" title="Mark as Must Do">⭐ Must Do</button>
             <button class="ref-item-done${doneItems[item.name]?' active':''}" onclick="toggleDone('${esc(item.name)}')" title="Mark as Done">✓ Done</button>
             <button class="ref-item-add" onclick="addFromRef(${safeItem})">Add</button>
@@ -1589,6 +1606,36 @@ function addFromRef(item){
   renderDay();
   showToast(`Added "${item.name.substring(0,28)}" to ${pkg.name}`);
 }
+
+function toggleTheme(){
+  const root=document.documentElement;
+  const isDark=root.classList.contains('dark-mode');
+  const isLight=root.classList.contains('light-mode');
+  const systemDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const btn=document.getElementById('btn-theme');
+  if(!isDark&&!isLight){
+    // Currently using system default — force opposite
+    if(systemDark){ root.classList.add('light-mode'); btn.textContent='🌙'; }
+    else { root.classList.add('dark-mode'); btn.textContent='☀️'; }
+  } else if(isDark){
+    root.classList.remove('dark-mode');
+    root.classList.add('light-mode');
+    btn.textContent='🌙';
+  } else {
+    root.classList.remove('light-mode');
+    root.classList.add('dark-mode');
+    btn.textContent='☀️';
+  }
+  localStorage.setItem('hk_theme', root.classList.contains('dark-mode')?'dark':root.classList.contains('light-mode')?'light':'system');
+}
+
+// Apply saved theme on load
+(function(){
+  const t=localStorage.getItem('hk_theme');
+  const btn=document.getElementById('btn-theme');
+  if(t==='dark'){ document.documentElement.classList.add('dark-mode'); if(btn) btn.textContent='☀️'; }
+  else if(t==='light'){ document.documentElement.classList.add('light-mode'); if(btn) btn.textContent='🌙'; }
+})();
 
 function toggleStar(name){
   if(starredItems[name]) delete starredItems[name];

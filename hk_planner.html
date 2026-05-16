@@ -249,8 +249,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 /* ── REFERENCE PANEL (desktop) ── */
 .split-layout{display:flex;gap:0}.pane-divider{width:8px;cursor:col-resize;flex-shrink:0;background:var(--border);transition:background 0.15s ease;position:relative;z-index:10}.pane-divider:hover,.pane-divider.dragging{background:var(--red)}
 @media(max-width:960px){.pane-divider{display:none}}
-.split-layout.ref-wide .planner-pane{flex:0 0 33.33%;min-width:0;max-width:33.33%}
-.split-layout.ref-wide .ref-pane{width:66.66%;flex:0 0 66.66%}
+.split-layout.ref-wide .planner-pane{flex:0 0 33.33% !important;min-width:0;max-width:33.33%}
+.split-layout.ref-wide .ref-pane{width:66.66% !important;flex:0 0 66.66% !important;max-width:66.66%}
 .planner-pane{flex:1;overflow-y:auto;min-width:0}
 .ref-pane{width:300px;max-width:60vw;background:var(--bg-secondary);overflow-y:auto;flex-shrink:0}
 .ref-pane-header{padding:10px 12px;font-size:12px;font-weight:600;background:var(--bg-tertiary);border-bottom:1px solid var(--border);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;position:sticky;top:0;z-index:5}

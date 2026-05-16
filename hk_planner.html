@@ -1639,27 +1639,29 @@ function toggleTheme(){
 })();
 
 function toggleStar(el,name){
-  if(starredItems[name]) delete starredItems[name];
+  var isStarred=!!starredItems[name];
+  if(isStarred) delete starredItems[name];
   else starredItems[name]=1;
-  localStorage.setItem('hk_starred', JSON.stringify(starredItems));
-  el.classList.toggle('active',!!starredItems[name]);
+  localStorage.setItem('hk_starred',JSON.stringify(starredItems));
+  el.classList.toggle('active',!isStarred);
   var row=el.closest('.ref-item');
-  if(row) row.dataset.mustdo=starredItems[name]?'1':'';
+  if(row) row.dataset.mustdo=!isStarred?'1':'';
   if(activeFilters.mustdo||activeFilters.done) applyFilters();
   if(currentView==='mustdo') renderMustDo();
 }
 
 function toggleDone(el,name){
-  if(doneItems[name]) delete doneItems[name];
+  var isDone=!!doneItems[name];
+  if(isDone) delete doneItems[name];
   else doneItems[name]=1;
-  localStorage.setItem('hk_done', JSON.stringify(doneItems));
-  el.classList.toggle('active',!!doneItems[name]);
+  localStorage.setItem('hk_done',JSON.stringify(doneItems));
+  el.classList.toggle('active',!isDone);
   var row=el.closest('.ref-item');
   if(row){
-    row.classList.toggle('is-done',!!doneItems[name]);
-    row.dataset.done=doneItems[name]?'1':'';
+    row.classList.toggle('is-done',!isDone);
+    row.dataset.done=!isDone?'1':'';
     var nameEl=row.querySelector('.ref-item-name');
-    if(nameEl) nameEl.style.textDecoration=doneItems[name]?'line-through':'';
+    if(nameEl) nameEl.style.textDecoration=!isDone?'line-through':'';
   }
   if(activeFilters.mustdo||activeFilters.done) applyFilters();
   if(currentView==='mustdo') renderMustDo();

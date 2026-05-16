@@ -1642,28 +1642,34 @@ function toggleStar(name){
   if(starredItems[name]) delete starredItems[name];
   else starredItems[name]=1;
   localStorage.setItem('hk_starred', JSON.stringify(starredItems));
-  // Update button state directly — no full re-render needed
-  const row=document.querySelector('[data-itemname="'+CSS.escape(name)+'"]');
-  if(row) row.querySelector('.ref-item-star')?.classList.toggle('active',!!starredItems[name]);
-  applyFilters();
-  if(currentView==='mustdo') renderMustDo();
-  renderDay();
+  // Find row by looping — avoids CSS.escape compatibility issues
+  var rows=document.querySelectorAll('.ref-item');
+  for(var i=0;i<rows.length;i++){
+    if(rows[i].getAttribute('data-itemname')===name){
+      var btn=rows[i].querySelector('.ref-item-star');
+      if(btn) btn.classList.toggle('active',!!starredItems[name]);
+      break;
+    }
+  }
+  setTimeout(function(){applyFilters();if(currentView==='mustdo')renderMustDo();renderDay();},50);
 }
 
 function toggleDone(name){
   if(doneItems[name]) delete doneItems[name];
   else doneItems[name]=1;
   localStorage.setItem('hk_done', JSON.stringify(doneItems));
-  const row=document.querySelector('[data-itemname="'+CSS.escape(name)+'"]');
-  if(row){
-    row.querySelector('.ref-item-done')?.classList.toggle('active',!!doneItems[name]);
-    row.classList.toggle('is-done',!!doneItems[name]);
-    const nameEl=row.querySelector('.ref-item-name');
-    if(nameEl) nameEl.style.textDecoration=doneItems[name]?'line-through':'';
+  var rows=document.querySelectorAll('.ref-item');
+  for(var i=0;i<rows.length;i++){
+    if(rows[i].getAttribute('data-itemname')===name){
+      var btn=rows[i].querySelector('.ref-item-done');
+      if(btn) btn.classList.toggle('active',!!doneItems[name]);
+      rows[i].classList.toggle('is-done',!!doneItems[name]);
+      var nameEl=rows[i].querySelector('.ref-item-name');
+      if(nameEl) nameEl.style.textDecoration=doneItems[name]?'line-through':'';
+      break;
+    }
   }
-  applyFilters();
-  if(currentView==='mustdo') renderMustDo();
-  renderDay();
+  setTimeout(function(){applyFilters();if(currentView==='mustdo')renderMustDo();renderDay();},50);
 }
 
 function toggleStatusFilter(type){

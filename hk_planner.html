@@ -1572,8 +1572,8 @@ function renderRefPanel(){
             </div>
           </div>
           <div style="display:flex;flex-direction:row;align-items:center;gap:3px;flex-shrink:0;flex-wrap:nowrap">
-            <button class="ref-item-star${starredItems[item.name]?' active':''}" onclick="toggleStar('${esc(item.name)}')" title="Mark as Must Do">⭐ Must Do</button>
-            <button class="ref-item-done${doneItems[item.name]?' active':''}" onclick="toggleDone('${esc(item.name)}')" title="Mark as Done">✓ Done</button>
+            <button class="ref-item-star${starredItems[item.name]?' active':''}" onclick="toggleStar(this,'${esc(item.name)}')" title="Mark as Must Do">⭐ Must Do</button>
+            <button class="ref-item-done${doneItems[item.name]?' active':''}" onclick="toggleDone(this,'${esc(item.name)}')" title="Mark as Done">✓</button>
             <button class="ref-item-add" onclick="addFromRef(${safeItem})">Add</button>
             <a class="ref-item-notes" href="${oneNoteUrl(cat.cat)}" target="_blank" title="Open OneNote">📓</a>
           </div>
@@ -1638,37 +1638,25 @@ function toggleTheme(){
   else if(t==='light'){ document.documentElement.classList.add('light-mode'); if(btn) btn.textContent='🌙'; }
 })();
 
-function toggleStar(name){
+function toggleStar(el,name){
   if(starredItems[name]) delete starredItems[name];
   else starredItems[name]=1;
   localStorage.setItem('hk_starred', JSON.stringify(starredItems));
-  // Find row by looping — avoids CSS.escape compatibility issues
-  var rows=document.querySelectorAll('.ref-item');
-  for(var i=0;i<rows.length;i++){
-    if(rows[i].getAttribute('data-itemname')===name){
-      var btn=rows[i].querySelector('.ref-item-star');
-      if(btn) btn.classList.toggle('active',!!starredItems[name]);
-      break;
-    }
-  }
+  el.classList.toggle('active',!!starredItems[name]);
   applyFilters();
   if(currentView==='mustdo') renderMustDo();
 }
 
-function toggleDone(name){
+function toggleDone(el,name){
   if(doneItems[name]) delete doneItems[name];
   else doneItems[name]=1;
   localStorage.setItem('hk_done', JSON.stringify(doneItems));
-  var rows=document.querySelectorAll('.ref-item');
-  for(var i=0;i<rows.length;i++){
-    if(rows[i].getAttribute('data-itemname')===name){
-      var btn=rows[i].querySelector('.ref-item-done');
-      if(btn) btn.classList.toggle('active',!!doneItems[name]);
-      rows[i].classList.toggle('is-done',!!doneItems[name]);
-      var nameEl=rows[i].querySelector('.ref-item-name');
-      if(nameEl) nameEl.style.textDecoration=doneItems[name]?'line-through':'';
-      break;
-    }
+  el.classList.toggle('active',!!doneItems[name]);
+  var row=el.closest('.ref-item');
+  if(row){
+    row.classList.toggle('is-done',!!doneItems[name]);
+    var nameEl=row.querySelector('.ref-item-name');
+    if(nameEl) nameEl.style.textDecoration=doneItems[name]?'line-through':'';
   }
   applyFilters();
   if(currentView==='mustdo') renderMustDo();
@@ -1994,14 +1982,14 @@ function renderMustDo(){
         <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
           ${item.map?`<a href="${item.map}" target="_blank" style="font-size:10px;background:var(--blue);color:#fff;padding:3px 8px;border-radius:10px;text-decoration:none">📍 Map</a>`:''}
           <a href="${oneNoteUrl(group.cat)}" target="_blank" style="font-size:10px;background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;padding:3px 8px;border-radius:10px;text-decoration:none;text-align:center">📓 Notes</a>
-          <button onclick="toggleStar('${esc(item.name)}');renderMustDo()" style="font-size:10px;background:none;border:none;color:var(--text-hint);cursor:pointer;text-decoration:underline;padding:0">Remove</button>
+          <button onclick="toggleStar(this,'${esc(item.name)}')" style="font-size:10px;background:none;border:none;color:var(--text-hint);cursor:pointer;text-decoration:underline;padding:0">Remove</button>
         </div>
       </div>`;
     }
 
     for(const item of completed){
       html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);opacity:0.5">
-        <button onclick="toggleDone('${esc(item.name)}');renderMustDo()" style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid #2E7D32;background:#E8F5E9;cursor:pointer;color:#2E7D32;font-size:13px;font-weight:700;line-height:1" title="Mark as not done">✓</button>
+        <button onclick="toggleDone(this,'${esc(item.name)}')" style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid #2E7D32;background:#E8F5E9;cursor:pointer;color:#2E7D32;font-size:13px;font-weight:700;line-height:1" title="Mark as not done">✓</button>
         <div style="flex:1;font-size:12px;font-weight:500;text-decoration:line-through;color:var(--text-muted)">${esc(item.name)}</div>
         <span style="font-size:10px;color:#2E7D32;font-weight:600">Done ✓</span>
       </div>`;

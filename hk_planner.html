@@ -452,6 +452,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
     <button class="btn-mode active" id="btn-day" onclick="setView(&#39;day&#39;)">Days</button>
     <button class="btn-mode" id="btn-overview" onclick="setView(&#39;overview&#39;)">Overview</button>
     <button class="btn-mode" id="btn-journey" onclick="setView(&#39;journey&#39;)">&#128652; Getting Around</button>
+    <button class="btn-mode" id="btn-mustdo" onclick="setView('mustdo')" title="Must Do remaining list">⭐ Must Do</button>
     <button class="btn-mode" id="btn-today" onclick="enterTodayMode()" title="Clean view for use on the day">📍 Today</button>
   </div>
 </div>
@@ -587,6 +588,8 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
   <div class="journey-section-title">Key Journeys — Step by Step</div>
 
 </div>
+
+<div id="mustdo-root" style="display:none;padding:16px;max-width:800px;margin:0 auto"></div>
 
 <div id="overview-root" style="display:none">
   <div class="overview" id="overview-content"></div>
@@ -1458,12 +1461,15 @@ function setView(v){
   document.getElementById('day-view-root').style.display=v==='day'?'':'none';
   document.getElementById('overview-root').style.display=v==='overview'?'':'none';
   document.getElementById('journey-root').style.display=v==='journey'?'':'none';
+  document.getElementById('mustdo-root').style.display=v==='mustdo'?'':'none';
   document.getElementById('btn-day').classList.toggle('active',v==='day');
   document.getElementById('btn-overview').classList.toggle('active',v==='overview');
   document.getElementById('btn-journey').classList.toggle('active',v==='journey');
+  document.getElementById('btn-mustdo').classList.toggle('active',v==='mustdo');
   document.getElementById('btn-today').classList.toggle('active',false);
   if(v==='overview') renderOverview();
   if(v==='journey') renderJourneyCards();
+  if(v==='mustdo') renderMustDo();
 }
 
 function renderOverview(){
@@ -1588,6 +1594,7 @@ function toggleDone(name){
   localStorage.setItem('hk_done', JSON.stringify(doneItems));
   renderRefPanel();
   applyFilters();
+  if(currentView==='mustdo') renderMustDo();
 }
 
 function toggleStatusFilter(type){
@@ -1856,6 +1863,78 @@ function buildPdfContent(days){
 }
 
 // ── TODAY MODE ────────────────────────────────────────────────────────────────
+function renderMustDo(){
+  const el=document.getElementById('mustdo-root');
+  if(!el) return;
+
+  // Collect all starred-but-not-done items grouped by category
+  const groups=[];
+  let total=0, done=0;
+  for(const cat of GUIDE_ITEMS){
+    const remaining=cat.items.filter(i=>starredItems[i.name]&&!doneItems[i.name]);
+    const completed=cat.items.filter(i=>starredItems[i.name]&&doneItems[i.name]);
+    if(remaining.length||completed.length){
+      groups.push({cat:cat.cat, remaining, completed});
+      total+=remaining.length+completed.length;
+      done+=completed.length;
+    }
+  }
+
+  if(total===0){
+    el.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-hint)">
+      <div style="font-size:40px;margin-bottom:12px">⭐</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:8px">No Must Do items yet</div>
+      <div style="font-size:13px">Tap ⭐ Must Do on any item in the Quick-add panel to add it here.</div>
+    </div>`;
+    return;
+  }
+
+  const pct=Math.round((done/total)*100);
+  let html=`<div style="margin-bottom:20px">
+    <h2 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px">⭐ Must Do List</h2>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:#2E7D32;border-radius:4px;transition:width 0.3s"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);white-space:nowrap">${done} of ${total} done</div>
+    </div>
+  </div>`;
+
+  for(const {cat, remaining, completed} of groups){
+    if(!remaining.length&&!completed.length) continue;
+    html+=`<div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--border)">${esc(cat)}</div>`;
+
+    for(const item of remaining){
+      const zone=item.zone&&ZONES[item.zone]?`<span class="zone-badge zone-${item.zone}" style="font-size:9px">${ZONES[item.zone].short}</span>`:'';
+      html+=`<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <button onclick="toggleDone('${esc(item.name)}')" style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:var(--bg);cursor:pointer;margin-top:1px" title="Mark as done"></button>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;margin-bottom:2px">${esc(item.name)} ${zone}${costBadge(item.cost)}</div>
+          ${item.hours?`<div style="font-size:11px;color:var(--text-hint);margin-bottom:3px">🕐 ${esc(item.hours)}</div>`:''}
+          ${item.tip?`<div style="font-size:11px;color:var(--text-muted);line-height:1.4">${esc(item.tip)}</div>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+          ${item.map?`<a href="${item.map}" target="_blank" style="font-size:10px;background:var(--blue);color:#fff;padding:3px 8px;border-radius:10px;text-decoration:none">📍 Map</a>`:''}
+          <button onclick="toggleStar('${esc(item.name)}');renderMustDo()" style="font-size:10px;background:none;border:none;color:var(--text-hint);cursor:pointer;text-decoration:underline;padding:0">Remove</button>
+        </div>
+      </div>`;
+    }
+
+    for(const item of completed){
+      html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);opacity:0.5">
+        <button onclick="toggleDone('${esc(item.name)}');renderMustDo()" style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid #2E7D32;background:#E8F5E9;cursor:pointer;color:#2E7D32;font-size:13px;font-weight:700;line-height:1" title="Mark as not done">✓</button>
+        <div style="flex:1;font-size:12px;font-weight:500;text-decoration:line-through;color:var(--text-muted)">${esc(item.name)}</div>
+        <span style="font-size:10px;color:#2E7D32;font-weight:600">Done ✓</span>
+      </div>`;
+    }
+
+    html+='</div>';
+  }
+
+  el.innerHTML=html;
+}
+
 function enterTodayMode(){
   document.getElementById('btn-today').classList.add('active');
   renderTodayMode(currentDay);

@@ -277,12 +277,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .ref-item-text{flex:1}
 .ref-item-name{font-size:12px;font-weight:500;color:var(--text)}
 .ref-item-sub{font-size:11px;color:var(--text-hint)}
-.ref-item-add{background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9;padding:2px 7px;border-radius:var(--radius);font-size:10px;font-weight:600;cursor:pointer;flex-shrink:0;transition:all 0.15s}
+.ref-item-add{background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9;padding:2px 7px;border-radius:var(--radius);font-size:10px;font-weight:600;cursor:pointer;flex-shrink:0;transition:all 0.15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .ref-item-add:hover{background:#BBDEFB;border-color:#1565C0}
-.ref-item-star{background:none;border:1px solid #FFE082;border-radius:6px;font-size:12px;cursor:pointer;padding:2px 4px;line-height:1;opacity:0.5;flex-shrink:0;transition:all 0.15s;color:#F57F17}
+.ref-item-star{background:none;border:1px solid #FFE082;border-radius:6px;font-size:12px;cursor:pointer;padding:2px 4px;line-height:1;opacity:0.5;flex-shrink:0;transition:all 0.15s;color:#F57F17;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
 .ref-item-star:hover{opacity:1;background:#FFF8E1}
 .ref-item-star.active{opacity:1;background:#FFF8E1;border-color:#F57F17}
-.ref-item-done{background:none;border:1px solid #A5D6A7;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;padding:2px 4px;line-height:1;opacity:0.5;flex-shrink:0;transition:all 0.15s;color:#2E7D32}
+.ref-item-done{background:none;border:1px solid #A5D6A7;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;padding:2px 4px;line-height:1;opacity:0.5;flex-shrink:0;transition:all 0.15s;color:#2E7D32;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
 .ref-item-done:hover{opacity:1;background:#E8F5E9}
 .ref-item-done.active{opacity:1;background:#E8F5E9;border-color:#2E7D32}
 .ref-item-notes{display:inline-flex;align-items:center;justify-content:center;font-size:10px;text-decoration:none;background:#F3E5F5;color:#6A1B9A;border:1px solid #CE93D8;border-radius:5px;padding:2px 6px;font-weight:600;transition:all 0.15s;white-space:nowrap}
@@ -1651,7 +1651,8 @@ function toggleStar(name){
       break;
     }
   }
-  setTimeout(function(){applyFilters();if(currentView==='mustdo')renderMustDo();renderDay();},50);
+  applyFilters();
+  if(currentView==='mustdo') renderMustDo();
 }
 
 function toggleDone(name){
@@ -1669,7 +1670,8 @@ function toggleDone(name){
       break;
     }
   }
-  setTimeout(function(){applyFilters();if(currentView==='mustdo')renderMustDo();renderDay();},50);
+  applyFilters();
+  if(currentView==='mustdo') renderMustDo();
 }
 
 function toggleStatusFilter(type){

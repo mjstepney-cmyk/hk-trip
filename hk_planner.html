@@ -268,6 +268,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .ref-item-done{background:none;border:1px solid #A5D6A7;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;padding:2px 4px;line-height:1;opacity:0.5;flex-shrink:0;transition:all 0.15s;color:#2E7D32}
 .ref-item-done:hover{opacity:1;background:#E8F5E9}
 .ref-item-done.active{opacity:1;background:#E8F5E9;border-color:#2E7D32}
+.ref-item-notes{display:inline-flex;align-items:center;justify-content:center;font-size:13px;text-decoration:none;opacity:0.5;transition:opacity 0.15s;line-height:1;padding:1px}
+.ref-item-notes:hover{opacity:1}
 .ref-item.is-done .ref-item-name{text-decoration:line-through;color:var(--text-hint)}
 .ref-item.is-done{opacity:0.6}
 .badge-mustdo{background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:700}
@@ -597,6 +599,9 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 
 <script>
 const DAYS = 14;
+const ONENOTE_SHOPPING = 'https://onedrive.live.com/view.aspx?resid=9B37FFCC30CA44D7%21s4bb30a6ba2c8464bacfc2a05b5ac6fec&id=documents&wd=target%28Shopping%20Notes.one%7C49957614-8BAA-486B-B831-4F6C20F29575%2F%29&wdsectionfileid=9B37FFCC30CA44D7!s2e2de1a8f639450caadea1455a6884e6&end';
+const ONENOTE_PLACES   = 'https://onedrive.live.com/view.aspx?resid=9B37FFCC30CA44D7%21s4bb30a6ba2c8464bacfc2a05b5ac6fec&id=documents&wd=target%28Places%20and%20Things%20Notes.one%7C9457C96C-61C0-423C-8100-BB901BB198A8%2F%29&wdsectionfileid=9B37FFCC30CA44D7!sb9e90d079b7440789d54209a874bb67e&end';
+const ONENOTE_SHOPPING_CATS = ['Markets','Shopping — Malls & Outlets','Shopping — Specialist & Streets'];
 const CONRAD_URL='https://maps.google.com/?q=Conrad+Hotel+Pacific+Place+88+Queensway+Admiralty+Hong+Kong';
 const CONRAD_START=()=>({id:uid(),name:'Conrad Hotel — Start',type:'start',cost:0,zone:1,hours:'',tip:'Pacific Place, 88 Queensway, Admiralty. Delete if your day does not start here.',map:CONRAD_URL});
 const CONRAD_FINISH=()=>({id:uid(),name:'Conrad Hotel — Return',type:'finish',cost:0,zone:1,hours:'',tip:'Return to Pacific Place, Admiralty.',map:CONRAD_URL});
@@ -1502,6 +1507,10 @@ function renderOverview(){
 
 function goToDay(d){currentDay=d;setView('day');renderDay();renderTabs();}
 
+function oneNoteUrl(cat){
+  return ONENOTE_SHOPPING_CATS.includes(cat) ? ONENOTE_SHOPPING : ONENOTE_PLACES;
+}
+
 function costBadge(cost){
   if(cost===undefined||cost===null) return '';
   const cls=['cost-free','cost-budget','cost-mid','cost-splurge'][cost]||'cost-budget';
@@ -1548,6 +1557,7 @@ function renderRefPanel(){
             <button class="ref-item-star${starredItems[item.name]?' active':''}" onclick="toggleStar('${esc(item.name)}')" title="Mark as Must Do">⭐ Must Do</button>
             <button class="ref-item-done${doneItems[item.name]?' active':''}" onclick="toggleDone('${esc(item.name)}')" title="Mark as Done">✓ Done</button>
             <button class="ref-item-add" onclick="addFromRef(${safeItem})">Add</button>
+            <a class="ref-item-notes" href="${oneNoteUrl(cat.cat)}" target="_blank" title="Open OneNote">📓</a>
           </div>
         </div>`;
       }
@@ -1916,6 +1926,7 @@ function renderMustDo(){
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
           ${item.map?`<a href="${item.map}" target="_blank" style="font-size:10px;background:var(--blue);color:#fff;padding:3px 8px;border-radius:10px;text-decoration:none">📍 Map</a>`:''}
+          <a href="${oneNoteUrl(group.cat)}" target="_blank" style="font-size:10px;background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;padding:3px 8px;border-radius:10px;text-decoration:none;text-align:center">📓 Notes</a>
           <button onclick="toggleStar('${esc(item.name)}');renderMustDo()" style="font-size:10px;background:none;border:none;color:var(--text-hint);cursor:pointer;text-decoration:underline;padding:0">Remove</button>
         </div>
       </div>`;

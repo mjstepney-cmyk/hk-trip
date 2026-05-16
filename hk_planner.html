@@ -262,6 +262,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .ref-item-name{font-size:12px;font-weight:500;color:var(--text)}
 .ref-item-sub{font-size:11px;color:var(--text-hint)}
 .ref-item-add{background:none;border:1px solid var(--border);color:var(--text-muted);padding:2px 7px;border-radius:var(--radius);font-size:11px;cursor:pointer;flex-shrink:0;margin-top:1px}
+.ref-item-star{background:none;border:none;font-size:14px;cursor:pointer;padding:0 2px;line-height:1;opacity:0.35;flex-shrink:0;transition:opacity 0.15s}
+.ref-item-star:hover,.ref-item-star.active{opacity:1}
+.ref-item-done{background:none;border:none;font-size:13px;cursor:pointer;padding:0 2px;line-height:1;opacity:0.35;flex-shrink:0;transition:opacity 0.15s}
+.ref-item-done:hover,.ref-item-done.active{opacity:1}
+.ref-item.is-done .ref-item-name{text-decoration:line-through;color:var(--text-hint)}
+.ref-item.is-done{opacity:0.6}
+.badge-mustdo{background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:700}
+.badge-done{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:700}
 .ref-item-add:hover{background:var(--red-light);color:var(--red);border-color:var(--red-mid)}
 .ref-search{padding:8px 12px;border-bottom:1px solid var(--border);position:sticky;top:32px;background:var(--bg-secondary);z-index:4}
 .ref-search input{width:100%;border:1px solid var(--border);border-radius:var(--radius);padding:5px 8px;font-size:12px;background:var(--bg);color:var(--text)}
@@ -524,12 +532,17 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
           <button class="ref-filter-btn cost-filter" data-cost="2" onclick="toggleFilter(&#39;cost&#39;,&#39;2&#39;)" style="background:#FFF3E0;color:#E65100;border:1px solid #FFCC80;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700">$$</button>
           <button class="ref-filter-btn cost-filter" data-cost="3" onclick="toggleFilter(&#39;cost&#39;,&#39;3&#39;)" style="background:#FFEBEE;color:#B71C1C;border:1px solid #EF9A9A;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700">$$$</button>
         </div>
+        <div style="font-size:9px;color:var(--text-hint);text-transform:uppercase;letter-spacing:0.5px;margin:5px 0 4px">Filter by status</div>
+        <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:4px">
+          <button class="ref-filter-btn" id="filter-mustdo-btn" onclick="toggleStatusFilter('mustdo')" style="background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700">⭐ Must Do</button>
+          <button class="ref-filter-btn" id="filter-done-btn" onclick="toggleStatusFilter('done')" style="background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700">✓ Done</button>
+        </div>
         <div style="margin-top:5px;text-align:right">
           <button onclick="clearFilters()" style="font-size:9px;color:var(--text-hint);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0">Clear all filters</button>
         </div>
       </div>
       <div class="ref-search"><input type="text" id="ref-search" placeholder="Search places, bars, food..." oninput="applyFilters()"></div>
-      <div id="ref-list"></div>/div>
+      <div id="ref-list"></div>
     </div>
   </div>
 </div>
@@ -663,7 +676,7 @@ const GUIDE_ITEMS = [
   {cat:'Markets',items:[
     {name:'Temple Street Night Market',zone:3,cost:1,type:'market',hours:'7pm–11pm (best after 8pm)',tip:'HK\'s only true night market; fortune tellers, street food, Cantonese opera; go for the atmosphere',map:'https://maps.google.com/?q=Temple+Street+Night+Market+Yau+Ma+Tei+Hong+Kong'},
     {name:'Mong Kok Flower Market',zone:3,cost:1,type:'market',hours:'7am–9pm (best before 9am)',tip:'Magical early morning; extraordinary at Chinese New Year with peach blossom & kumquat trees',map:'https://maps.google.com/?q=Flower+Market+Road+Prince+Edward+Hong+Kong'},
-    {name:'Ladies\' Market',zone:3,type:'market',hours:'Noon–11pm',tip:'Opens noon, livelier after 3pm; affordable clothing, bags, souvenirs; bargain hard',map:'https://maps.google.com/?q=Ladies+Market+Tung+Choi+Street+Mong+Kok+Hong+Kong'},
+    {name:'Ladies\' Market',zone:3,cost:1,type:'market',hours:'Noon–11pm',tip:'Opens noon, livelier after 3pm; affordable clothing, bags, souvenirs; bargain hard',map:'https://maps.google.com/?q=Ladies+Market+Tung+Choi+Street+Mong+Kok+Hong+Kong'},
     {name:'Jade Market',zone:3,cost:1,type:'market',hours:'10am–4pm (mornings best)',tip:'Under the flyover, Kansu St, Yau Ma Tei; quality varies enormously — bargain confidently',map:'https://maps.google.com/?q=Jade+Market+Kansu+Street+Yau+Ma+Tei+Hong+Kong'},
     {name:'Goldfish Market',zone:3,cost:1,type:'market',hours:'10am–8pm',tip:'Tung Choi St north near Prince Edward; dozens of fish shops; truly unique and very photogenic',map:'https://maps.google.com/?q=Goldfish+Market+Tung+Choi+Street+Mong+Kok+Hong+Kong'},
     {name:'Cat Street Flea Market',zone:2,cost:1,type:'market',hours:'11am–5pm (weekday mornings best)',tip:'Mao-era collectibles, antiques, vintage posters, brass Buddhas; combine with Sheung Wan galleries',map:'https://maps.google.com/?q=Cat+Street+Upper+Lascar+Row+Sheung+Wan+Hong+Kong'},
@@ -722,7 +735,7 @@ const GUIDE_ITEMS = [
     {name:'Sai Yeung Choi St S (Electronics)',zone:3,cost:2,type:'shopping',hours:'11am–10pm',tip:'HK\'s main electronics street; cameras, lenses, computers, gadgets; good for comparing prices',map:'https://maps.google.com/?q=Sai+Yeung+Choi+Street+South+Mong+Kok+Hong+Kong'},
     {name:'Canton Road (Luxury)',zone:3,cost:3,type:'shopping',hours:'10am–9pm',tip:'The luxury brand parade: Chanel, Gucci, Prada, Cartier in a row; TST — mostly window shopping',map:'https://maps.google.com/?q=Canton+Road+Tsim+Sha+Tsui+Hong+Kong'},
     {name:'Li Yuen St E & W (The Lanes)',zone:1,cost:1,type:'shopping',hours:'10am–7pm Mon–Sat',tip:'Narrow covered alleys in Central; cheap fashion, costume jewellery, accessories',map:'https://maps.google.com/?q=Li+Yuen+Street+East+Central+Hong+Kong'},
-    {name:'Jardine\'s Bazaar / Crescent',zone:1,type:'shopping',hours:'11am–8pm',tip:'Bargain women\'s and children\'s clothing, cosmetics; very local feel; Causeway Bay',map:'https://maps.google.com/?q=Jardines+Crescent+Causeway+Bay+Hong+Kong'},
+    {name:'Jardine\'s Bazaar / Crescent',zone:1,cost:1,type:'shopping',hours:'11am–8pm',tip:'Bargain women\'s and children\'s clothing, cosmetics; very local feel; Causeway Bay',map:'https://maps.google.com/?q=Jardines+Crescent+Causeway+Bay+Hong+Kong'},
     {name:'Des Voeux Rd West (Dried Seafood)',zone:2,cost:1,type:'shopping',hours:'9am–5pm',tip:'Dried scallops, abalone, mushrooms, ginseng; fascinating to browse and buy; Sheung Wan',map:'https://maps.google.com/?q=Des+Voeux+Road+West+Sheung+Wan+Hong+Kong'},
     {name:'Western Market',zone:2,cost:1,type:'shopping',hours:'10am–7pm',tip:'Edwardian heritage building in Sheung Wan; fabric, buttons, trimmings on upper floors',map:'https://maps.google.com/?q=Western+Market+Sheung+Wan+Hong+Kong'},
     {name:'K11 Musea',zone:3,cost:2,type:'shopping',hours:'10am–10pm',tip:'Arts and retail hybrid on TST waterfront; independent and regional brands; beautifully designed; Day 4 stop',map:'https://maps.google.com/?q=K11+Musea+Tsim+Sha+Tsui+Hong+Kong'},
@@ -757,7 +770,7 @@ const GUIDE_ITEMS = [
     {name:'Cardinal Point (Rooftop)',zone:1,cost:3,type:'bar',hours:'5pm–midnight',tip:'2024 Best Al Fresco Bar; stunning outdoor terrace. Forty-Five, 45 Pedder St, Central rooftop',map:'https://maps.google.com/?q=Cardinal+Point+45+Pedder+Street+Central+Hong+Kong'},
     {name:'001 Bar (Tai Kwun)',zone:1,cost:2,type:'bar',hours:'6pm–late Tue–Sun',tip:'HK\'s original speakeasy at Tai Kwun arts centre; find Block 13. 10 Hollywood Rd, Central',map:'https://maps.google.com/?q=001+Bar+Tai+Kwun+Hollywood+Road+Central+Hong+Kong'},
     {name:'The Green Door',zone:1,cost:2,type:'bar',hours:'6pm–late',tip:'Find the literal green door near Graham St, Central, and knock. Intimate underground speakeasy.',map:'https://maps.google.com/?q=Graham+Street+Central+Hong+Kong'},
-    {name:'Ned Kelly\'s Last Stand',zone:3,type:'bar',hours:'11am–2am; live jazz 9:30pm',tip:'HK\'s oldest bar (since 1972); Dixieland jazz nightly; unpretentious. 11A Ashley Rd, TST',map:'https://maps.google.com/?q=Ned+Kellys+Last+Stand+Ashley+Road+Tsim+Sha+Tsui+Hong+Kong'},
+    {name:'Ned Kelly\'s Last Stand',zone:3,cost:1,type:'bar',hours:'11am–2am; live jazz 9:30pm',tip:'HK\'s oldest bar (since 1972); Dixieland jazz nightly; unpretentious. 11A Ashley Rd, TST',map:'https://maps.google.com/?q=Ned+Kellys+Last+Stand+Ashley+Road+Tsim+Sha+Tsui+Hong+Kong'},
     {name:'Terrible Baby (Eaton HK)',zone:3,cost:2,type:'bar',hours:'5pm–midnight',tip:'Hip garden bar at Eaton HK Hotel; fruity cocktails, live music events. 380 Nathan Rd, Jordan',map:'https://maps.google.com/?q=Eaton+HK+Hotel+380+Nathan+Road+Jordan+Hong+Kong'},
     {name:'Kinsman (Cantonese Bar)',zone:1,cost:2,type:'bar',hours:'6pm–midnight',tip:'Spirit of HK Award 2024; Cantonese spirits, baijiu, papaya wine; typhoon shelter fries. Central.',map:'https://maps.google.com/?q=Kinsman+Bar+Central+Hong+Kong'},
     {name:'Bound (Coffee & Craft Beer)',zone:3,cost:1,type:'bar',hours:'Noon–midnight',tip:'Cult neighbourhood bar; craft beers + HK-inspired cocktails. 32 Boundary St, Sham Shui Po',map:'https://maps.google.com/?q=Bound+32+Boundary+Street+Sham+Shui+Po+Hong+Kong'},
@@ -793,10 +806,10 @@ const GUIDE_ITEMS = [
     {name:'Tomo (Tai Hang)',zone:1,cost:2,type:'bar',hours:'5pm–late (daily)',tip:'Neighbourhood bar in the hip Tai Hang village area near Causeway Bay. Neighbourhood cocktails, local vibe, welcoming community feel. Near the Hong Kong Central Library.',map:'https://maps.google.com/?q=Tomo+Bar+Tai+Hang+Hong+Kong'}
   ]},
   {cat:'Restaurants & Dim Sum',items:[
-    {name:'Maxim\'s Palace Dim Sum',zone:1,type:'food',hours:'11am–3pm wkdays; 9am wknds',tip:'Iconic trolley dim sum in palatial room; City Hall Low Block, Edinburgh Place, Central. Book ahead.',map:'https://maps.google.com/?q=Maxims+Palace+City+Hall+Edinburgh+Place+Central+Hong+Kong'},
+    {name:'Maxim\'s Palace Dim Sum',zone:1,cost:1,type:'food',hours:'11am–3pm wkdays; 9am wknds',tip:'Iconic trolley dim sum in palatial room; City Hall Low Block, Edinburgh Place, Central. Book ahead.',map:'https://maps.google.com/?q=Maxims+Palace+City+Hall+Edinburgh+Place+Central+Hong+Kong'},
     {name:'Luk Yu Tea House',zone:1,cost:2,type:'food',hours:'7am–6pm; dim sum until 5pm',tip:'1930s Art Deco landmark; traditional dim sum & old-school HK atmosphere. 24-26 Stanley St, Central',map:'https://maps.google.com/?q=Luk+Yu+Tea+House+Stanley+Street+Central+Hong+Kong'},
     {name:'One Dim Sum',zone:3,cost:1,type:'food',hours:'8:30am–3pm (queues from opening)',tip:'Michelin Bib Gourmand; exceptional quality at very low prices. 15 Playing Field Rd, Prince Edward',map:'https://maps.google.com/?q=One+Dim+Sum+Playing+Field+Road+Prince+Edward+Hong+Kong'},
-    {name:'Kam\'s Roast Goose',zone:1,type:'food',hours:'11am–10pm (arrive early)',tip:'Michelin 1-star; glassy lacquered roast goose + char siu. 226 Hennessy Rd, Wan Chai. Cash only.',map:'https://maps.google.com/?q=Kams+Roast+Goose+226+Hennessy+Road+Wan+Chai+Hong+Kong'},
+    {name:'Kam\'s Roast Goose',zone:1,cost:1,type:'food',hours:'11am–10pm (arrive early)',tip:'Michelin 1-star; glassy lacquered roast goose + char siu. 226 Hennessy Rd, Wan Chai. Cash only.',map:'https://maps.google.com/?q=Kams+Roast+Goose+226+Hennessy+Road+Wan+Chai+Hong+Kong'},
     {name:'The Chairman',zone:1,cost:3,type:'food',hours:'Lunch & dinner — BOOK WEEKS AHEAD',tip:'One of HK\'s best; outstanding seasonal Cantonese. 18 Kau U Fong, Central. Signature: steamed crab.',map:'https://maps.google.com/?q=The+Chairman+18+Kau+U+Fong+Central+Hong+Kong'},
     {name:'Ho Lee Fook',zone:1,cost:3,type:'food',hours:'Dinner from 6pm',tip:'Modern Cantonese; famous kurobuta char siu. 1-5 Elgin St, Soho, Central. Lively atmosphere.',map:'https://maps.google.com/?q=Ho+Lee+Fook+1-5+Elgin+Street+Soho+Central+Hong+Kong'},
     {name:'Seventh Son',zone:1,cost:3,type:'food',hours:'Lunch & dinner',tip:'Michelin-starred traditional Cantonese; roast suckling pig & golden coin chicken. Lockhart Rd, Wan Chai',map:'https://maps.google.com/?q=Seventh+Son+Lockhart+Road+Wan+Chai+Hong+Kong'},
@@ -804,7 +817,7 @@ const GUIDE_ITEMS = [
     {name:'Bowrington Rd Cooked Food Ctr',zone:1,cost:1,type:'food',hours:'Noon–10pm',tip:'Hawker-style cooked food centre; Wing Kee beef brisket noodles. Bowrington Rd, Wan Chai. Cash only.',map:'https://maps.google.com/?q=Bowrington+Road+Cooked+Food+Centre+Wan+Chai+Hong+Kong'},
     {name:'Tam Jai Mixian',zone:1,cost:1,type:'food',hours:'Various branches citywide',tip:'Spicy Yunnan rice noodle soups + addictive Tu Fei (土匪) chicken wings. Very affordable.',map:'https://maps.google.com/?q=Tam+Jai+Yunnan+Mixian+Hong+Kong'},
     {name:'Kwan Kee Clay Pot Rice',zone:2,cost:1,type:'food',hours:'Evening only; queues form early',tip:'Michelin-recommended; slow-cooked claypot rice with lap cheung sausage. 263 Queen\'s Rd West, Sai Ying Pun',map:'https://maps.google.com/?q=Kwan+Kee+Clay+Pot+Rice+Queens+Road+West+Hong+Kong'},
-    {name:'Mak\'s Noodles (Wontons)',zone:1,type:'food',hours:'11am–9pm',tip:'The gold standard for wonton noodle soup in HK. 77 Wellington St, Central. Queue and eat at counter.',map:'https://maps.google.com/?q=Maks+Noodles+77+Wellington+Street+Central+Hong+Kong'},
+    {name:'Mak\'s Noodles (Wontons)',zone:1,cost:1,type:'food',hours:'11am–9pm',tip:'The gold standard for wonton noodle soup in HK. 77 Wellington St, Central. Queue and eat at counter.',map:'https://maps.google.com/?q=Maks+Noodles+77+Wellington+Street+Central+Hong+Kong'},
     {name:'Lan Fong Yuen (Milk Tea)',zone:1,cost:1,type:'food',hours:'7am–6pm Mon–Sat',tip:'Birthplace of HK-style milk tea and yuanyang (coffee-tea). G/F, 2 Gage St, Central. Very local.',map:'https://maps.google.com/?q=Lan+Fong+Yuen+2+Gage+Street+Central+Hong+Kong'},
   
     {name:'Yardbird',zone:1,cost:2,type:'food',hours:'Dinner from 6pm; reservations essential',tip:'Modern Michelin-starred yakitori. Outstanding chicken skewers — tsukune with cured egg yolk dipping sauce. Very popular. Book ahead.',map:'https://maps.google.com/?q=Yardbird+Restaurant+Bridges+Street+Sheung+Wan+Hong+Kong'},
@@ -1434,7 +1447,9 @@ function showToast(msg,duration=3000,withUndo=false){
   t._timer=setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.style.display='none',300);},duration);
 }
 
-const activeFilters={zone:null,type:null,cost:new Set()};
+const activeFilters={zone:null,type:null,cost:new Set(),mustdo:false,done:false};
+let starredItems = JSON.parse(localStorage.getItem('hk_starred')||'{}');
+let doneItems    = JSON.parse(localStorage.getItem('hk_done')||'{}');
 
 function setView(v){
   currentView=v;
@@ -1505,12 +1520,12 @@ function renderRefPanel(){
     const key='ref-'+cat.cat;
     const open=expandedRefCats[key]!==false;
     html+=`<div class="ref-category">
-      <div class="ref-cat-header" onclick="toggleRefCat('${key}')"><span>${cat.cat}</span><span>${open?'▲':'▼'}</span></div>`;
-    if(open){
-      for(const item of cat.items){
+      <div class="ref-cat-header" onclick="toggleRefCat('${key}')"><span>${cat.cat}</span><span>${open?'▲':'▼'}</span></div>
+      <div class="ref-cat-body" id="${key}-body" style="display:${open?'':'none'}">`;
+    for(const item of cat.items){
         const idx=itemIndex++;
         const safeItem=JSON.stringify(item).replace(/"/g,'&quot;');
-        html+=`<div class="ref-item" data-search="${(item.name+' '+item.type+' '+(item.tip||'')).toLowerCase()}" data-zone="${item.zone||''}" data-type="${item.type||''}" data-cost="${item.cost!==undefined?item.cost:''}">
+        html+=`<div class="ref-item${doneItems[item.name]?' is-done':''}" data-search="${(item.name+' '+item.type+' '+(item.tip||'')).toLowerCase()}" data-zone="${item.zone||''}" data-type="${item.type||''}" data-cost="${item.cost!==undefined?item.cost:''}" data-mustdo="${starredItems[item.name]?'1':''}" data-done="${doneItems[item.name]?'1':''}">
           <div class="ref-item-text">
             <div class="ref-item-name" onclick="toggleRefInfo('refinfo-${idx}')">${esc(item.name)}</div>
             <div class="ref-item-sub">${item.hours||''}${item.zone?` &nbsp;<span class="ref-zone-${item.zone}">${ZONES[item.zone].short}</span>`:''}&nbsp;${item.cost!==undefined?costBadge(item.cost):''}</div>
@@ -1521,10 +1536,14 @@ function renderRefPanel(){
               ${item.map?`<a class="ref-info-map" href="${zoomedMapUrl(item.map)}" target="_blank">&#128205; Open in Maps</a>`:''}
             </div>
           </div>
-          <button class="ref-item-add" onclick="addFromRef(${safeItem})">Add</button>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
+            <button class="ref-item-star${starredItems[item.name]?' active':''}" onclick="toggleStar('${esc(item.name)}')" title="Mark as Must Do">⭐</button>
+            <button class="ref-item-done${doneItems[item.name]?' active':''}" onclick="toggleDone('${esc(item.name)}')" title="Mark as Done">✓</button>
+            <button class="ref-item-add" onclick="addFromRef(${safeItem})">Add</button>
+          </div>
         </div>`;
       }
-    }
+    html+=`</div>`;
     html+=`</div>`;
   }
   el.innerHTML=html;
@@ -1551,6 +1570,32 @@ function addFromRef(item){
   save();
   renderDay();
   showToast(`Added "${item.name.substring(0,28)}" to ${pkg.name}`);
+}
+
+function toggleStar(name){
+  if(starredItems[name]) delete starredItems[name];
+  else starredItems[name]=1;
+  localStorage.setItem('hk_starred', JSON.stringify(starredItems));
+  renderRefPanel();
+  applyFilters();
+}
+
+function toggleDone(name){
+  if(doneItems[name]) delete doneItems[name];
+  else doneItems[name]=1;
+  localStorage.setItem('hk_done', JSON.stringify(doneItems));
+  renderRefPanel();
+  applyFilters();
+}
+
+function toggleStatusFilter(type){
+  activeFilters[type]=!activeFilters[type];
+  const btn=document.getElementById('filter-'+type+'-btn');
+  if(btn){
+    btn.style.opacity=activeFilters[type]?'1':'0.45';
+    btn.style.boxShadow=activeFilters[type]?'0 0 0 2px currentColor':'none';
+  }
+  applyFilters();
 }
 
 function toggleFilter(dimension,value){
@@ -1581,10 +1626,16 @@ function clearFilters(){
   activeFilters.zone=null;
   activeFilters.type=null;
   activeFilters.cost=new Set();
+  activeFilters.mustdo=false;
+  activeFilters.done=false;
   document.querySelectorAll('.ref-filter-btn').forEach(btn=>{
     btn.style.opacity='1';
     btn.style.fontWeight='600';
     btn.style.boxShadow='none';
+  });
+  ['mustdo','done'].forEach(t=>{
+    const b=document.getElementById('filter-'+t+'-btn');
+    if(b){b.style.opacity='1';b.style.boxShadow='none';}
   });
   document.getElementById('ref-search').value='';
   applyFilters();
@@ -1605,7 +1656,9 @@ function applyFilters(){
     const matchesZone=!zoneFilter||z===zoneFilter;
     const matchesType=!typeFilter||t===typeFilter;
     const matchesCost=costFilter.size===0||costFilter.has(c);
-    const show=matchesQuery&&matchesZone&&matchesType&&matchesCost;
+    const matchesMustdo=!activeFilters.mustdo||el.dataset.mustdo==='1';
+    const matchesDone=!activeFilters.done||el.dataset.done==='1';
+    const show=matchesQuery&&matchesZone&&matchesType&&matchesCost&&matchesMustdo&&matchesDone;
     el.style.display=show?'':'none';
     if(show) visibleItems++;
   });
@@ -1617,6 +1670,16 @@ function applyFilters(){
 }
 
 // Keep filterRef as alias for backwards compatibility
+function toggleRefCat(key){
+  const isOpen = expandedRefCats[key]!==false;
+  expandedRefCats[key] = !isOpen;
+  const body = document.getElementById(key+'-body');
+  const header = document.querySelector(`[onclick="toggleRefCat('${key}')"] span:last-child`);
+  if(body) body.style.display = isOpen ? 'none' : '';
+  if(header) header.textContent = isOpen ? '▼' : '▲';
+  if(!isOpen) applyFilters();
+}
+
 function filterRef(q){ applyFilters(); }
 
 function toggleRefPaneDesktop(){

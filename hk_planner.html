@@ -1643,7 +1643,9 @@ function toggleStar(el,name){
   else starredItems[name]=1;
   localStorage.setItem('hk_starred', JSON.stringify(starredItems));
   el.classList.toggle('active',!!starredItems[name]);
-  applyFilters();
+  var row=el.closest('.ref-item');
+  if(row) row.dataset.mustdo=starredItems[name]?'1':'';
+  if(activeFilters.mustdo||activeFilters.done) applyFilters();
   if(currentView==='mustdo') renderMustDo();
 }
 
@@ -1655,10 +1657,11 @@ function toggleDone(el,name){
   var row=el.closest('.ref-item');
   if(row){
     row.classList.toggle('is-done',!!doneItems[name]);
+    row.dataset.done=doneItems[name]?'1':'';
     var nameEl=row.querySelector('.ref-item-name');
     if(nameEl) nameEl.style.textDecoration=doneItems[name]?'line-through':'';
   }
-  applyFilters();
+  if(activeFilters.mustdo||activeFilters.done) applyFilters();
   if(currentView==='mustdo') renderMustDo();
 }
 

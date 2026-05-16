@@ -279,18 +279,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .ref-item-sub{font-size:11px;color:var(--text-hint)}
 .ref-item-add{background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9;padding:2px 7px;border-radius:var(--radius);font-size:10px;font-weight:600;cursor:pointer;flex-shrink:0;transition:all 0.15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .ref-item-add:hover{background:#BBDEFB;border-color:#1565C0}
-.ref-item-star{background:none;border:1px solid #FFE082;border-radius:6px;font-size:12px;cursor:pointer;padding:2px 4px;line-height:1;opacity:0.5;flex-shrink:0;transition:all 0.15s;color:#F57F17;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
-.ref-item-star:hover{opacity:1;background:#FFF8E1}
-.ref-item-star.active{opacity:1;background:#FFF8E1;border-color:#F57F17}
-.ref-item-done{background:none;border:1px solid #A5D6A7;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;padding:2px 4px;line-height:1;opacity:0.5;flex-shrink:0;transition:all 0.15s;color:#2E7D32;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
-.ref-item-done:hover{opacity:1;background:#E8F5E9}
-.ref-item-done.active{opacity:1;background:#E8F5E9;border-color:#2E7D32}
-.ref-item-notes{display:inline-flex;align-items:center;justify-content:center;font-size:10px;text-decoration:none;background:#F3E5F5;color:#6A1B9A;border:1px solid #CE93D8;border-radius:5px;padding:2px 6px;font-weight:600;transition:all 0.15s;white-space:nowrap}
-.ref-item-notes:hover{background:#E1BEE7;border-color:#9C27B0}
-.ref-item.is-done .ref-item-name{text-decoration:line-through;color:var(--text-hint)}
-.ref-item.is-done{opacity:0.6}
+.ref-item-star,.ref-item-done{background:none;border:1px solid var(--border);border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;padding:2px 5px;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all 0.15s;color:var(--text-muted)}
+.ref-item-star.on{background:#FFF8E1;color:#F57F17;border-color:#FFE082}
+.ref-item-done.on{background:#E8F5E9;color:#2E7D32;border-color:#A5D6A7}
+.ref-item.is-done .ref-item-name{text-decoration:line-through;opacity:0.5}
 .badge-mustdo{background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:700}
 .badge-done{background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;font-size:9px;padding:1px 5px;border-radius:8px;font-weight:700}
+
+
+
+
+
+
+.ref-item-notes{display:inline-flex;align-items:center;justify-content:center;font-size:10px;text-decoration:none;background:#F3E5F5;color:#6A1B9A;border:1px solid #CE93D8;border-radius:5px;padding:2px 6px;font-weight:600;transition:all 0.15s;white-space:nowrap}
+.ref-item-notes:hover{background:#E1BEE7;border-color:#9C27B0}
+
+
+
+
 .ref-item-add:hover{background:var(--red-light);color:var(--red);border-color:var(--red-mid)}
 .ref-search{padding:8px 12px;border-bottom:1px solid var(--border);position:sticky;top:32px;background:var(--bg-secondary);z-index:4}
 .ref-search input{width:100%;border:1px solid var(--border);border-radius:var(--radius);padding:5px 8px;font-size:12px;background:var(--bg);color:var(--text)}
@@ -472,7 +478,8 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
     <button class="btn-mode active" id="btn-day" onclick="setView(&#39;day&#39;)">Days</button>
     <button class="btn-mode" id="btn-overview" onclick="setView(&#39;overview&#39;)">Overview</button>
     <button class="btn-mode" id="btn-journey" onclick="setView(&#39;journey&#39;)">&#128652; Getting Around</button>
-    <button class="btn-mode" id="btn-mustdo" onclick="setView('mustdo')" title="Must Do remaining list">⭐</button>
+    
+    <button class="btn-mode" id="btn-mustdo" onclick="setView('mustdo')" title="Must Do list">⭐ Must Do</button>
     <button class="btn-mode" id="btn-today" onclick="enterTodayMode()" title="Clean view for use on the day">📍 Today</button>
   </div>
 </div>
@@ -556,11 +563,11 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
           <button class="ref-filter-btn cost-filter" data-cost="3" onclick="toggleFilter(&#39;cost&#39;,&#39;3&#39;)" style="background:#FFEBEE;color:#B71C1C;border:1px solid #EF9A9A;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700">$$$</button>
         </div>
         <div style="font-size:9px;color:var(--text-hint);text-transform:uppercase;letter-spacing:0.5px;margin:5px 0 4px">Filter by status</div>
-        <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:4px">
-          <button class="ref-filter-btn" id="filter-mustdo-btn" onclick="toggleStatusFilter('mustdo')" style="background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700">⭐ Must Do</button>
-          <button class="ref-filter-btn" id="filter-done-btn" onclick="toggleStatusFilter('done')" style="background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700">✓</button>
+        <div style="display:flex;gap:3px;margin-bottom:4px">
+          <button id="filter-mustdo-btn" onclick="toggleStatusFilter(&#39;mustdo&#39;)" style="background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700;touch-action:manipulation">⭐ Must Do</button>
+          <button id="filter-done-btn" onclick="toggleStatusFilter(&#39;done&#39;)" style="background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700;touch-action:manipulation">✓ Done</button>
         </div>
-        <div style="margin-top:5px;text-align:right">
+        <div style="margin-top:2px;text-align:right">
           <button onclick="clearFilters()" style="font-size:9px;color:var(--text-hint);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0">Clear all filters</button>
         </div>
       </div>
@@ -1476,20 +1483,20 @@ function showToast(msg,duration=3000,withUndo=false){
 }
 
 const activeFilters={zone:null,type:null,cost:new Set(),mustdo:false,done:false};
-let starredItems = JSON.parse(localStorage.getItem('hk_starred')||'{}');
-let doneItems    = JSON.parse(localStorage.getItem('hk_done')||'{}');
+let starredItems=JSON.parse(localStorage.getItem('hk_starred')||'{}');
+let doneItems=JSON.parse(localStorage.getItem('hk_done')||'{}');
 
 function setView(v){
   currentView=v;
   document.getElementById('day-view-root').style.display=v==='day'?'':'none';
   document.getElementById('overview-root').style.display=v==='overview'?'':'none';
   document.getElementById('journey-root').style.display=v==='journey'?'':'none';
-  document.getElementById('mustdo-root').style.display=v==='mustdo'?'':'none';
   document.getElementById('btn-day').classList.toggle('active',v==='day');
   document.getElementById('btn-overview').classList.toggle('active',v==='overview');
   document.getElementById('btn-journey').classList.toggle('active',v==='journey');
-  document.getElementById('btn-mustdo').classList.toggle('active',v==='mustdo');
   document.getElementById('btn-today').classList.toggle('active',false);
+  if(document.getElementById('mustdo-root')) document.getElementById('mustdo-root').style.display=v==='mustdo'?'':'none';
+  if(document.getElementById('btn-mustdo')) document.getElementById('btn-mustdo').classList.toggle('active',v==='mustdo');
   if(v==='overview') renderOverview();
   if(v==='journey') renderJourneyCards();
   if(v==='mustdo') renderMustDo();
@@ -1551,6 +1558,7 @@ function renderRefPanel(){
   if(!el) return;
   let html='';
   let itemIndex=0;
+  window._refItems=[];
   for(const cat of GUIDE_ITEMS){
     const key='ref-'+cat.cat;
     const open=expandedRefCats[key]!==false;
@@ -1559,8 +1567,9 @@ function renderRefPanel(){
       <div class="ref-cat-body" id="${key}-body" style="display:${open?'':'none'}">`;
     for(const item of cat.items){
         const idx=itemIndex++;
+        window._refItems.push(item);
         const safeItem=JSON.stringify(item).replace(/"/g,'&quot;');
-        html+=`<div class="ref-item${doneItems[item.name]?' is-done':''}" data-itemname="${esc(item.name)}" data-search="${(item.name+' '+item.type+' '+(item.tip||'')).toLowerCase()}" data-zone="${item.zone||''}" data-type="${item.type||''}" data-cost="${item.cost!==undefined?item.cost:''}" data-mustdo="${starredItems[item.name]?'1':''}" data-done="${doneItems[item.name]?'1':''}">
+        html+=`<div class="ref-item${doneItems[item.name]?' is-done':''}" data-itemname="${esc(item.name)}" data-mustdo="${starredItems[item.name]?'1':''}" data-done="${doneItems[item.name]?'1':''}" data-search="${(item.name+' '+item.type+' '+(item.tip||'')).toLowerCase()}" data-zone="${item.zone||''}" data-type="${item.type||''}" data-cost="${item.cost!==undefined?item.cost:''}">
           <div class="ref-item-text">
             <div class="ref-item-name" onclick="toggleRefInfo('refinfo-${idx}')">${esc(item.name)}</div>
             <div class="ref-item-sub">${item.hours||''}${item.zone?` &nbsp;<span class="ref-zone-${item.zone}">${ZONES[item.zone].short}</span>`:''}&nbsp;${item.cost!==undefined?costBadge(item.cost):''}</div>
@@ -1572,8 +1581,8 @@ function renderRefPanel(){
             </div>
           </div>
           <div style="display:flex;flex-direction:row;align-items:center;gap:3px;flex-shrink:0;flex-wrap:nowrap">
-            <button class="ref-item-star${starredItems[item.name]?' active':''}" onclick="toggleStar(this,'${esc(item.name)}')" title="Mark as Must Do">⭐ Must Do</button>
-            <button class="ref-item-done${doneItems[item.name]?' active':''}" onclick="toggleDone(this,'${esc(item.name)}')" title="Mark as Done">✓</button>
+            <button class="ref-item-star${starredItems[item.name]?' on':''}" data-action="star" data-idx="${itemIndex-1}">⭐</button>
+            <button class="ref-item-done${doneItems[item.name]?' on':''}" data-action="done" data-idx="${itemIndex-1}">✓</button>
             <button class="ref-item-add" onclick="addFromRef(${safeItem})">Add</button>
             <a class="ref-item-notes" href="${oneNoteUrl(cat.cat)}" target="_blank" title="Open OneNote">📓</a>
           </div>
@@ -1638,44 +1647,7 @@ function toggleTheme(){
   else if(t==='light'){ document.documentElement.classList.add('light-mode'); if(btn) btn.textContent='🌙'; }
 })();
 
-function toggleStar(el,name){
-  var isStarred=!!starredItems[name];
-  if(isStarred) delete starredItems[name];
-  else starredItems[name]=1;
-  localStorage.setItem('hk_starred',JSON.stringify(starredItems));
-  el.classList.toggle('active',!isStarred);
-  var row=el.closest('.ref-item');
-  if(row) row.dataset.mustdo=!isStarred?'1':'';
-  if(activeFilters.mustdo||activeFilters.done) applyFilters();
-  if(currentView==='mustdo') renderMustDo();
-}
 
-function toggleDone(el,name){
-  var isDone=!!doneItems[name];
-  if(isDone) delete doneItems[name];
-  else doneItems[name]=1;
-  localStorage.setItem('hk_done',JSON.stringify(doneItems));
-  el.classList.toggle('active',!isDone);
-  var row=el.closest('.ref-item');
-  if(row){
-    row.classList.toggle('is-done',!isDone);
-    row.dataset.done=!isDone?'1':'';
-    var nameEl=row.querySelector('.ref-item-name');
-    if(nameEl) nameEl.style.textDecoration=!isDone?'line-through':'';
-  }
-  if(activeFilters.mustdo||activeFilters.done) applyFilters();
-  if(currentView==='mustdo') renderMustDo();
-}
-
-function toggleStatusFilter(type){
-  activeFilters[type]=!activeFilters[type];
-  const btn=document.getElementById('filter-'+type+'-btn');
-  if(btn){
-    btn.style.opacity=activeFilters[type]?'1':'0.45';
-    btn.style.boxShadow=activeFilters[type]?'0 0 0 2px currentColor':'none';
-  }
-  applyFilters();
-}
 
 function toggleFilter(dimension,value){
   if(dimension==='cost'){
@@ -1707,15 +1679,13 @@ function clearFilters(){
   activeFilters.cost=new Set();
   activeFilters.mustdo=false;
   activeFilters.done=false;
+  ['mustdo','done'].forEach(function(t){var b=document.getElementById('filter-'+t+'-btn');if(b){b.style.opacity='1';b.style.boxShadow='none';}});
   document.querySelectorAll('.ref-filter-btn').forEach(btn=>{
     btn.style.opacity='1';
     btn.style.fontWeight='600';
     btn.style.boxShadow='none';
   });
-  ['mustdo','done'].forEach(t=>{
-    const b=document.getElementById('filter-'+t+'-btn');
-    if(b){b.style.opacity='1';b.style.boxShadow='none';}
-  });
+
   document.getElementById('ref-search').value='';
   applyFilters();
 }
@@ -1933,77 +1903,121 @@ function buildPdfContent(days){
 }
 
 // ── TODAY MODE ────────────────────────────────────────────────────────────────
-function renderMustDo(){
-  const el=document.getElementById('mustdo-root');
-  if(!el) return;
+// ── STAR / DONE — event delegation on ref-list ────────────────────────────────
+function initRefListEvents(){
+  var list=document.getElementById('ref-list');
+  if(!list||list._hasEvents) return;
+  list._hasEvents=true;
+  list.addEventListener('click',function(e){
+    var btn=e.target.closest('[data-action]');
+    if(!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var action=btn.dataset.action;
+    var name=btn.dataset.name;
+    var row=btn.closest('.ref-item');
+    var itemName=window._refItems&&window._refItems[parseInt(btn.dataset.idx)]?window._refItems[parseInt(btn.dataset.idx)].name:null;
+    if(!itemName) return;
+    if(action==='star'){
+      if(starredItems[itemName]) delete starredItems[itemName];
+      else starredItems[itemName]=1;
+      localStorage.setItem('hk_starred',JSON.stringify(starredItems));
+      btn.classList.toggle('on',!!starredItems[itemName]);
+      if(row) row.dataset.mustdo=starredItems[itemName]?'1':'';
+      if(activeFilters.mustdo||activeFilters.done) applyFilters();
+      if(currentView==='mustdo') renderMustDo();
+    } else if(action==='done'){
+      if(doneItems[itemName]) delete doneItems[itemName];
+      else doneItems[itemName]=1;
+      localStorage.setItem('hk_done',JSON.stringify(doneItems));
+      btn.classList.toggle('on',!!doneItems[itemName]);
+      if(row){
+        row.classList.toggle('is-done',!!doneItems[itemName]);
+        row.dataset.done=doneItems[itemName]?'1':'';
+        var nameEl=row.querySelector('.ref-item-name');
+        if(nameEl) nameEl.style.textDecoration=doneItems[itemName]?'line-through':'';
+      }
+      if(activeFilters.mustdo||activeFilters.done) applyFilters();
+      if(currentView==='mustdo') renderMustDo();
+    }
+  });
+}
 
-  // Collect all starred-but-not-done items grouped by category
-  const groups=[];
-  let total=0, done=0;
-  for(const cat of GUIDE_ITEMS){
-    const remaining=cat.items.filter(i=>starredItems[i.name]&&!doneItems[i.name]);
-    const completed=cat.items.filter(i=>starredItems[i.name]&&doneItems[i.name]);
+function toggleStatusFilter(type){
+  activeFilters[type]=!activeFilters[type];
+  var btn=document.getElementById('filter-'+type+'-btn');
+  if(btn){
+    btn.style.opacity=activeFilters[type]?'1':'0.5';
+    btn.style.boxShadow=activeFilters[type]?'0 0 0 2px currentColor':'none';
+  }
+  applyFilters();
+}
+
+function renderMustDo(){
+  var el=document.getElementById('mustdo-root');
+  if(!el) return;
+  var groups=[]; var total=0; var done=0;
+  for(var i=0;i<GUIDE_ITEMS.length;i++){
+    var cat=GUIDE_ITEMS[i];
+    var remaining=cat.items.filter(function(x){return starredItems[x.name]&&!doneItems[x.name];});
+    var completed=cat.items.filter(function(x){return starredItems[x.name]&&doneItems[x.name];});
     if(remaining.length||completed.length){
-      groups.push({cat:cat.cat, remaining, completed});
+      groups.push({cat:cat.cat,remaining:remaining,completed:completed});
       total+=remaining.length+completed.length;
       done+=completed.length;
     }
   }
-
   if(total===0){
-    el.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-hint)">
-      <div style="font-size:40px;margin-bottom:12px">⭐</div>
-      <div style="font-size:16px;font-weight:600;margin-bottom:8px">No Must Do items yet</div>
-      <div style="font-size:13px">Tap ⭐ Must Do on any item in the Quick-add panel to add it here.</div>
-    </div>`;
+    el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--text-hint)"><div style="font-size:40px;margin-bottom:12px">⭐</div><div style="font-size:16px;font-weight:600;margin-bottom:8px">No Must Do items yet</div><div style="font-size:13px">Tap ⭐ on any item in the Quick-add panel to mark it as Must Do.</div></div>';
     return;
   }
-
-  const pct=Math.round((done/total)*100);
-  let html=`<div style="margin-bottom:20px">
-    <h2 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px">⭐ Must Do List</h2>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
-      <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
-        <div style="width:${pct}%;height:100%;background:#2E7D32;border-radius:4px;transition:width 0.3s"></div>
-      </div>
-      <div style="font-size:12px;color:var(--text-muted);white-space:nowrap">${done} of ${total} done</div>
-    </div>
-  </div>`;
-
-  for(const {cat, remaining, completed} of groups){
-    if(!remaining.length&&!completed.length) continue;
-    html+=`<div style="margin-bottom:20px">
-      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--border)">${esc(cat)}</div>`;
-
-    for(const item of remaining){
-      const zone=item.zone&&ZONES[item.zone]?`<span class="zone-badge zone-${item.zone}" style="font-size:9px">${ZONES[item.zone].short}</span>`:'';
-      html+=`<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
-        <button onclick="toggleDone('${esc(item.name)}')" style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:var(--bg);cursor:pointer;margin-top:1px" title="Mark as done"></button>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:600;margin-bottom:2px">${esc(item.name)} ${zone}${costBadge(item.cost)}</div>
-          ${item.hours?`<div style="font-size:11px;color:var(--text-hint);margin-bottom:3px">🕐 ${esc(item.hours)}</div>`:''}
-          ${item.tip?`<div style="font-size:11px;color:var(--text-muted);line-height:1.4">${esc(item.tip)}</div>`:''}
-        </div>
-        <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
-          ${item.map?`<a href="${item.map}" target="_blank" style="font-size:10px;background:var(--blue);color:#fff;padding:3px 8px;border-radius:10px;text-decoration:none">📍 Map</a>`:''}
-          <a href="${oneNoteUrl(group.cat)}" target="_blank" style="font-size:10px;background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;padding:3px 8px;border-radius:10px;text-decoration:none;text-align:center">📓 Notes</a>
-          <button onclick="toggleStar(this,'${esc(item.name)}')" style="font-size:10px;background:none;border:none;color:var(--text-hint);cursor:pointer;text-decoration:underline;padding:0">Remove</button>
-        </div>
-      </div>`;
+  var pct=Math.round((done/total)*100);
+  var html='<div style="margin-bottom:20px"><h2 style="font-size:18px;font-weight:700;margin-bottom:8px">⭐ Must Do List</h2><div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:#2E7D32;border-radius:4px"></div></div><div style="font-size:12px;color:var(--text-muted);white-space:nowrap">'+done+' of '+total+' done</div></div></div>';
+  for(var g=0;g<groups.length;g++){
+    var grp=groups[g];
+    html+='<div style="margin-bottom:20px"><div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--border)">'+esc(grp.cat)+'</div>';
+    for(var r=0;r<grp.remaining.length;r++){
+      var item=grp.remaining[r];
+      var zone=item.zone&&ZONES[item.zone]?'<span class="zone-badge zone-'+item.zone+'" style="font-size:9px">'+ZONES[item.zone].short+'</span>':'';
+      html+='<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">';
+      html+='<button data-mustdo-done="'+esc(item.name)+'" style="flex-shrink:0;width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:var(--bg);cursor:pointer;margin-top:1px;touch-action:manipulation;font-size:14px" title="Mark as done"></button>';
+      html+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;margin-bottom:2px">'+esc(item.name)+' '+zone+costBadge(item.cost)+'</div>';
+      if(item.hours) html+='<div style="font-size:11px;color:var(--text-hint);margin-bottom:3px">🕐 '+esc(item.hours)+'</div>';
+      if(item.tip) html+='<div style="font-size:11px;color:var(--text-muted);line-height:1.4">'+esc(item.tip)+'</div>';
+      html+='</div><div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">';
+      if(item.map) html+='<a href="'+item.map+'" target="_blank" style="font-size:10px;background:var(--blue);color:#fff;padding:3px 8px;border-radius:10px;text-decoration:none">📍 Map</a>';
+      html+='<a href="'+oneNoteUrl(grp.cat)+'" target="_blank" style="font-size:10px;background:#F3E5F5;color:#6A1B9A;border:1px solid #CE93D8;padding:3px 8px;border-radius:10px;text-decoration:none;text-align:center">📓</a>';
+      html+='<button data-mustdo-remove="'+esc(item.name)+'" style="font-size:10px;background:none;border:none;color:var(--text-hint);cursor:pointer;text-decoration:underline;padding:0;touch-action:manipulation">Remove</button>';
+      html+='</div></div>';
     }
-
-    for(const item of completed){
-      html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);opacity:0.5">
-        <button onclick="toggleDone(this,'${esc(item.name)}')" style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid #2E7D32;background:#E8F5E9;cursor:pointer;color:#2E7D32;font-size:13px;font-weight:700;line-height:1" title="Mark as not done">✓</button>
-        <div style="flex:1;font-size:12px;font-weight:500;text-decoration:line-through;color:var(--text-muted)">${esc(item.name)}</div>
-        <span style="font-size:10px;color:#2E7D32;font-weight:600">Done ✓</span>
-      </div>`;
+    for(var c=0;c<grp.completed.length;c++){
+      var item=grp.completed[c];
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);opacity:0.5">';
+      html+='<button data-mustdo-undone="'+esc(item.name)+'" style="flex-shrink:0;width:24px;height:24px;border-radius:50%;border:2px solid #2E7D32;background:#E8F5E9;cursor:pointer;color:#2E7D32;font-size:13px;font-weight:700;line-height:1;touch-action:manipulation">✓</button>';
+      html+='<div style="flex:1;font-size:12px;font-weight:500;text-decoration:line-through;color:var(--text-muted)">'+esc(item.name)+'</div>';
+      html+='<span style="font-size:10px;color:#2E7D32;font-weight:600">Done ✓</span>';
+      html+='</div>';
     }
-
     html+='</div>';
   }
-
   el.innerHTML=html;
+  // Wire up mustdo view buttons via event delegation
+  el.onclick=function(e){
+    var btn=e.target.closest('[data-mustdo-done],[data-mustdo-undone],[data-mustdo-remove]');
+    if(!btn) return;
+    var name=btn.dataset.mustdoDone||btn.dataset.mustdoUndone||btn.dataset.mustdoRemove;
+    if(btn.dataset.mustdoDone!==undefined){
+      doneItems[name]=1;
+      localStorage.setItem('hk_done',JSON.stringify(doneItems));
+    } else if(btn.dataset.mustdoUndone!==undefined){
+      delete doneItems[name];
+      localStorage.setItem('hk_done',JSON.stringify(doneItems));
+    } else if(btn.dataset.mustdoRemove!==undefined){
+      delete starredItems[name];
+      localStorage.setItem('hk_starred',JSON.stringify(starredItems));
+    }
+    renderMustDo();
+  };
 }
 
 function enterTodayMode(){
@@ -2426,6 +2440,7 @@ initData();
 renderTabs();
 renderDay();
 renderRefPanel();
+initRefListEvents();
 initMobileRefToggle();
 window.addEventListener('resize', initMobileRefToggle);
 applyResponsiveLayout();

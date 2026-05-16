@@ -1560,7 +1560,7 @@ function renderRefPanel(){
     for(const item of cat.items){
         const idx=itemIndex++;
         const safeItem=JSON.stringify(item).replace(/"/g,'&quot;');
-        html+=`<div class="ref-item${doneItems[item.name]?' is-done':''}" data-search="${(item.name+' '+item.type+' '+(item.tip||'')).toLowerCase()}" data-zone="${item.zone||''}" data-type="${item.type||''}" data-cost="${item.cost!==undefined?item.cost:''}" data-mustdo="${starredItems[item.name]?'1':''}" data-done="${doneItems[item.name]?'1':''}">
+        html+=`<div class="ref-item${doneItems[item.name]?' is-done':''}" data-itemname="${esc(item.name)}" data-search="${(item.name+' '+item.type+' '+(item.tip||'')).toLowerCase()}" data-zone="${item.zone||''}" data-type="${item.type||''}" data-cost="${item.cost!==undefined?item.cost:''}" data-mustdo="${starredItems[item.name]?'1':''}" data-done="${doneItems[item.name]?'1':''}">
           <div class="ref-item-text">
             <div class="ref-item-name" onclick="toggleRefInfo('refinfo-${idx}')">${esc(item.name)}</div>
             <div class="ref-item-sub">${item.hours||''}${item.zone?` &nbsp;<span class="ref-zone-${item.zone}">${ZONES[item.zone].short}</span>`:''}&nbsp;${item.cost!==undefined?costBadge(item.cost):''}</div>
@@ -1642,17 +1642,28 @@ function toggleStar(name){
   if(starredItems[name]) delete starredItems[name];
   else starredItems[name]=1;
   localStorage.setItem('hk_starred', JSON.stringify(starredItems));
-  renderRefPanel();
+  // Update button state directly — no full re-render needed
+  const row=document.querySelector('[data-itemname="'+CSS.escape(name)+'"]');
+  if(row) row.querySelector('.ref-item-star')?.classList.toggle('active',!!starredItems[name]);
   applyFilters();
+  if(currentView==='mustdo') renderMustDo();
+  renderDay();
 }
 
 function toggleDone(name){
   if(doneItems[name]) delete doneItems[name];
   else doneItems[name]=1;
   localStorage.setItem('hk_done', JSON.stringify(doneItems));
-  renderRefPanel();
+  const row=document.querySelector('[data-itemname="'+CSS.escape(name)+'"]');
+  if(row){
+    row.querySelector('.ref-item-done')?.classList.toggle('active',!!doneItems[name]);
+    row.classList.toggle('is-done',!!doneItems[name]);
+    const nameEl=row.querySelector('.ref-item-name');
+    if(nameEl) nameEl.style.textDecoration=doneItems[name]?'line-through':'';
+  }
   applyFilters();
   if(currentView==='mustdo') renderMustDo();
+  renderDay();
 }
 
 function toggleStatusFilter(type){

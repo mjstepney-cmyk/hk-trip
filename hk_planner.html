@@ -1505,7 +1505,7 @@ function scrollTabIntoView(){
 
 
 // ── CLOUD SYNC (JSONBin) ─────────────────────────────────────────────
-const JBIN_KEY = '$2a$10$N8ZqUCuw0WOkBji.nQXnhOqpfPf1Iqj6BYc/QkPq1Ei8ht0LMGoce';
+const JBIN_KEY = '$2a$10$c7sf5j.d6SvPWejToX3bzuRHL3Tm5RAL06Sb3jjT9VCdUEizDv1em';
 const JBIN_BIN_STORE = 'hk_jbin_id';
 let _syncTimer = null;
 let _syncing = false;
@@ -1541,19 +1541,28 @@ async function cloudPush(manual=false){
   try{
     const id = await getBinId();
     const payload = {tripData, _ts: new Date().toISOString()};
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${id}`, {
-      method:'PUT',
-      headers:{'Content-Type':'application/json','X-Access-Key':JBIN_KEY},
-      body: JSON.stringify(payload)
-    });
-    if(!res.ok) throw new Error('Push failed');
+    let res;
+    try{
+      res = await fetch(`https://api.jsonbin.io/v3/b/${id}`, {
+        method:'PUT',
+        headers:{'Content-Type':'application/json','X-Master-Key':JBIN_KEY},
+        body: JSON.stringify(payload)
+      });
+    }catch(netErr){
+      showToast('⚠ Push network error: '+netErr.message, 8000);
+      throw netErr;
+    }
+    if(!res.ok){
+      const errText = await res.text().catch(()=>'');
+      showToast('⚠ Push failed ('+res.status+'): '+errText.slice(0,100), 8000);
+      throw new Error('Push failed: '+res.status);
+    }
     setSyncIndicator('ok');
     updateSyncStatus('Synced to cloud');
     if(manual) showToast('✅ Pushed to cloud');
   }catch(e){
     setSyncIndicator('err');
     updateSyncStatus('Cloud unavailable — saved locally');
-    if(manual) showToast('⚠ Could not reach cloud — data saved locally');
   }finally{ _syncing=false; }
 }
 
@@ -1563,10 +1572,20 @@ async function cloudPull(manual=false){
   setSyncIndicator('pull');
   try{
     const id = await getBinId();
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
-      headers:{'X-Access-Key':JBIN_KEY}
-    });
-    if(!res.ok) throw new Error('Pull failed');
+    let res;
+    try{
+      res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
+        headers:{'X-Master-Key':JBIN_KEY}
+      });
+    }catch(netErr){
+      showToast('⚠ Pull network error: '+netErr.message, 8000);
+      throw netErr;
+    }
+    if(!res.ok){
+      const errText = await res.text().catch(()=>'');
+      showToast('⚠ Pull failed ('+res.status+'): '+errText.slice(0,100), 8000);
+      throw new Error('Pull failed: '+res.status);
+    }
     const j = await res.json();
     const remote = j.record;
     if(!remote.tripData) throw new Error('Invalid remote data');

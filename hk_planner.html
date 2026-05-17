@@ -1525,19 +1525,12 @@ function setSyncIndicator(state){
 }
 
 async function getBinId(){
+  // Use stored ID, falling back to the hardcoded shared bin
   let id = localStorage.getItem(JBIN_BIN_STORE);
-  if(id) return id;
-  // Create a new bin
-  setSyncIndicator('init');
-  const res = await fetch('https://api.jsonbin.io/v3/b', {
-    method:'POST',
-    headers:{'Content-Type':'application/json','X-Access-Key':JBIN_KEY,'X-Bin-Name':'HK Trip Planner'},
-    body: JSON.stringify({tripData, _ts: new Date().toISOString()})
-  });
-  if(!res.ok) throw new Error('Could not create bin');
-  const j = await res.json();
-  id = j.metadata.id;
-  localStorage.setItem(JBIN_BIN_STORE, id);
+  if(!id){
+    id = '6a09ef20250b1311c3641926';
+    localStorage.setItem(JBIN_BIN_STORE, id);
+  }
   return id;
 }
 

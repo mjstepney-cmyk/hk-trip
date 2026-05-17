@@ -490,6 +490,24 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .wx-start-input:focus{outline:none;border-color:var(--blue)}
 .wx-clear-date{background:none;border:none;color:#1a4a7a;font-size:11px;cursor:pointer;padding:0 2px;line-height:1;display:none}
 .wx-clear-date.visible{display:inline}
+/* ── SYNC SETUP DIALOG ── */
+.sync-dialog-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:400;align-items:center;justify-content:center}
+.sync-dialog-overlay.open{display:flex}
+.sync-dialog{background:var(--bg);border-radius:var(--radius-lg);padding:20px 22px;width:360px;max-width:92vw;box-shadow:0 8px 32px rgba(0,0,0,0.25)}
+.sync-dialog h3{font-size:15px;font-weight:700;margin:0 0 6px;color:var(--text)}
+.sync-dialog p{font-size:12px;color:var(--text-muted);margin:0 0 14px;line-height:1.5}
+.sync-dialog label{font-size:11px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px}
+.sync-dialog input{width:100%;font-size:12px;font-family:monospace;padding:7px 9px;border:1px solid var(--border-strong);border-radius:var(--radius);background:var(--bg);color:var(--text);margin-bottom:10px;box-sizing:border-box}
+.sync-dialog input:focus{outline:none;border-color:var(--blue)}
+.sync-dialog-btns{display:flex;gap:8px;margin-top:4px}
+.sync-dialog .btn-primary{flex:1;background:var(--blue);color:#fff;border:none;padding:9px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer}
+.sync-dialog .btn-primary:hover{background:#0d4f8a}
+.sync-dialog .btn-secondary{background:var(--bg-secondary);border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:var(--radius);font-size:13px;cursor:pointer}
+.sync-copy-row{display:flex;gap:6px;margin-bottom:12px}
+.sync-copy-row input{margin-bottom:0;flex:1}
+.sync-copy-btn{background:var(--blue-light);color:var(--blue);border:1px solid rgba(24,95,165,0.25);padding:6px 10px;border-radius:var(--radius);font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.sync-copy-btn:hover{background:var(--blue);color:#fff}
+.sync-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
 </style>
 </head>
 <body>
@@ -513,6 +531,30 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
   </div>
 </div>
 <input type="file" id="import-input" accept=".json" style="display:none" onchange="importPlans(this)">
+
+<!-- SYNC SETUP DIALOG -->
+<div class="sync-dialog-overlay" id="sync-setup-overlay">
+  <div class="sync-dialog">
+    <h3>☁ Cloud Sync Setup</h3>
+    <p>To sync across devices, each device needs the same Bin ID. Copy it from your first device and paste it here.</p>
+
+    <label>Your Bin ID (this device)</label>
+    <div class="sync-copy-row">
+      <input type="text" id="sync-bin-display" readonly placeholder="Not yet created — open planner normally first">
+      <button class="sync-copy-btn" onclick="copyBinId()">Copy</button>
+    </div>
+
+    <hr class="sync-divider">
+
+    <label>Paste Bin ID from another device</label>
+    <input type="text" id="sync-bin-paste" placeholder="Paste bin ID here…" spellcheck="false" autocomplete="off">
+
+    <div class="sync-dialog-btns">
+      <button class="btn-secondary" onclick="closeSyncSetup()">Cancel</button>
+      <button class="btn-primary" onclick="saveBinId()">Save &amp; Sync</button>
+    </div>
+  </div>
+</div>
 
 <!-- PDF DIALOG -->
 <div class="pdf-dialog-overlay" id="pdf-dialog-overlay">
@@ -545,11 +587,15 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 <div id="toast" style="display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgb(26, 26, 46); color: rgb(255, 255, 255); padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; opacity: 0;">⚠️ Route capped at 9 stops — 4 stops omitted. Split into separate slots.</div>
 
 <div id="day-view-root">
-  <div id="sync-bar" style="display:none;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:4px 12px;font-size:11px;color:var(--text-hint);display:flex;align-items:center;justify-content:space-between">
-  <span id="sync-status">Last auto-saved 16:13 on Sun 22 Mar</span>
-  <span style="display:flex;gap:10px">
-    <button onclick="exportPlans()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">💾 Save backup</button>
-    <button onclick="document.getElementById(&#39;import-input&#39;).click()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">📂 Load backup</button>
+  <div id="sync-bar" style="display:flex;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:4px 12px;font-size:11px;color:var(--text-hint);align-items:center;justify-content:space-between">
+  <span id="sync-status">Initialising sync…</span>
+  <span style="display:flex;gap:10px;align-items:center">
+    <span id="sync-indicator" style="font-size:10px;padding:1px 7px;border-radius:8px;font-weight:600;background:#e0e0e0;color:#666">–</span>
+    <button onclick="cloudPush(true)" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0" title="Force push to cloud">☁ Push</button>
+    <button onclick="cloudPull(true)" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0" title="Force pull from cloud">⬇ Pull</button>
+    <button onclick="openSyncSetup()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">⚙ Sync setup</button>
+    <button onclick="exportPlans()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">💾 Backup</button>
+    <button onclick="document.getElementById(&#39;import-input&#39;).click()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">📂 Restore</button>
   </span>
 </div>
 <div id="wx-bar">
@@ -1458,18 +1504,158 @@ function scrollTabIntoView(){
 }
 
 
+// ── CLOUD SYNC (JSONBin) ─────────────────────────────────────────────
+const JBIN_KEY = '$2a$10$N8ZqUCuw0WOkBji.nQXnhOqpfPf1Iqj6BYc/QkPq1Ei8ht0LMGoce';
+const JBIN_BIN_STORE = 'hk_jbin_id';
+let _syncTimer = null;
+let _syncing = false;
+
+function setSyncIndicator(state){
+  const el = document.getElementById('sync-indicator');
+  if(!el) return;
+  const map = {
+    ok:    {bg:'#E8F5E9',color:'#2E7D32',text:'✓ Synced'},
+    push:  {bg:'#E3F2FD',color:'#1565C0',text:'↑ Pushing…'},
+    pull:  {bg:'#E3F2FD',color:'#1565C0',text:'↓ Pulling…'},
+    err:   {bg:'#FFEBEE',color:'#B71C1C',text:'⚠ Offline'},
+    init:  {bg:'#FFF8E1',color:'#F57F17',text:'… Init'},
+  };
+  const s = map[state]||map.init;
+  el.style.background=s.bg; el.style.color=s.color; el.textContent=s.text;
+}
+
+async function getBinId(){
+  let id = localStorage.getItem(JBIN_BIN_STORE);
+  if(id) return id;
+  // Create a new bin
+  setSyncIndicator('init');
+  const res = await fetch('https://api.jsonbin.io/v3/b', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','X-Access-Key':JBIN_KEY,'X-Bin-Name':'HK Trip Planner'},
+    body: JSON.stringify({tripData, _ts: new Date().toISOString()})
+  });
+  if(!res.ok) throw new Error('Could not create bin');
+  const j = await res.json();
+  id = j.metadata.id;
+  localStorage.setItem(JBIN_BIN_STORE, id);
+  return id;
+}
+
+async function cloudPush(manual=false){
+  if(_syncing) return;
+  _syncing = true;
+  setSyncIndicator('push');
+  try{
+    const id = await getBinId();
+    const payload = {tripData, _ts: new Date().toISOString()};
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${id}`, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Access-Key':JBIN_KEY},
+      body: JSON.stringify(payload)
+    });
+    if(!res.ok) throw new Error('Push failed');
+    setSyncIndicator('ok');
+    updateSyncStatus('Synced to cloud');
+    if(manual) showToast('✅ Pushed to cloud');
+  }catch(e){
+    setSyncIndicator('err');
+    updateSyncStatus('Cloud unavailable — saved locally');
+    if(manual) showToast('⚠ Could not reach cloud — data saved locally');
+  }finally{ _syncing=false; }
+}
+
+async function cloudPull(manual=false){
+  if(_syncing) return;
+  _syncing = true;
+  setSyncIndicator('pull');
+  try{
+    const id = await getBinId();
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
+      headers:{'X-Access-Key':JBIN_KEY}
+    });
+    if(!res.ok) throw new Error('Pull failed');
+    const j = await res.json();
+    const remote = j.record;
+    if(!remote.tripData) throw new Error('Invalid remote data');
+    // Compare timestamps — take newer
+    const remoteTs = remote._ts ? new Date(remote._ts) : new Date(0);
+    const localTs  = new Date(localStorage.getItem('hk_last_saved')||0);
+    if(remoteTs > localTs || manual){
+      if(manual && remoteTs <= localTs){
+        if(!confirm('Local data is newer than cloud. Pull anyway and overwrite local?')){ _syncing=false; setSyncIndicator('ok'); return; }
+      }
+      tripData = remote.tripData;
+      migrateData();
+      localStorage.setItem('hk_trip_v2', JSON.stringify(tripData));
+      localStorage.setItem('hk_last_saved', remote._ts||new Date().toISOString());
+      renderTabs(); renderDay();
+      setSyncIndicator('ok');
+      updateSyncStatus('Pulled from cloud');
+      if(manual) showToast('✅ Pulled latest from cloud');
+    } else {
+      setSyncIndicator('ok');
+      updateSyncStatus('Already up to date');
+    }
+  }catch(e){
+    setSyncIndicator('err');
+    updateSyncStatus('Cloud unavailable — using local');
+  }finally{ _syncing=false; }
+}
+
+function updateSyncStatus(msg){
+  const now = new Date();
+  const t = now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const el = document.getElementById('sync-status');
+  if(el) el.textContent = `${msg} · ${t}`;
+}
+
+function debouncedPush(){
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(()=>cloudPush(), 2000);
+}
+
+async function initSync(){
+  // On load: pull if remote is newer, else use local
+  try{ await cloudPull(); } catch(e){ setSyncIndicator('err'); }
+}
+
+function openSyncSetup(){
+  const binId = localStorage.getItem(JBIN_BIN_STORE)||'';
+  document.getElementById('sync-bin-display').value = binId;
+  document.getElementById('sync-bin-paste').value = '';
+  document.getElementById('sync-setup-overlay').classList.add('open');
+}
+
+function closeSyncSetup(){
+  document.getElementById('sync-setup-overlay').classList.remove('open');
+}
+
+function copyBinId(){
+  const val = document.getElementById('sync-bin-display').value;
+  if(!val){ showToast('No bin ID yet — open the planner and make a change first'); return; }
+  navigator.clipboard.writeText(val).then(()=>showToast('✅ Bin ID copied to clipboard')).catch(()=>{
+    document.getElementById('sync-bin-display').select();
+    document.execCommand('copy');
+    showToast('✅ Bin ID copied');
+  });
+}
+
+function saveBinId(){
+  const val = document.getElementById('sync-bin-paste').value.trim();
+  if(!val){ showToast('Please paste a Bin ID first'); return; }
+  localStorage.setItem(JBIN_BIN_STORE, val);
+  closeSyncSetup();
+  showToast('✅ Bin ID saved — pulling from cloud…');
+  cloudPull(false);
+}
+// ─────────────────────────────────────────────────────────────────────
+
 function save(){
   localStorage.setItem('hk_trip_v2',JSON.stringify(tripData));
   const now=new Date();
-  const timeStr=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  const dateStr=now.toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'});
   localStorage.setItem('hk_last_saved',now.toISOString());
-  const bar=document.getElementById('sync-bar');
-  const status=document.getElementById('sync-status');
-  if(bar&&status){
-    bar.style.display='flex';
-    status.textContent=`Auto-saved ${timeStr} on ${dateStr} — remember to export backup before switching device`;
-  }
+  updateSyncStatus('Saved locally');
+  debouncedPush();
 }
 
 function exportPlans(){
@@ -2675,6 +2861,7 @@ renderDay();
 fetchWeather();
 initTripStartInput();
 initWxScrollSync();
+initSync();
 renderRefPanel();
 window.addEventListener('resize', alignWxPills);
 initRefListEvents();

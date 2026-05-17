@@ -461,6 +461,33 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .zz-route-badge.bus{background:#B8860B}
 .zz-route-badge.walk{background:#666}
 
+/* ── WEATHER BAR ── */
+#wx-bar{display:none;background:#deeaf8;border-bottom:1px solid #a8c4e0;font-size:12px;color:#1a1a1a}
+#wx-bar.visible{display:block}
+.wx-top-row{display:flex;align-items:center;gap:8px;padding:4px 12px;border-bottom:1px solid #a8c4e0}
+.wx-pills-row{position:relative;overflow-x:auto;scrollbar-width:none;white-space:nowrap}
+.wx-pills-row::-webkit-scrollbar{display:none}
+.wx-now{display:flex;align-items:center;gap:6px;font-weight:700;color:#0d3d6b;white-space:nowrap;font-size:13px}
+.wx-now-sub{font-size:11px;color:#1a4a7a;font-weight:500}
+.wx-warn{background:#B71C1C;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;white-space:nowrap;animation:wx-pulse 2s infinite}
+@keyframes wx-pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.wx-forecast{display:flex;min-width:100%}
+.wx-forecast::-webkit-scrollbar{display:none}
+.wx-day{display:inline-flex;flex-direction:column;align-items:center;gap:1px;background:#fff;border-radius:4px;padding:2px 3px;border:1px solid #7aafd4;overflow:hidden;box-sizing:border-box;vertical-align:top}
+.wx-day-label{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.3px}
+.wx-day-empty{background:transparent !important;border:none !important}
+.wx-day-icon{font-size:15px;line-height:1}
+.wx-day-temp{font-size:10px;color:#1a1a1a;white-space:nowrap;font-weight:600}
+.wx-day-today{border:2px solid #185fa5 !important;background:#c8dcf0 !important}
+.wx-refresh{background:none;border:none;color:#0d3d6b;font-size:13px;cursor:pointer;padding:0 2px;flex-shrink:0}
+.wx-refresh:hover{opacity:1}
+@media(max-width:960px){#wx-bar{padding:4px 10px;font-size:11px}.wx-forecast{max-width:calc(100vw - 240px)}.wx-start-input{width:100px}}
+.wx-start-wrap{display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:auto}
+.wx-start-label{font-size:10px;color:#1a4a7a;white-space:nowrap;font-weight:500}
+.wx-start-input{font-size:11px;border:1px solid #7aafd4;border-radius:var(--radius);padding:2px 5px;background:#fff;color:#1a1a1a;cursor:pointer;width:120px}
+.wx-start-input:focus{outline:none;border-color:var(--blue)}
+.wx-clear-date{background:none;border:none;color:#1a4a7a;font-size:11px;cursor:pointer;padding:0 2px;line-height:1;display:none}
+.wx-clear-date.visible{display:inline}
 </style>
 </head>
 <body>
@@ -522,6 +549,22 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
     <button onclick="exportPlans()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">💾 Save backup</button>
     <button onclick="document.getElementById(&#39;import-input&#39;).click()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">📂 Load backup</button>
   </span>
+</div>
+<div id="wx-bar">
+  <div class="wx-top-row">
+    <div class="wx-now" id="wx-now">⛅ –</div>
+    <span id="wx-warn" style="display:none" class="wx-warn"></span>
+    <div class="wx-start-wrap">
+      <label class="wx-start-label" for="wx-start-date">From</label>
+      <input type="date" id="wx-start-date" class="wx-start-input" title="Set trip start date to align forecast to days">
+      <button class="wx-clear-date" id="wx-clear-date" onclick="clearTripStart()" title="Clear date">✕</button>
+    </div>
+    <a href="https://www.hko.gov.hk/en/wxinfo/currwx/fnd.htm" target="_blank" style="font-size:11px;color:#1a4a7a;text-decoration:none;border:1px solid #7aafd4;border-radius:10px;padding:2px 8px;background:#fff;white-space:nowrap;flex-shrink:0" title="Full forecast on HKO website">HKO ↗</a>
+    <button class="wx-refresh" onclick="fetchWeather(true)" title="Refresh weather">↺</button>
+  </div>
+  <div class="wx-pills-row" id="wx-pills-row">
+    <div class="wx-forecast" id="wx-forecast"></div>
+  </div>
 </div>
 <div class="tabs" id="day-tabs"><div class="tab active"><div style="display:flex;align-items:center;gap:3px;font-weight:600">Day 1<span class="tab-dot tab-dot-has">10</span></div><div style="font-size:10px;color:var(--red);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 2<span class="tab-dot tab-dot-has">10</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 3<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 4<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 5<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 6<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 7<span class="tab-dot tab-dot-has">4</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 8<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 9<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 10<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 11<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 12<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 13<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div><div class="tab"><div style="display:flex;align-items:center;gap:3px;font-weight:400">Day 14<span class="tab-dot tab-dot-empty">·</span></div><div style="font-size:10px;color:var(--text-hint);">–</div></div></div>
   <div class="split-layout">
@@ -1040,6 +1083,7 @@ function zoomedMapUrl(url){
 }
 
 function renderDay(){
+  setTimeout(alignWxPills,0);
   renderTabs();
   const d=tripData[currentDay];
   const otherDays=Array.from({length:DAYS},(_,i)=>i+1).filter(x=>x!==currentDay);
@@ -2436,10 +2480,181 @@ function addJourneyToDay(idx){
   showToast('Added "' + j.name + '" to Day ' + currentDay);
 }
 
+// ── WEATHER (HKO Open Data API) ──────────────────────────────────────
+const HKO_FND = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=en';
+const HKO_CUR = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en';
+const HKO_WARN= 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en';
+const WX_CACHE_KEY = 'hk_wx_cache';
+const WX_CACHE_TTL = 20 * 60 * 1000; // 20 min
+
+const HKO_ICONS = {
+  50:'☀️',51:'🌤',52:'⛅',53:'🌦',54:'🌧',60:'🌩',62:'⛈',63:'🌨',64:'❄️',
+  65:'🌫',70:'🌙',71:'🌙',72:'🌙',73:'🌙',74:'🌙',75:'🌙',76:'🌙',77:'🌙'
+};
+function wxIcon(code){return HKO_ICONS[code]||'🌡';}
+
+async function fetchWeather(force){
+  try{
+    if(!force){
+      const cached = sessionStorage.getItem(WX_CACHE_KEY);
+      if(cached){
+        const {data,ts} = JSON.parse(cached);
+        if(Date.now()-ts < WX_CACHE_TTL){renderWeather(data);return;}
+      }
+    }
+    const [fnd,cur,warn] = await Promise.all([
+      fetch(HKO_FND).then(r=>r.json()),
+      fetch(HKO_CUR).then(r=>r.json()),
+      fetch(HKO_WARN).then(r=>r.json())
+    ]);
+    const data = {fnd,cur,warn};
+    sessionStorage.setItem(WX_CACHE_KEY, JSON.stringify({data,ts:Date.now()}));
+    renderWeather(data);
+  }catch(e){
+    // CORS or network failure — hide bar silently
+    document.getElementById('wx-bar').classList.remove('visible');
+  }
+}
+
+function renderWeather({fnd,cur,warn}){
+  const bar = document.getElementById('wx-bar');
+  const nowEl = document.getElementById('wx-now');
+  const warnEl = document.getElementById('wx-warn');
+  const fcEl = document.getElementById('wx-forecast');
+
+  // Current conditions — find HKO HQ reading
+  let temp='–', humid='–';
+  try{
+    const hkoTemp = cur.temperature.data.find(d=>d.place==='Hong Kong Observatory') || cur.temperature.data[0];
+    const hkoHum  = cur.humidity.data.find(d=>d.place==='Hong Kong Observatory') || cur.humidity.data[0];
+    if(hkoTemp) temp = hkoTemp.value+'°C';
+    if(hkoHum)  humid = hkoHum.value+'%';
+  }catch(e){}
+
+  // Current icon from today's forecast
+  let curIcon = '🌡';
+  try{curIcon = wxIcon(fnd.weatherForecast[0].ForecastIcon);}catch(e){}
+
+  nowEl.innerHTML = `${curIcon} <span>${temp}</span><span class="wx-now-sub">&nbsp;${humid}</span>`;
+
+  // Warnings
+  try{
+    const activeWarns = Object.values(warn).filter(w=>w.type&&w.actionCode&&w.actionCode!=='CANCEL');
+    if(activeWarns.length){
+      warnEl.textContent = '⚠ ' + activeWarns.map(w=>w.type).join(' · ');
+      warnEl.style.display='inline-block';
+    } else {
+      warnEl.style.display='none';
+    }
+  }catch(e){warnEl.style.display='none';}
+
+  // Build forecast lookup by YYYYMMDD
+  const fcMap = {};
+  try{
+    fnd.weatherForecast.forEach(d=>{ fcMap[d.forecastDate]={icon:wxIcon(d.ForecastIcon),lo:d.forecastMintemp.value,hi:d.forecastMaxtemp.value}; });
+  }catch(e){}
+
+  // Store data for tab-aligned rendering
+  bar._fcMap = fcMap;
+  bar.classList.add('visible');
+  alignWxPills();
+}
+
+function alignWxPills(){
+  const bar = document.getElementById('wx-bar');
+  if(!bar || !bar.classList.contains('visible')) return;
+  const fcMap = bar._fcMap || {};
+  const tabs = document.querySelectorAll('#day-tabs .tab');
+  const tabsEl = document.getElementById('day-tabs');
+  const fcEl = document.getElementById('wx-forecast');
+  const pillsRow = document.getElementById('wx-pills-row');
+  if(!tabs.length || !fcEl) return;
+
+  const startDate = getTripStart();
+  const today = new Date();
+  const todayStr = today.getFullYear()+String(today.getMonth()+1).padStart(2,'0')+String(today.getDate()).padStart(2,'0');
+  const tabsRect = tabsEl.getBoundingClientRect();
+  const barRect = pillsRow.getBoundingClientRect();
+
+  let html = '';
+  const totalW = tabsEl.scrollWidth;
+  pillsRow.style.height = '36px';
+  fcEl.style.position = 'relative';
+  fcEl.style.width = totalW + 'px';
+  fcEl.style.height = '36px';
+
+  tabs.forEach((tab, i) => {
+    // Date for this day
+    let dateStr = null;
+    if(startDate){
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + i);
+      dateStr = d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+    } else {
+      const d = new Date(today);
+      d.setDate(d.getDate() + i);
+      dateStr = d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+    }
+
+    const fc = fcMap[dateStr];
+    const left = tab.offsetLeft;
+    const width = tab.offsetWidth;
+    const isToday = dateStr === todayStr;
+
+    if(fc){
+      html += `<div class="wx-day${isToday?' wx-day-today':''}" style="position:absolute;left:${left}px;width:${width}px;height:32px;top:2px">` +
+        `<div class="wx-day-icon">${fc.icon}</div>` +
+        `<div class="wx-day-temp">${fc.lo}–${fc.hi}°</div>` +
+        `</div>`;
+    } else {
+      html += `<div class="wx-day wx-day-empty" style="position:absolute;left:${left}px;width:${width}px;height:32px;top:2px"></div>`;
+    }
+  });
+
+  fcEl.innerHTML = html;
+}
+
+function getTripStart(){
+  const v = localStorage.getItem('hk_trip_start');
+  if(!v) return null;
+  const d = new Date(v+'T00:00:00+08:00');
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function clearTripStart(){
+  localStorage.removeItem('hk_trip_start');
+  document.getElementById('wx-start-date').value='';
+  document.getElementById('wx-clear-date').classList.remove('visible');
+  const cached = sessionStorage.getItem('hk_wx_cache');
+  if(cached){ try{ renderWeather(JSON.parse(cached).data); }catch(e){} }
+}
+
+function initTripStartInput(){
+  const input = document.getElementById('wx-start-date');
+  const clearBtn = document.getElementById('wx-clear-date');
+  const saved = localStorage.getItem('hk_trip_start');
+  if(saved){ input.value = saved; clearBtn.classList.add('visible'); }
+  input.addEventListener('change', function(){
+    const v = this.value;
+    if(v){
+      localStorage.setItem('hk_trip_start', v);
+      clearBtn.classList.add('visible');
+    } else {
+      clearTripStart();
+    }
+    const cached = sessionStorage.getItem('hk_wx_cache');
+    if(cached){ try{ renderWeather(JSON.parse(cached).data); }catch(e){} }
+  });
+}
+// ─────────────────────────────────────────────────────────────────────
+
 initData();
 renderTabs();
 renderDay();
+fetchWeather();
+initTripStartInput();
 renderRefPanel();
+window.addEventListener('resize', alignWxPills);
 initRefListEvents();
 initMobileRefToggle();
 window.addEventListener('resize', initMobileRefToggle);

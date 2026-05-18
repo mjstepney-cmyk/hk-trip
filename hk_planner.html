@@ -267,8 +267,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 /* ── REFERENCE PANEL (desktop) ── */
 .split-layout{display:flex;gap:0}.pane-divider{width:8px;cursor:col-resize;flex-shrink:0;background:var(--border);transition:background 0.15s ease;position:relative;z-index:10}.pane-divider:hover,.pane-divider.dragging{background:var(--red)}
 @media(max-width:960px){.pane-divider{display:none}}
-.split-layout.ref-wide .planner-pane{flex:0 0 33.33% !important;min-width:0;max-width:33.33%}
-.split-layout.ref-wide .ref-pane{width:66.66% !important;flex:0 0 66.66% !important;max-width:66.66%}
+.split-layout.ref-wide .planner-pane{flex:0 0 50% !important;min-width:0;max-width:50%}
+.split-layout.ref-wide .ref-pane{width:50% !important;flex:0 0 50% !important;max-width:50%}
 .planner-pane{flex:1;overflow-y:auto;min-width:0}
 .ref-pane{width:300px;max-width:60vw;background:var(--bg-secondary);overflow-y:auto;flex-shrink:0}
 .ref-pane-header{padding:10px 12px;font-size:12px;font-weight:600;background:var(--bg-tertiary);border-bottom:1px solid var(--border);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;position:sticky;top:0;z-index:5}
@@ -381,7 +381,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .add-pkg-btn{background:none;border:1px dashed var(--border);color:var(--text-hint);font-size:12px;padding:6px 20px;border-radius:var(--radius-lg);cursor:pointer;width:100%}
 .add-pkg-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
 /* ── Item cards ── */
-.item-card{display:flex;align-items:flex-start;gap:6px;padding:7px 8px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:5px;cursor:pointer;background:var(--bg)}
+.item-card{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;padding:7px 8px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:5px;cursor:pointer;background:var(--bg)}
 .item-card[draggable]:hover{border-color:var(--border-strong)}
 .item-card.drag-over{border-color:var(--red);background:var(--red-light)}
 .card-drag-handle{color:var(--text-hint);cursor:grab;font-size:14px;flex-shrink:0;padding-top:1px}
@@ -396,12 +396,21 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .card-map-btn:hover{color:var(--red)}
 .card-delete-btn{background:none;border:none;color:var(--text-hint);font-size:12px;cursor:pointer;padding:1px 4px}
 .card-delete-btn:hover{color:var(--red)}
-.card-detail{display:none;margin-top:5px;padding-top:5px;border-top:1px solid var(--border)}
+.card-detail{display:none;width:100%;flex-basis:100%;margin-top:4px;padding:8px 4px 2px;border-top:1px solid var(--border)}
 .card-detail.open{display:block}
 .card-hours{font-size:11px;color:var(--text-muted);margin-bottom:3px}
 .card-tip{font-size:11px;color:var(--text-hint);margin-top:2px}
-.card-tip-detail{font-size:11px;color:var(--text-muted);margin-bottom:4px}
-.card-note-input{width:100%;font-size:11px;border:1px solid var(--border);border-radius:var(--radius);padding:4px 6px;background:var(--bg-secondary);color:var(--text);font-family:inherit;box-sizing:border-box}
+.card-tip-detail{font-size:12px;color:var(--text-muted);margin-bottom:8px;line-height:1.5}
+.card-note-input{width:100%;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);padding:6px 8px;background:var(--bg-secondary);color:var(--text);font-family:inherit;box-sizing:border-box;line-height:1.6}
+.card-steps{list-style:none;padding:0;margin:0 0 8px}
+.card-step{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+.card-step-num{width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.card-step-text{font-size:12px;color:var(--text);line-height:1.5;flex:1}
+@media(max-width:960px){
+  .card-step-text{font-size:13px}
+  .card-note-input{font-size:13px}
+  .card-tip-detail{font-size:13px}
+}
 /* ── Day header ── */
 .day-title-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
 .day-num{margin:0;font-size:20px}
@@ -515,7 +524,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 <div class="app-header">
   <div>
     <div class="app-header-title" style="font-size:17px;font-weight:600;color:#fff">Hong Kong Trip</div>
-    <div class="subtitle">14-day planner</div>
+    <div class="subtitle" id="header-subtitle">14-day planner</div>
   </div>
   <div class="header-actions">
     <button class="btn-mode" id="btn-theme" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
@@ -684,6 +693,8 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
         <option value="shamshuipo">Sham Shui Po / Cheung Sha Wan</option>
         <option value="stanley">Stanley / Repulse Bay</option>
         <option value="aberdeen">Aberdeen / Horizon Plaza</option>
+        <option value="florentia">Florentia Village (Kwai Hing)</option>
+        <option value="citygate">Citygate Outlets (Tung Chung)</option>
       </select>
       <div class="zz-arrow">&#8594;</div>
       <select class="zz-select" id="zz-to" onchange="zzRoute()">
@@ -697,6 +708,8 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
         <option value="shamshuipo">Sham Shui Po / Cheung Sha Wan</option>
         <option value="stanley">Stanley / Repulse Bay</option>
         <option value="aberdeen">Aberdeen / Horizon Plaza</option>
+        <option value="florentia">Florentia Village (Kwai Hing)</option>
+        <option value="citygate">Citygate Outlets (Tung Chung)</option>
         <option value="peak_upper">Ngong Ping / Big Buddha</option>
       </select>
     </div>
@@ -1114,8 +1127,9 @@ function renderTabs(){
     const count=(day.packages||[]).reduce((s,p)=>s+p.items.length,0);
     const dotClass=count>0?'tab-dot tab-dot-has':'tab-dot tab-dot-empty';
     const dotLabel=count>0?String(count):'';
+    const flagIcons=(day.loungeEvening?'🍷':'')+(day.dedicatedTrip?'🚌':'');
     html+=`<div class="tab${d===currentDay?' active':''}" onclick="goToDay(${d})">
-      <div style="display:flex;align-items:center;gap:3px;font-weight:${d===currentDay?'600':'400'}">Day ${d}<span class="${dotClass}">${dotLabel}</span></div>
+      <div style="display:flex;align-items:center;gap:3px;font-weight:${d===currentDay?'600':'400'}">Day ${d}<span class="${dotClass}">${dotLabel}</span>${flagIcons}</div>
       <div style="font-size:10px;color:${d===currentDay?'var(--red)':'var(--text-hint)'}">${esc(day.title)||'–'}</div>
     </div>`;
   }
@@ -1216,7 +1230,19 @@ function renderDay(){
 
   // Day footer actions
   const routeUrl=buildRouteUrl(currentDay);
-  html+=`<div class="day-actions">
+  const isLounge=d.loungeEvening||false;
+  const isDedicated=d.dedicatedTrip||false;
+  html+=`<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 2px 2px;margin-top:4px;border-top:1px solid var(--border)">
+    <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted);cursor:pointer;user-select:none">
+      <input type="checkbox" ${isLounge?'checked':''} onchange="toggleDayFlag(${currentDay},'loungeEvening',this.checked)" style="accent-color:var(--red);width:14px;height:14px">
+      🍷 Lounge evening
+    </label>
+    <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted);cursor:pointer;user-select:none">
+      <input type="checkbox" ${isDedicated?'checked':''} onchange="toggleDayFlag(${currentDay},'dedicatedTrip',this.checked)" style="accent-color:#F57F17;width:14px;height:14px">
+      🚌 Dedicated trip
+    </label>
+  </div>
+  <div class="day-actions">
     <select id="move-day-target" class="move-slot">${dayOpts}</select>
     <button class="btn-secondary" onclick="moveDayPlan(${currentDay},'swap')">&#8644; Swap</button>
     <button class="btn-secondary" onclick="moveDayPlan(${currentDay},'move')">&#8594; Move</button>
@@ -1265,12 +1291,31 @@ function renderItemCard(item,day,pkgId,idx,total){
     <div class="card-actions">
       <button class="card-move-item-btn" onclick="moveItemUp(${day},'${pkgId}','${item.id}')" ${idx===0?'disabled':''}>&#8593;</button>
       <button class="card-move-item-btn" onclick="moveItemDown(${day},'${pkgId}','${item.id}')" ${idx===total-1?'disabled':''}>&#8595;</button>
-      <button class="card-delete-btn" onclick="deleteItem(${day},'${pkgId}','${item.id}')">&#10005;</button>
+      <button class="card-delete-btn" onclick="deleteItem(${day},'${pkgId}','${item.id}')" title="Remove from day">&#10005;</button>
     </div>
     <div class="card-detail" id="detail-${item.id}">
       ${item.tip?`<div class="card-tip-detail">${esc(item.tip)}</div>`:''}
-      <input class="card-note-input" placeholder="Add a note…" value="${esc(item.notes||'')}"
-        oninput="updateItemNote(${day},'${pkgId}','${item.id}',this.value)" onclick="event.stopPropagation()">
+      ${(()=>{
+        if(!item.notes) return '';
+        // Detect step-format notes (lines starting with digit.)
+        const lines = item.notes.split('\n');
+        const isSteps = lines.length > 1 && /^\d+\./.test(lines[0].trim());
+        if(isSteps){
+          const stepLines = lines.filter(l => /^\d+\./.test(l.trim()));
+          const tipLine = lines.find(l => l.startsWith('💡'));
+          const stepsHtml = stepLines.map(l => {
+            const num = l.match(/^(\d+)\./)[1];
+            const text = l.replace(/^\d+\.\s*/,'');
+            return '<li class="card-step"><span class="card-step-num">'+num+'</span><span class="card-step-text">'+esc(text)+'</span></li>';
+          }).join('');
+          const tipHtml = tipLine ? '<div style="font-size:11px;color:var(--text-hint);background:var(--bg-tertiary);border-radius:var(--radius);padding:5px 8px;margin-top:4px;line-height:1.5">'+esc(tipLine)+'</div>' : '';
+          return '<ul class="card-steps">'+stepsHtml+'</ul>'+tipHtml;
+        }
+        return '<div style="font-size:12px;color:var(--text-muted);white-space:pre-line;line-height:1.6;margin-bottom:6px">'+esc(item.notes)+'</div>';
+      })()}
+      <textarea class="card-note-input" placeholder="Add a personal note…" rows="2"
+        oninput="updateItemNote(${day},'${pkgId}','${item.id}',this.value)" onclick="event.stopPropagation()"
+        style="resize:vertical;margin-top:4px">${esc(item.notes&&!/^\d+\./.test(item.notes.trim())?item.notes:'')}</textarea>
     </div>
   </div>`;
 }
@@ -1461,18 +1506,19 @@ function moveDayPlan(fromDay,mode){
   const toDay=parseInt(sel?.value);
   if(!toDay||isNaN(toDay)||toDay===fromDay){showToast('Please select a destination day first.');return;}
   function cloneDay(d){
-    return JSON.parse(JSON.stringify({title:tripData[d].title||'',area:tripData[d].area||'',packages:tripData[d].packages||[]}));
+    const src=tripData[d];
+    return JSON.parse(JSON.stringify({title:src.title||'',area:src.area||'',packages:src.packages||[],loungeEvening:src.loungeEvening||false,dedicatedTrip:src.dedicatedTrip||false}));
   }
   const fromSnap=cloneDay(fromDay);
   const toSnap=cloneDay(toDay);
   if(mode==='swap'){
-    tripData[toDay].title=fromSnap.title;tripData[toDay].area=fromSnap.area;tripData[toDay].packages=fromSnap.packages;
-    tripData[fromDay].title=toSnap.title;tripData[fromDay].area=toSnap.area;tripData[fromDay].packages=toSnap.packages;
+    tripData[toDay].title=fromSnap.title;tripData[toDay].area=fromSnap.area;tripData[toDay].packages=fromSnap.packages;tripData[toDay].loungeEvening=fromSnap.loungeEvening;tripData[toDay].dedicatedTrip=fromSnap.dedicatedTrip;
+    tripData[fromDay].title=toSnap.title;tripData[fromDay].area=toSnap.area;tripData[fromDay].packages=toSnap.packages;tripData[fromDay].loungeEvening=toSnap.loungeEvening;tripData[fromDay].dedicatedTrip=toSnap.dedicatedTrip;
     save();renderTabs();renderDay();
     showToast(`⇄ Day ${fromDay} and Day ${toDay} swapped`);
   } else {
     if(!confirm(`Copy Day ${fromDay} to Day ${toDay} and clear Day ${fromDay}?\nDay ${toDay}'s plan will be overwritten.`)) return;
-    tripData[toDay].title=fromSnap.title;tripData[toDay].area=fromSnap.area;tripData[toDay].packages=fromSnap.packages;
+    tripData[toDay].title=fromSnap.title;tripData[toDay].area=fromSnap.area;tripData[toDay].packages=fromSnap.packages;tripData[toDay].loungeEvening=fromSnap.loungeEvening;tripData[toDay].dedicatedTrip=fromSnap.dedicatedTrip;
     clearDay(fromDay,true);
     save();renderTabs();renderDay();
     showToast(`→ Day ${fromDay} moved to Day ${toDay}`);
@@ -1485,6 +1531,12 @@ function clearDay(day,silent){
   tripData[day].title='';
   tripData[day].area='';
   save();renderTabs();renderDay();
+}
+
+function toggleDayFlag(day,flag,val){
+  tripData[day][flag]=val;
+  save();
+  renderTabs();
 }
 
 function updateDayField(day,field,val){
@@ -1668,6 +1720,18 @@ function save(){
   localStorage.setItem('hk_last_saved',now.toISOString());
   updateSyncStatus('Saved locally');
   debouncedPush();
+  updateHeaderSubtitle();
+}
+
+function updateHeaderSubtitle(){
+  const el=document.getElementById('header-subtitle');
+  if(!el) return;
+  const loungeDays=Object.values(tripData).filter(d=>d&&d.loungeEvening).length;
+  const plannedDays=Object.values(tripData).filter(d=>d&&(d.packages||[]).some(p=>p.items.length>0)).length;
+  const parts=['14-day planner'];
+  if(plannedDays>0) parts.push(`${plannedDays} planned`);
+  if(loungeDays>0) parts.push(`🍷 ${loungeDays} lounge`);
+  el.textContent=parts.join(' · ');
 }
 
 function exportPlans(){
@@ -1734,7 +1798,7 @@ function setView(v){
   currentView=v;
   document.getElementById('day-view-root').style.display=v==='day'?'':'none';
   document.getElementById('overview-root').style.display=v==='overview'?'':'none';
-  document.getElementById('journey-root').style.display=v==='journey'?'':'none';
+  document.getElementById('journey-root').style.display=v==='journey'?'block':'none';
   document.getElementById('btn-day').classList.toggle('active',v==='day');
   document.getElementById('btn-overview').classList.toggle('active',v==='overview');
   document.getElementById('btn-journey').classList.toggle('active',v==='journey');
@@ -1763,7 +1827,7 @@ function renderOverview(){
       return `<span style="font-size:9px;background:${zl};color:${zc};border-radius:8px;padding:1px 5px;font-weight:600">${zn}</span>`;
     }).join('');
     html+=`<div class="overview-day-card" onclick="goToDay(${d})">
-      <div class="overview-day-num">Day ${d}</div>
+      <div class="overview-day-num">Day ${d}${tripData[d].loungeEvening?' 🍷':''}${tripData[d].dedicatedTrip?' 🚌':''}</div>
       <div class="overview-day-title">${esc(day.title)||'<span style="color:var(--text-hint);font-style:italic;font-weight:400">Unplanned</span>'}</div>
       ${dayZones.length?`<div style="display:flex;flex-wrap:wrap;gap:2px;margin-bottom:4px">${zoneChips}</div>`:''}
       <div class="overview-pills">${all.length?all.slice(0,4).map(i=>`<span class="overview-pill" style="background:${typeColorLight(i.type)};color:${typeColor(i.type)}">${esc(i.name)}</span>`).join('')+(all.length>4?`<span class="overview-pill">+${all.length-4} more</span>`:''): `<span class="overview-empty">Nothing added yet</span>`}</div>
@@ -1978,9 +2042,14 @@ function filterRef(q){ applyFilters(); }
 function toggleRefPaneDesktop(){
   const layout = document.querySelector('.split-layout');
   const btn    = document.getElementById('ref-desktop-toggle-btn');
+  const refPane = document.getElementById('ref-pane');
+  const plannerPane = document.getElementById('planner-pane');
   if(!layout || !btn) return;
   const isWide = layout.classList.contains('ref-wide');
   layout.classList.toggle('ref-wide', !isWide);
+  // Clear any inline widths set by drag so CSS class takes control
+  if(refPane){ refPane.style.width=''; refPane.style.flex=''; refPane.style.maxWidth=''; }
+  if(plannerPane){ plannerPane.style.flex=''; plannerPane.style.maxWidth=''; }
   btn.textContent = isWide ? '⇔ Expand' : '⇔ Collapse';
   btn.title = isWide ? 'Expand reference panel' : 'Collapse reference panel';
 }
@@ -2111,30 +2180,33 @@ function buildPdfContent(days){
       html+=`</div>`;
     }
 
-    for(const slotKey of SLOT_ORDER){
-      const items=(d.slots[slotKey]||[]).filter(i=>i.type!=='start'&&i.type!=='finish');
-      if(items.length===0) continue;
-
-      html+=`<div class="slot">
-        <div class="slot-header" style="background:${SLOT_COLOURS[slotKey]}">${SLOT_NAMES[slotKey]}</div>`;
-
-      for(const item of items){
-        const costClass=item.cost===0?'cost-free':`cost-${item.cost||2}`;
-        const costLabel=COST_LABELS[item.cost]||'';
-        const zoneTxt=item.zone&&ZONES[item.zone]?ZONES[item.zone].short:'';
-        html+=`<div class="activity" style="border-left-color:${SLOT_COLOURS[slotKey]}">
-          <div class="activity-name">${item.name||''}</div>
-          ${item.tip?`<div class="activity-tip">${item.tip}</div>`:''}
-          ${item.notes?`<div class="activity-note">📝 ${item.notes}</div>`:''}
-          <div class="activity-meta">
-            ${item.hours?`<span>🕐 ${item.hours}</span>`:''}
-            ${costLabel?`<span class="badge ${costClass}">${costLabel}</span>`:''}
-            ${zoneTxt?`<span class="badge zone-badge">${zoneTxt}</span>`:''}
-          </div>
-          ${item.map?`<div class="map-url">🗺 ${item.map}</div>`:''}
-        </div>`;
+    // Use packages (current schema)
+    const pkgs=d.packages||[];
+    if(pkgs.length===0){
+      html+=`<div class="empty">Nothing planned for this day.</div>`;
+    } else {
+      for(const pkg of pkgs){
+        if(pkg.items.length===0) continue;
+        html+=`<div class="slot">
+          <div class="slot-header" style="background:#444">${pkg.name||'Plan'}</div>`;
+        for(const item of pkg.items){
+          const costClass=item.cost===0?'cost-free':`cost-${item.cost||2}`;
+          const costLabel=COST_LABELS[item.cost]||'';
+          const zoneTxt=item.zone&&ZONES[item.zone]?ZONES[item.zone].short:'';
+          html+=`<div class="activity" style="border-left-color:#444">
+            <div class="activity-name">${item.name||''}</div>
+            ${item.tip?`<div class="activity-tip">${item.tip}</div>`:''}
+            ${item.notes?`<div class="activity-note">📝 ${item.notes}</div>`:''}
+            <div class="activity-meta">
+              ${item.hours?`<span>🕐 ${item.hours}</span>`:''}
+              ${costLabel?`<span class="badge ${costClass}">${costLabel}</span>`:''}
+              ${zoneTxt?`<span class="badge zone-badge">${zoneTxt}</span>`:''}
+            </div>
+            ${item.map?`<div class="map-url">🗺 ${item.map}</div>`:''}
+          </div>`;
+        }
+        html+='</div>';
       }
-      html+='</div>';
     }
 
     const date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
@@ -2287,12 +2359,7 @@ function todayNextDay(){
 function renderTodayMode(day){
   const d=tripData[day];
   const title=d.title||'Day '+day;
-  const SLOT_DEFS=[
-    {key:'anchor', label:'🍳 Breakfast', colour:'var(--red)'},
-    {key:'morning', label:'🌅 Morning', colour:'#185FA5'},
-    {key:'afternoon', label:'☀️ Afternoon', colour:'#E65100'},
-    {key:'evening', label:'🌙 Evening', colour:'#0F6E56'},
-  ];
+  const routeUrl=buildRouteUrl(day);
 
   let html=`<div class="today-header">
     <div>
@@ -2307,36 +2374,32 @@ function renderTodayMode(day){
   </div>
   <div class="today-body">`;
 
-  for(const {key, label, colour} of SLOT_DEFS){
-    const items=(d.slots[key]||[]);
-    const visItems=items.filter(i=>i.type!=='start'&&i.type!=='finish');
-    if(key==='anchor'&&visItems.length===0) continue;
+  if(d.dedicatedTrip){
+    html+=`<div style="background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:12px;color:#F57F17;display:flex;align-items:center;gap:7px">🚌 <strong>Dedicated trip day</strong> — travel time intensive, not for combining with other areas</div>`;
+  }
+  if(d.loungeEvening){
+    html+=`<div style="background:var(--red-light);border:1px solid rgba(192,57,43,0.25);border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:12px;color:var(--red);display:flex;align-items:center;gap:7px">🍷 <strong>Executive Lounge evening</strong> — evening reserved at the Conrad</div>`;
+  }
 
-    const routeUrl=key!=='anchor'?buildRouteUrl([key],day):null;
-    html+=`<div class="today-slot">
-      <div class="today-slot-header" style="background:${colour}15;border-bottom-color:${colour}30">
-        <span style="color:${colour};font-size:18px">${label.split(' ')[0]}</span>
-        <span style="color:${colour}">${label.split(' ').slice(1).join(' ')}</span>
-      </div>
-      <div class="today-slot-body">`;
-
-    if(visItems.length===0){
-      html+=`<div class="today-empty">Nothing planned yet</div>`;
-    } else {
-      for(const item of visItems){
-        if(item.type==='anchor'){
-          html+=`<div class="today-card today-anchor">
-            <div class="today-card-name">${esc(item.name)}</div>
-            ${item.hours?`<div style="font-size:11px;color:var(--text-hint)">${esc(item.hours)}</div>`:''}
-          </div>`;
-          continue;
-        }
+  const pkgs=d.packages||[];
+  if(pkgs.length===0||(pkgs.length===1&&pkgs[0].items.length===0)){
+    html+=`<div style="text-align:center;padding:30px 20px;color:var(--text-hint);font-size:13px">Nothing planned for this day yet.</div>`;
+  } else {
+    for(const pkg of pkgs){
+      if(pkg.items.length===0) continue;
+      html+=`<div class="today-slot">
+        <div class="today-slot-header" style="background:var(--bg-secondary);border-bottom:1px solid var(--border)">
+          <span style="font-weight:600;color:var(--text);font-size:13px">${esc(pkg.name)}</span>
+        </div>
+        <div class="today-slot-body">`;
+      for(const item of pkg.items){
         const costBadgeHtml=item.cost!==undefined?costBadge(item.cost):'';
         const zoneHtml=item.zone&&ZONES[item.zone]?`<span class="zone-badge zone-${item.zone}" style="font-size:10px">${ZONES[item.zone].short}</span>`:'';
+        const colour=typeColor(item.type||'activity');
         html+=`<div class="today-card" style="border-left-color:${colour}">
           <div class="today-card-name">${esc(item.name)}</div>
           ${item.tip?`<div class="today-card-tip">${esc(item.tip)}</div>`:''}
-          ${item.notes?`<div class="today-card-note">📝 ${esc(item.notes)}</div>`:''}
+          ${item.notes?`<div class="today-card-note" style="white-space:pre-line">📝 ${esc(item.notes)}</div>`:''}
           <div class="today-card-meta">
             ${item.hours?`<span style="font-size:11px;color:var(--text-hint)">🕐 ${esc(item.hours)}</span>`:''}
             ${costBadgeHtml}${zoneHtml}
@@ -2344,20 +2407,17 @@ function renderTodayMode(day){
           </div>
         </div>`;
       }
+      html+='</div></div>';
     }
-
-    html+='</div>'; // today-slot-body
-
-    // Route bar for non-anchor slots
-    if(key!=='anchor'&&routeUrl){
-      html+=`<div class="today-route-bar">
-        <a class="today-route-btn today-route-walk" href="${routeUrl}" target="_blank">🗺 Walk route</a>
-      </div>`;
-    }
-    html+='</div>'; // today-slot
   }
 
-  html+='</div>'; // today-body
+  if(routeUrl){
+    html+=`<div class="today-route-bar">
+      <a class="today-route-btn today-route-walk" href="${routeUrl}" target="_blank">🗺 Full day route</a>
+    </div>`;
+  }
+
+  html+='</div>';
   document.getElementById('today-root').innerHTML=html;
 }
 
@@ -2555,6 +2615,57 @@ const JOURNEYS = [
     tips:'Do Sham Shui Po as a morning visit when the fabric and wholesale markets are most active. Apliu Street flea market runs all day but is best browsed without the afternoon crowds. Combine with Mong Kok (one stop back) for a full Kowloon market day.',
     mapUrl:'https://maps.google.com/maps?q=Sham+Shui+Po+MTR+Station+Hong+Kong&z=17',
   },
+  {
+    id:'florentia-village',
+    icon:'🛍',
+    name:'Florentia Village — Prada Outlet',
+    summary:'Admiralty → Kwai Hing MTR → 3-min walk — allow a half day',
+    time:'25 mins door to door',
+    cost:'HK$12.40 Octopus (MTR)',
+    steps:[
+      {t:'From Conrad Hotel walk to <strong>Admiralty MTR Station</strong> (5 mins via Pacific Place, Exit C). Take the <strong>Tsuen Wan Line</strong> (red line) westbound.'},
+      {t:'Ride 8 stops to <strong>Kwai Hing Station</strong> — about 18 mins. Alight and use <strong>Exit E</strong>.'},
+      {t:'Turn right out of the exit onto <strong>Kwai Cheong Road</strong>. Walk straight — Florentia Village is on the right at <strong>100 Kwai Cheong Road</strong>, about 3 mins on foot.'},
+      {t:'Opening hours: <strong>Mon–Fri 10am–7pm; Sat–Sun 10:30am–7:30pm</strong>. Brands include Prada, Miu Miu, Balenciaga, Furla, Kenzo — typically 50–70% off RRP.'},
+      {t:'Return: walk back to Kwai Hing Exit E, take <strong>Tsuen Wan Line eastbound</strong> to Admiralty — 18 mins.'},
+    ],
+    tips:'Plan a dedicated half-day — do not combine with other areas. Weekday mornings are quieter. Bring a bag. Prices are in HKD so the sterling exchange rate works in your favour. No café inside — eat before you go or grab something in Kwai Hing Town Centre nearby.',
+    mapUrl:'https://maps.google.com/maps?q=Florentia+Village+100+Kwai+Cheong+Road+Kwai+Chung+Hong+Kong&z=17',
+  },
+  {
+    id:'citygate-outlets',
+    icon:'✈️',
+    name:'Citygate Outlets — Tung Chung',
+    summary:'Admiralty → Tung Chung MTR — mall directly connected to station',
+    time:'28 mins door to door',
+    cost:'HK$22.90 Octopus (MTR)',
+    steps:[
+      {t:'From Conrad Hotel walk to <strong>Admiralty MTR</strong> (5 mins). Follow signs to <strong>Hong Kong Station</strong> — one stop west on the Island Line, or walk 10 mins to Hong Kong Station directly via the IFC footbridge.'},
+      {t:'At Hong Kong Station, board the <strong>Tung Chung Line</strong> (orange line) westbound. Ride to <strong>Tung Chung Station</strong> — 28 mins, 9 stops.'},
+      {t:'Use <strong>Exit B</strong> — Citygate Outlets is directly connected to the station concourse. Walk straight in without going outside.'},
+      {t:'80+ outlet stores including <strong>Burberry, Coach, Nike, Polo Ralph Lauren, Samsonite, Timberland, Tommy Hilfiger</strong> — discounts up to 70%. Open daily 10am–10pm.'},
+      {t:'Return: board the <strong>Tung Chung Line eastbound</strong> from inside the station. 28 mins back to Hong Kong Station / Admiralty.'},
+    ],
+    tips:'Ideal as a standalone morning or early afternoon trip — or combine with the Big Buddha cable car (both depart from Tung Chung). The July–August Shopping Festival brings extra discounts. Also the logical stop if you are flying home — check bags at the airport first, then shop. Best on a weekday when it is quieter.',
+    mapUrl:'https://maps.google.com/maps?q=Citygate+Outlets+Tung+Chung+Station+Hong+Kong&z=17',
+  },
+  {
+    id:'horizon-plaza',
+    icon:'🏢',
+    name:'Horizon Plaza — Ap Lei Chau',
+    summary:'Admiralty → South Horizons MTR → 5-min walk — 28-floor outlet warehouse',
+    time:'20 mins door to door',
+    cost:'HK$8.50 Octopus (MTR)',
+    steps:[
+      {t:'From Conrad Hotel walk to <strong>Admiralty MTR Station</strong> (5 mins via Pacific Place, Exit C). Take the <strong>South Island Line</strong> southbound — it departs from the Admiralty platform level.'},
+      {t:'Ride 4 stops to <strong>South Horizons Station</strong> — about 12 mins. Use <strong>Exit A</strong>.'},
+      {t:'From Exit A walk along <strong>Ap Lei Chau Main Street</strong> toward the waterfront — about 5 mins. <strong>Horizon Plaza</strong> is the large white tower directly on the waterfront at 2 Lee Wing Street.'},
+      {t:'The building has 28 floors of designer outlet shops, antiques, homeware and furniture. Highlights include <strong>Joyce Warehouse</strong> (designer fashion), <strong>Lane Crawford Outlet</strong>, <strong>Indigo Living</strong>, and various antique dealers. Hours: generally 10am–6pm (check individual shops — some close Mon).'},
+      {t:'Return: walk back to South Horizons MTR and take the <strong>South Island Line northbound</strong> back to Admiralty — 12 mins.'},
+    ],
+    tips:'Go on a weekday — weekends are busier and some wholesale/trade buyers take priority. Not every floor is open every day. Start at the top and work down. No food inside — eat beforehand or head to South Horizons Plaza nearby. The waterfront walk to Aberdeen is pleasant if you want to extend the trip.',
+    mapUrl:'https://maps.google.com/maps?q=Horizon+Plaza+2+Lee+Wing+Street+Ap+Lei+Chau+Hong+Kong&z=17',
+  },
 ];
 
 // Zone-to-zone route logic
@@ -2573,8 +2684,8 @@ const ZZ_ROUTES = {
   'shamshuipo-admiralty':{desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> Sham Shui Po → Admiralty — 22 mins, HK$13.50.'},
   'admiralty-stanley':  {desc:'Walk or MTR to <strong>Hong Kong/Central Station</strong> (Exit D) → <span class="zz-route-badge bus">Bus 6X</span> from Exchange Square Bus Terminus to Stanley — 50 mins, HK$10.60. Bus 6 and 260 also serve this route.'},
   'stanley-admiralty':  {desc:'<span class="zz-route-badge bus">Bus 6X/6/260</span> from Stanley Bus Terminus to Exchange Square Central — 50 mins, HK$10.60. Then walk or MTR 1 stop east to Admiralty.'},
-  'admiralty-aberdeen': {desc:'<span class="zz-route-badge bus">Bus 70</span> from Exchange Square Central to Aberdeen — 35 mins, HK$8.60. Alternatively MTR to Admiralty then Bus 7 (30 mins).'},
-  'aberdeen-admiralty': {desc:'<span class="zz-route-badge bus">Bus 70</span> Aberdeen to Exchange Square Central — 35 mins. Then walk/MTR to Admiralty.'},
+  'admiralty-aberdeen': {desc:'For <strong>Aberdeen Market / waterfront</strong>: <span class="zz-route-badge bus">Bus 70</span> from Exchange Square Central — 35 mins, HK$9.70. For <strong>Horizon Plaza</strong>: MTR to <strong>South Horizons</strong> (South Island Line, change at Admiralty) then <span class="zz-route-badge walk">walk</span> 5 mins, or taxi ~HK$30.'},
+  'aberdeen-admiralty': {desc:'From <strong>Horizon Plaza</strong>: walk 5 mins to South Horizons MTR → <span class="zz-route-badge">MTR South Island Line</span> to Admiralty — 15 mins, HK$8.50. From <strong>Aberdeen</strong>: <span class="zz-route-badge bus">Bus 70</span> to Exchange Square Central, then walk/MTR to Admiralty.'},
   'central-tst':        {desc:'<span class="zz-route-badge ferry">Star Ferry</span> Central Pier 7 to TST — 8 mins, HK$4.50. The classic and most scenic option. OR <span class="zz-route-badge">MTR</span> from Hong Kong Station, change to Tsuen Wan Line at Admiralty, to TST — 12 mins.'},
   'tst-central':        {desc:'<span class="zz-route-badge ferry">Star Ferry</span> TST Pier to Central Pier 7 — 8 mins, HK$4.50. OR <span class="zz-route-badge">MTR</span> TST → Admiralty/Central — 12 mins.'},
   'tst-mongkok':        {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> TST → Mong Kok — 8 mins, HK$8.80. Direct, northbound on the red line.'},
@@ -2587,6 +2698,18 @@ const ZZ_ROUTES = {
   'wanchai-stanley':    {desc:'<span class="zz-route-badge bus">Minibus 40/40X</span> from Jardine\'s Bazaar, Causeway Bay to Stanley via Repulse Bay — 40 mins. Faster than Bus 6 from this side of the island.'},
   'admiralty-peak_upper':{desc:'Walk to Garden Rd → <span class="zz-route-badge">Peak Tram</span> to Peak Tower — 7 mins, HK$62 return. Then walk or take Cable Car (separate charge) for Ngong Ping/Big Buddha — need to go to Tung Chung first via MTR.'},
   'central-peak_upper': {desc:'For Ngong Ping/Big Buddha: <span class="zz-route-badge">MTR Tung Chung Line</span> from Hong Kong Station to Tung Chung — 28 mins, HK$28. Then <span class="zz-route-badge">Cable Car</span> Ngong Ping 360 to Ngong Ping village — 25 mins, HK$235 return. Book cable car online in advance.'},
+  'admiralty-florentia': {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> from Admiralty to <strong>Kwai Hing Station</strong> — 22 mins, HK$12.40. Exit <strong>E</strong>, turn right, walk 3 mins along Kwai Cheong Road. Florentia Village is at 100 Kwai Cheong Road on the right.'},
+  'florentia-admiralty': {desc:'Walk back to <strong>Kwai Hing MTR</strong> (3 mins, Exit E side). <span class="zz-route-badge">MTR Tsuen Wan Line</span> eastbound to Admiralty — 22 mins, HK$12.40. Change at Tsuen Wan if needed but most trains are direct.'},
+  'central-florentia':   {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> from Hong Kong/Central Station to <strong>Kwai Hing</strong> — 20 mins, HK$11.80. Exit <strong>E</strong>, walk 3 mins along Kwai Cheong Road to 100 Kwai Cheong Road.'},
+  'florentia-central':   {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> Kwai Hing → Hong Kong/Central — 20 mins, HK$11.80.'},
+  'admiralty-citygate':  {desc:'<span class="zz-route-badge">MTR Tung Chung Line</span> from Admiralty/Hong Kong Station to <strong>Tung Chung Station</strong> — 28 mins, HK$22.90. Exit <strong>B</strong>, Citygate Outlets is directly connected — you walk straight into the mall from the station concourse.'},
+  'citygate-admiralty':  {desc:'<span class="zz-route-badge">MTR Tung Chung Line</span> from Tung Chung to Admiralty/Hong Kong Station — 28 mins, HK$22.90. Board from inside Citygate or the adjacent Tung Chung Station Exit B.'},
+  'central-citygate':    {desc:'<span class="zz-route-badge">MTR Tung Chung Line</span> from Hong Kong Station (Central) to Tung Chung — 28 mins, HK$22.90. Exit B — Citygate is directly connected to the station.'},
+  'citygate-central':    {desc:'<span class="zz-route-badge">MTR Tung Chung Line</span> Tung Chung → Hong Kong Station (Central) — 28 mins, HK$22.90.'},
+  'florentia-citygate':  {desc:'<span class="zz-route-badge">MTR Tsuen Wan Line</span> Kwai Hing → Tsuen Wan (2 stops, 5 mins), then change to <span class="zz-route-badge">Tung Chung Line</span> at Lai King → Tung Chung (20 mins). Total ~30 mins, ~HK$14.'},
+  'citygate-florentia':  {desc:'<span class="zz-route-badge">MTR Tung Chung Line</span> Tung Chung → Lai King, change to <span class="zz-route-badge">Tsuen Wan Line</span> → Kwai Hing — ~30 mins total. Or taxi ~HK$80 (15 mins, no change).'},
+  'aberdeen-florentia':  {desc:'Taxi recommended — ~HK$80, 20 mins via Aberdeen Tunnel. No direct public transport. Alternatively MTR from South Horizons → Admiralty → Kwai Hing (~35 mins, HK$14).'},
+  'aberdeen-citygate':   {desc:'Taxi recommended — ~HK$150, 35 mins via Aberdeen Tunnel and Castle Peak Road. Alternatively MTR from South Horizons → Hong Kong Station → Tung Chung (~45 mins, HK$20).'},
 };
 
 function zzRoute(){
@@ -2606,48 +2729,71 @@ function zzRoute(){
   }
 }
 
-let journeyCardsRendered = false;
-
 function renderJourneyCards(){
-  if(journeyCardsRendered) return;
-  journeyCardsRendered = true;
   const root = document.getElementById('journey-root');
-  // Find the section title divs and insert cards after the last one
-  let html = '';
-  JOURNEYS.forEach((j,idx) => {
-    html += `<div class="journey-card">
-      <div class="journey-card-header" onclick="toggleJourneyCard('jbody-${idx}','jchev-${idx}')">
-        <div class="journey-icon">${j.icon}</div>
-        <div class="journey-title">
-          <div class="journey-name">${j.name}</div>
-          <div class="journey-summary">${j.summary}</div>
-        </div>
-        <div class="journey-meta">
-          <span class="journey-time">${j.time}</span>
-          <span class="journey-cost">${j.cost}</span>
-          <span class="journey-chevron" id="jchev-${idx}">&#9660;</span>
-        </div>
-      </div>
-      <div class="journey-body" id="jbody-${idx}">
-        <ol class="journey-steps">
-          ${j.steps.map((s,i) => `<li class="journey-step"><span class="step-num">${i+1}</span><span class="step-text">${s.t}</span></li>`).join('')}
-        </ol>
-        <div class="journey-tips">&#128161; ${j.tips}</div>
-        <div class="journey-actions">
-          <a class="journey-map-btn" href="${j.mapUrl}" target="_blank">&#128205; Open start in Maps</a>
-          <button class="journey-add-btn" onclick="addJourneyToDay(${idx})">+ Add to Day ${currentDay}</button>
-        </div>
-      </div>
-    </div>`;
-  });
+  // Remove previously appended cards
+  root.querySelectorAll('.journey-card').forEach(el => el.remove());
 
-  // Append after the section title
-  const sectionTitle = root.querySelector('.journey-section-title:last-of-type');
-  if(sectionTitle){
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    while(div.firstChild) root.appendChild(div.firstChild);
-  }
+  JOURNEYS.forEach((j, idx) => {
+    // Build card element directly — no innerHTML parsing of dynamic content
+    const card = document.createElement('div');
+    card.className = 'journey-card';
+
+    // Day options HTML
+    let optHtml = '';
+    for(let d=1; d<=DAYS; d++){
+      const title = tripData[d] && tripData[d].title ? ' — '+tripData[d].title.substring(0,18) : '';
+      const sel = d===currentDay ? ' selected' : '';
+      optHtml += '<option value="'+d+'"'+sel+'>Day '+d+title+'</option>';
+    }
+
+    // Steps HTML — safe because we control JOURNEYS data
+    const stepsHtml = j.steps.map((s,i) =>
+      '<li class="journey-step"><span class="step-num">'+(i+1)+'</span><span class="step-text">'+s.t+'</span></li>'
+    ).join('');
+
+    card.innerHTML =
+      '<div class="journey-card-header">'+
+        '<div class="journey-icon">'+j.icon+'</div>'+
+        '<div class="journey-title">'+
+          '<div class="journey-name">'+j.name+'</div>'+
+          '<div class="journey-summary">'+j.summary+'</div>'+
+        '</div>'+
+        '<div class="journey-meta">'+
+          '<span class="journey-time">'+j.time+'</span>'+
+          '<span class="journey-cost">'+j.cost+'</span>'+
+          '<span class="journey-chevron">&#9660;</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="journey-body">'+
+        '<ol class="journey-steps">'+stepsHtml+'</ol>'+
+        '<div class="journey-tips">&#128161; '+j.tips+'</div>'+
+        '<div class="journey-actions">'+
+          '<a class="journey-map-btn" href="'+j.mapUrl+'" target="_blank">&#128205; Open start in Maps</a>'+
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
+            '<select class="journey-day-sel" style="font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text)">'+optHtml+'</select>'+
+            '<button class="journey-add-btn">+ Add to plan</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+
+    // Wire up events directly — no inline onclick strings
+    card.querySelector('.journey-card-header').addEventListener('click', function(){
+      const body = card.querySelector('.journey-body');
+      const chev = card.querySelector('.journey-chevron');
+      const open = body.classList.toggle('open');
+      if(chev) chev.classList.toggle('open', open);
+    });
+
+    card.querySelector('.journey-add-btn').addEventListener('click', function(e){
+      e.stopPropagation();
+      const sel = card.querySelector('.journey-day-sel');
+      const dayNum = sel ? parseInt(sel.value) : currentDay;
+      addJourneyToDay(idx, dayNum);
+    });
+
+    root.appendChild(card);
+  });
 }
 
 function toggleJourneyCard(bodyId, chevId){
@@ -2658,13 +2804,18 @@ function toggleJourneyCard(bodyId, chevId){
   if(chev) chev.classList.toggle('open', open);
 }
 
-function addJourneyToDay(idx){
+function addJourneyToDay(idx, dayNum){
   const j = JOURNEYS[idx];
-  const day = tripData[currentDay];
+  const targetDay = parseInt(dayNum) || currentDay;
+  const day = tripData[targetDay];
   if(!day.packages || day.packages.length === 0){
     day.packages = [freshPkg('Package 1')];
   }
   const pkg = day.packages[day.packages.length - 1];
+  // Short summary for the tip line; full steps in notes
+  const stripHtml = s => s.replace(/<[^>]+>/g,'');
+  const shortTip = j.summary + ' · ' + j.time + ' · ' + j.cost;
+  const stepNotes = j.steps.map((s,i) => (i+1)+'. '+stripHtml(s.t)).join('\n') + '\n💡 ' + stripHtml(j.tips);
   pkg.items.push({
     id: uid(),
     name: j.name,
@@ -2672,12 +2823,14 @@ function addJourneyToDay(idx){
     cost: 0,
     zone: 1,
     hours: j.time,
-    tip: j.tips,
+    tip: shortTip,
     map: j.mapUrl,
-    notes: ''
+    notes: stepNotes
   });
   save();
-  showToast('Added "' + j.name + '" to Day ' + currentDay);
+  renderTabs();
+  if(targetDay === currentDay) renderDay();
+  showToast('Added "' + j.name + '" to Day ' + targetDay);
 }
 
 // ── WEATHER (HKO Open Data API) ──────────────────────────────────────
@@ -2875,6 +3028,7 @@ initTripStartInput();
 initWxScrollSync();
 initSync();
 renderRefPanel();
+updateHeaderSubtitle();
 window.addEventListener('resize', alignWxPills);
 initRefListEvents();
 initMobileRefToggle();
@@ -2888,15 +3042,28 @@ applyResponsiveLayout();
   let startX,startW;
   divider.addEventListener('mousedown',function(e){
     if(window.innerWidth<=960) return;
-    startX=e.clientX; startW=refPane.offsetWidth;
+    // Capture width BEFORE touching classes to avoid snap-back on reflow
+    const layout=document.querySelector('.split-layout');
+    const plannerPane=document.getElementById('planner-pane');
+    startX=e.clientX;
+    startW=refPane.offsetWidth;
+    // Now remove ref-wide and lock current width inline so CSS !important can't override
+    if(layout&&layout.classList.contains('ref-wide')){
+      layout.classList.remove('ref-wide');
+      if(plannerPane){ plannerPane.style.flex=''; plannerPane.style.maxWidth=''; }
+    }
+    refPane.style.width=startW+'px';
+    refPane.style.flex='0 0 '+startW+'px';
+    refPane.style.maxWidth=startW+'px';
     divider.classList.add('dragging');
     document.body.style.cursor='col-resize';
     document.body.style.userSelect='none';
     function onMove(e){
       const delta=startX-e.clientX;
-      const newW=Math.min(Math.max(startW+delta,180),window.innerWidth*0.6);
+      const newW=Math.min(Math.max(startW+delta,180),window.innerWidth*0.65);
       refPane.style.width=newW+'px';
       refPane.style.flex='0 0 '+newW+'px';
+      refPane.style.maxWidth=newW+'px';
     }
     function onUp(){
       divider.classList.remove('dragging');

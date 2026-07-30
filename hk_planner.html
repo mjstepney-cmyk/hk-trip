@@ -1718,7 +1718,7 @@ async function initSync(){
     if(Date.now() - _lastSyncAt > 30000) cloudPull();
   };
   document.addEventListener('visibilitychange', ()=>{
-    if(document.visibilityState === 'visible') maybePull();
+    if(document.visibilityState === 'visible'){ maybePull(); fetchWeather(); }
     else flushPendingPush();
   });
   window.addEventListener('focus', maybePull);
@@ -2951,15 +2951,17 @@ function renderWeather({fnd,cur,warn}){
 
   // Current icon from today's forecast
   let curIcon = '🌡';
-  try{curIcon = wxIcon(fnd.weatherForecast[0].ForecastIcon);}catch(e){}
+  try{curIcon = wxIcon(cur.icon[0]);}catch(e){
+    try{curIcon = wxIcon(fnd.weatherForecast[0].ForecastIcon);}catch(e2){}
+  }
 
   nowEl.innerHTML = `${curIcon} <span>${temp}</span><span class="wx-now-sub">&nbsp;${humid}</span>`;
 
   // Warnings
   try{
-    const activeWarns = Object.values(warn).filter(w=>w.type&&w.actionCode&&w.actionCode!=='CANCEL');
+    const activeWarns = Object.values(warn).filter(w=>w&&w.actionCode&&w.actionCode!=='CANCEL');
     if(activeWarns.length){
-      warnEl.textContent = '⚠ ' + activeWarns.map(w=>w.type).join(' · ');
+      warnEl.textContent = '⚠ ' + activeWarns.map(w=>w.name||w.type||w.code).join(' · ');
       warnEl.style.display='inline-block';
     } else {
       warnEl.style.display='none';
@@ -2970,6 +2972,12 @@ function renderWeather({fnd,cur,warn}){
   const fcMap = {};
   try{
     fnd.weatherForecast.forEach(d=>{ fcMap[d.forecastDate]={icon:wxIcon(d.ForecastIcon),lo:d.forecastMintemp.value,hi:d.forecastMaxtemp.value}; });
+  }catch(e){}
+  // fnd starts tomorrow — fill today's pill from live observations
+  try{
+    const t = new Date();
+    const tStr = t.getFullYear()+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0');
+    if(!fcMap[tStr]) fcMap[tStr] = {icon:curIcon, now:temp};
   }catch(e){}
 
   // Store data for tab-aligned rendering
@@ -3022,7 +3030,7 @@ function alignWxPills(){
     if(fc){
       html += `<div class="wx-day${isToday?' wx-day-today':''}" style="position:absolute;left:${left}px;width:${width}px;height:32px;top:2px">` +
         `<div class="wx-day-icon">${fc.icon}</div>` +
-        `<div class="wx-day-temp">${fc.lo}–${fc.hi}°</div>` +
+        `<div class="wx-day-temp">${fc.now!==undefined?fc.now:fc.lo+'–'+fc.hi+'°'}</div>` +
         `</div>`;
     } else {
       html += `<div class="wx-day wx-day-empty" style="position:absolute;left:${left}px;width:${width}px;height:32px;top:2px"></div>`;

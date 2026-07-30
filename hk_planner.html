@@ -599,7 +599,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
   <div id="sync-bar" style="display:flex;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:4px 12px;font-size:11px;color:var(--text-hint);align-items:center;justify-content:space-between">
   <span id="sync-status">Initialising sync…</span>
   <span style="display:flex;gap:10px;align-items:center">
-    <span id="sync-indicator" style="font-size:10px;padding:1px 7px;border-radius:8px;font-weight:600;background:#e0e0e0;color:#666">–</span>
+    <span id="sync-indicator" onclick="cloudPull(true)" title="Tap to refresh from cloud" style="cursor:pointer;font-size:10px;padding:1px 7px;border-radius:8px;font-weight:600;background:#e0e0e0;color:#666">–</span>
     <button onclick="cloudPush(true)" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0" title="Force push to cloud">☁ Push</button>
     <button onclick="cloudPull(true)" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0" title="Force pull from cloud">⬇ Pull</button>
     <button onclick="openSyncSetup()" style="font-size:11px;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">⚙ Sync setup</button>
@@ -1561,6 +1561,9 @@ const JBIN_KEY = '$2a$10$c7sf5j.d6SvPWejToX3bzuRHL3Tm5RAL06Sb3jjT9VCdUEizDv1em';
 const JBIN_BIN_STORE = 'hk_jbin_id';
 let _syncTimer = null;
 let _syncing = false;
+let _lastSyncAt = 0;
+let _lastRemoteTs = null;
+let _pendingPush = false;
 
 function setSyncIndicator(state){
   const el = document.getElementById('sync-indicator');
@@ -1592,6 +1595,24 @@ async function cloudPush(manual=false){
   setSyncIndicator('push');
   try{
     const id = await getBinId();
+    // Guard: if cloud has changes from another device since our last sync, don't clobber
+    if(_lastRemoteTs){
+      try{
+        const chk = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {headers:{'X-Master-Key':JBIN_KEY}});
+        if(chk.ok){
+          const cj = await chk.json();
+          const rts = cj.record && cj.record._ts;
+          if(rts && new Date(rts) > new Date(_lastRemoteTs)){
+            _syncing = false;
+            if(confirm('Cloud has newer changes from another device. Pull them first? (Cancel = overwrite cloud with this device)')){
+              await cloudPull(true);
+              return;
+            }
+            _syncing = true;
+          }
+        }
+      }catch(e){ /* check failed — proceed with push */ }
+    }
     const payload = {tripData, _ts: new Date().toISOString()};
     let res;
     try{
@@ -1611,6 +1632,9 @@ async function cloudPush(manual=false){
     }
     setSyncIndicator('ok');
     updateSyncStatus('Synced to cloud');
+    _lastRemoteTs = payload._ts;
+    _lastSyncAt = Date.now();
+    _pendingPush = false;
     if(manual) showToast('✅ Pushed to cloud');
   }catch(e){
     setSyncIndicator('err');
@@ -1642,6 +1666,8 @@ async function cloudPull(manual=false){
     const remote = j.record;
     if(!remote.tripData) throw new Error('Invalid remote data');
     // Compare timestamps — take newer
+    _lastRemoteTs = remote._ts || null;
+    _lastSyncAt = Date.now();
     const remoteTs = remote._ts ? new Date(remote._ts) : new Date(0);
     const localTs  = new Date(localStorage.getItem('hk_last_saved')||0);
     if(remoteTs > localTs || manual){
@@ -1674,6 +1700,7 @@ function updateSyncStatus(msg){
 }
 
 function debouncedPush(){
+  _pendingPush = true;
   clearTimeout(_syncTimer);
   _syncTimer = setTimeout(()=>cloudPush(), 2000);
 }
@@ -1681,6 +1708,41 @@ function debouncedPush(){
 async function initSync(){
   // On load: pull if remote is newer, else use local
   try{ await cloudPull(); } catch(e){ setSyncIndicator('err'); }
+
+  // Re-pull when returning to the tab/app (if >30s since last sync)
+  const maybePull = ()=>{
+    if(_syncing || _pendingPush) return;
+    if(Date.now() - _lastSyncAt > 30000) cloudPull();
+  };
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.visibilityState === 'visible') maybePull();
+    else flushPendingPush();
+  });
+  window.addEventListener('focus', maybePull);
+  window.addEventListener('pagehide', flushPendingPush);
+
+  // Recover when connection returns
+  window.addEventListener('online', ()=>{
+    if(_pendingPush) cloudPush(); else cloudPull();
+  });
+}
+
+// Immediate push (keepalive) if a debounced push is still pending when leaving
+function flushPendingPush(){
+  if(!_pendingPush) return;
+  clearTimeout(_syncTimer);
+  const id = localStorage.getItem(JBIN_BIN_STORE);
+  if(!id) return;
+  const payload = JSON.stringify({tripData, _ts: new Date().toISOString()});
+  try{
+    fetch(`https://api.jsonbin.io/v3/b/${id}`, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':JBIN_KEY},
+      body: payload,
+      keepalive: true
+    });
+    _pendingPush = false;
+  }catch(e){ /* will retry on next open via debounce/online */ }
 }
 
 function openSyncSetup(){
@@ -3021,6 +3083,14 @@ function initTripStartInput(){
 // ─────────────────────────────────────────────────────────────────────
 
 initData();
+// Auto-select today's day during the trip
+(function(){
+  const start = getTripStart();
+  if(start){
+    const d = Math.floor((Date.now() - start.getTime())/86400000) + 1;
+    if(d >= 1 && d <= DAYS) currentDay = d;
+  }
+})();
 renderTabs();
 renderDay();
 fetchWeather();

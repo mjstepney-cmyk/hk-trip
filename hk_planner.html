@@ -62,6 +62,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 .btn-mode{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);color:#fff;padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;transition:background 0.15s}
 .btn-mode.active{background:rgba(255,255,255,0.35)}
 .btn-mode:hover{background:rgba(255,255,255,0.3)}
+.hdr-menu-wrap{position:relative;flex-shrink:0}
+#hdr-menu-dd{display:none;position:absolute;top:calc(100% + 6px);left:0;background:var(--bg);border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:300;min-width:150px;padding:4px}
+#hdr-menu-dd.open{display:block}
+#hdr-menu-dd button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);font-size:13px;padding:9px 12px;border-radius:var(--radius);cursor:pointer}
+#hdr-menu-dd button:hover{background:var(--bg-secondary)}
 @media(max-width:960px){
   .app-header{padding:7px 12px}
   .app-header-title{font-size:14px;font-weight:600}
@@ -267,6 +272,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 /* ── REFERENCE PANEL (desktop) ── */
 .split-layout{display:flex;gap:0}.pane-divider{width:8px;cursor:col-resize;flex-shrink:0;background:var(--border);transition:background 0.15s ease;position:relative;z-index:10}.pane-divider:hover,.pane-divider.dragging{background:var(--red)}
 @media(max-width:960px){.pane-divider{display:none}}
+#ref-filters-toggle{display:none;width:100%;text-align:left;background:var(--bg-tertiary);border:none;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:12px;font-weight:600;padding:9px 10px;cursor:pointer}
+@media(max-width:960px){
+  #ref-filters-toggle{display:block}
+  #ref-filters.collapsed{display:none}
+  .ref-filter-btn{padding:6px 11px !important;font-size:11px !important}
+  #filter-mustdo-btn,#filter-done-btn{padding:6px 11px !important;font-size:11px !important}
+  #sync-bar button,#sync-bar #sync-indicator{padding:5px 8px !important}
+  .nav-btn{padding:7px 15px;font-size:16px}
+}
 .split-layout.ref-wide .planner-pane{flex:0 0 50% !important;min-width:0;max-width:50%}
 .split-layout.ref-wide .ref-pane{width:50% !important;flex:0 0 50% !important;max-width:50%}
 .planner-pane{flex:1;overflow-y:auto;min-width:0}
@@ -370,6 +384,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .pkg-drag-handle{color:var(--text-hint);cursor:grab;font-size:13px;flex-shrink:0}
 .pkg-name-input{flex:1;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--text);outline:none;padding:0}
 .pkg-name-input:focus{background:var(--bg);border-radius:3px;padding:0 4px}
+.pkg-target-badge{font-size:9px;font-weight:700;background:var(--gold-light);color:var(--gold);border:1px solid rgba(184,134,11,0.3);border-radius:8px;padding:1px 6px;white-space:nowrap;flex-shrink:0}
 .pkg-header-actions{display:flex;gap:3px;flex-shrink:0}
 .pkg-move-btn{background:none;border:1px solid var(--border);color:var(--text-hint);font-size:11px;padding:1px 5px;border-radius:var(--radius);cursor:pointer}
 .pkg-move-btn:hover{background:var(--bg-tertiary)}
@@ -492,7 +507,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .wx-day-today{border:2px solid #185fa5 !important;background:#c8dcf0 !important}
 .wx-refresh{background:none;border:none;color:#0d3d6b;font-size:13px;cursor:pointer;padding:0 2px;flex-shrink:0}
 .wx-refresh:hover{opacity:1}
-@media(max-width:960px){#wx-bar{padding:4px 10px;font-size:11px}.wx-forecast{max-width:calc(100vw - 240px)}.wx-start-input{width:100px}}
+@media(max-width:960px){#wx-bar{padding:4px 10px;font-size:11px}.wx-forecast{max-width:calc(100vw - 240px)}.wx-start-input{width:120px}}
 .wx-start-wrap{display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:auto}
 .wx-start-label{font-size:10px;color:#1a4a7a;white-space:nowrap;font-weight:500}
 .wx-start-input{font-size:11px;border:1px solid #7aafd4;border-radius:var(--radius);padding:2px 5px;background:#fff;color:#1a1a1a;cursor:pointer;width:120px}
@@ -527,10 +542,13 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
     <div class="subtitle" id="header-subtitle">14-day planner</div>
   </div>
   <div class="header-actions">
-    <button class="btn-mode" id="btn-theme" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
-    <button class="btn-mode" onclick="exportPlans()" title="Save your day plans as a backup file">💾 Save</button>
-    <button class="btn-mode" onclick="document.getElementById(&#39;import-input&#39;).click()" title="Restore plans from a backup file">📂 Load</button>
-    <button class="btn-mode" onclick="showPdfDialog()" title="Print or save a day plan as PDF">🖨 Print</button>
+    <div class="hdr-menu-wrap">
+      <button class="btn-mode" onclick="toggleHdrMenu()" title="Settings">⚙</button>
+      <div id="hdr-menu-dd">
+        <button id="btn-theme" onclick="toggleTheme();toggleHdrMenu()">🌙 Dark mode</button>
+        <button onclick="showPdfDialog();toggleHdrMenu()">🖨 Print / PDF</button>
+      </div>
+    </div>
     <button class="btn-mode active" id="btn-day" onclick="setView(&#39;day&#39;)">Days</button>
     <button class="btn-mode" id="btn-overview" onclick="setView(&#39;overview&#39;)">Overview</button>
     <button class="btn-mode" id="btn-journey" onclick="setView(&#39;journey&#39;)">&#128652; Getting Around</button>
@@ -593,7 +611,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 
 <!-- TODAY MODE OVERLAY -->
 <div id="today-root"></div>
-<div id="toast" style="display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgb(26, 26, 46); color: rgb(255, 255, 255); padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; opacity: 0;">⚠️ Route capped at 9 stops — 4 stops omitted. Split into separate slots.</div>
+<div id="toast" style="display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgb(26, 26, 46); color: rgb(255, 255, 255); padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; opacity: 0;"></div>
 
 <div id="day-view-root">
   <div id="sync-bar" style="display:flex;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:4px 12px;font-size:11px;color:var(--text-hint);align-items:center;justify-content:space-between">
@@ -631,11 +649,12 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
       <div class="ref-pane-header" style="display:flex;align-items:center;justify-content:space-between">
         <span>Quick-add from guide</span>
         <div style="display:flex;align-items:center;gap:8px">
-          <button onclick="toggleRefPaneDesktop()" id="ref-desktop-toggle-btn" class="ref-desktop-toggle" title="Expand reference panel">⇔ Expand</button>
+          <button onclick="toggleRefPaneDesktop()" id="ref-desktop-toggle-btn" class="ref-desktop-toggle" title="Widen guide panel">⇔ Wider</button>
           <button onclick="toggleRefPane()" id="ref-expand-btn" style="background:var(--red);color:#fff;border:none;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:600;cursor:pointer">Expand ▲</button>
         </div>
       </div>
-      <div style="padding:6px 8px;border-bottom:1px solid var(--border);background:var(--bg-tertiary)">
+      <button id="ref-filters-toggle" onclick="toggleFiltersBlock()">Filters ▾</button>
+      <div id="ref-filters" style="padding:6px 8px;border-bottom:1px solid var(--border);background:var(--bg-tertiary)">
         <div style="font-size:9px;color:var(--text-hint);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Filter by zone</div>
         <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px">
           <button class="ref-filter-btn zone-filter" data-zone="0" onclick="toggleFilter(&#39;zone&#39;,&#39;0&#39;)" style="background:#E3F2FD;color:#0277BD;border:1px solid #81D4FA;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:600">Harbour</button>
@@ -667,8 +686,8 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
           <button id="filter-mustdo-btn" onclick="toggleStatusFilter(&#39;mustdo&#39;)" style="background:#FFF8E1;color:#F57F17;border:1px solid #FFE082;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700;touch-action:manipulation">⭐ Must Do</button>
           <button id="filter-done-btn" onclick="toggleStatusFilter(&#39;done&#39;)" style="background:#E8F5E9;color:#2E7D32;border:1px solid #A5D6A7;font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:700;touch-action:manipulation">✓ Done</button>
         </div>
-        <div style="margin-top:2px;text-align:right">
-          <button onclick="clearFilters()" style="font-size:9px;color:var(--text-hint);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0">Clear all filters</button>
+        <div style="margin-top:4px;text-align:right">
+          <button id="clear-filters-btn" onclick="clearFilters()" style="display:none;font-size:10px;padding:4px 12px;border-radius:10px;border:1px solid #EF9A9A;background:#FFEBEE;color:#B71C1C;cursor:pointer;font-weight:700;touch-action:manipulation">✕ Clear filters</button>
         </div>
       </div>
       <div class="ref-search"><input type="text" id="ref-search" placeholder="Search places, bars, food..." oninput="applyFilters()"></div>
@@ -695,6 +714,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
         <option value="aberdeen">Aberdeen / Horizon Plaza</option>
         <option value="florentia">Florentia Village (Kwai Hing)</option>
         <option value="citygate">Citygate Outlets (Tung Chung)</option>
+        <option value="peak_upper">Ngong Ping / Big Buddha</option>
       </select>
       <div class="zz-arrow">&#8594;</div>
       <select class="zz-select" id="zz-to" onchange="zzRoute()">
@@ -1179,9 +1199,10 @@ function renderDay(){
     html+=`<div class="empty-day"><strong>Nothing planned yet</strong><br>Use the quick-add panel on the right, or click <em>+ New package</em> below.</div>`;
   }
   pkgs.forEach((pkg,pkgIdx)=>{
+    const isTarget=(pkg.id===activePkgId)||(!tripData[currentDay].packages.some(p=>p.id===activePkgId)&&pkgIdx===pkgs.length-1);
     html+=`<div class="pkg-block" id="pkg-${pkg.id}">
-      <div class="pkg-header">
-        <span class="pkg-drag-handle">⋮⋮</span>
+      <div class="pkg-header" onclick="if(event.target.tagName!=='INPUT'&&event.target.tagName!=='BUTTON')setActivePkg('${pkg.id}')" style="cursor:pointer">
+        <span class="pkg-drag-handle">⋮⋮</span>${isTarget?'<span class="pkg-target-badge" title="Quick-add items go here — tap another package header to change">➕ adds here</span>':''}
         <input class="pkg-name-input" value="${esc(pkg.name)}" placeholder="Package name…"
           oninput="renamePkg(${currentDay},'${pkg.id}',this.value)">
         <div class="pkg-header-actions">
@@ -1549,8 +1570,8 @@ function updateDayField(day,field,val){
 }
 
 
-function prevDay(){if(currentDay>1){currentDay--;renderDay();renderTabs();scrollTabIntoView()}}
-function nextDay(){if(currentDay<DAYS){currentDay++;renderDay();renderTabs();scrollTabIntoView()}}
+function prevDay(){ activePkgId=null;if(currentDay>1){currentDay--;renderDay();renderTabs();scrollTabIntoView()}}
+function nextDay(){ activePkgId=null;if(currentDay<DAYS){currentDay++;renderDay();renderTabs();scrollTabIntoView()}}
 
 function scrollTabIntoView(){
   const tabs=document.getElementById('day-tabs');
@@ -1607,10 +1628,11 @@ async function cloudPush(manual=false){
           const rts = cj.record && cj.record._ts;
           if(rts && new Date(rts) > new Date(_lastRemoteTs)){
             _syncing = false;
-            if(confirm('Cloud has newer changes from another device. Pull them first? (Cancel = overwrite cloud with this device)')){
+            if(confirm('Another device has saved newer changes to the cloud.\n\nOK = bring those changes to this device (recommended)')){
               await cloudPull(true);
               return;
             }
+            if(!confirm('Overwrite the cloud with THIS device\u2019s plans instead?\n\nThe other device\u2019s changes will be lost.')){ setSyncIndicator('ok'); return; }
             _syncing = true;
           }
         }
@@ -1675,7 +1697,7 @@ async function cloudPull(manual=false){
     const localTs  = new Date(localStorage.getItem('hk_last_saved')||0);
     if(remoteTs > localTs || manual){
       if(manual && remoteTs <= localTs){
-        if(!confirm('Local data is newer than cloud. Pull anyway and overwrite local?')){ _syncing=false; setSyncIndicator('ok'); return; }
+        if(!confirm('This device\u2019s plans are newer than the cloud copy.\n\nOK = replace this device\u2019s plans with the older cloud copy\nCancel = keep this device\u2019s plans')){ _syncing=false; setSyncIndicator('ok'); return; }
       }
       tripData = remote.tripData;
       migrateData();
@@ -1903,7 +1925,8 @@ function renderOverview(){
   el.innerHTML=html;
 }
 
-function goToDay(d){currentDay=d;setView('day');renderDay();renderTabs();}
+function goToDay(d){ activePkgId=null; _goToDay(d); }
+function _goToDay(d){currentDay=d;setView('day');renderDay();renderTabs();}
 
 function oneNoteUrl(cat){
   return ONENOTE_SHOPPING_CATS.includes(cat) ? ONENOTE_SHOPPING : ONENOTE_PLACES;
@@ -1978,18 +2001,27 @@ function toggleRefInfo(id){
   if(!isOpen) el.classList.add('open');
 }
 
+let activePkgId=null;
+function setActivePkg(id){ activePkgId=id; renderDay(); }
 function addFromRef(item){
   const day=tripData[currentDay];
   if(!day.packages||day.packages.length===0){
     day.packages=[freshPkg('Package 1')];
   }
-  const pkg=day.packages[day.packages.length-1];
+  const pkg=day.packages.find(p=>p.id===activePkgId)||day.packages[day.packages.length-1];
   pkg.items.push({...item,id:uid(),notes:''});
   save();
   renderDay();
   showToast(`Added "${item.name.substring(0,28)}" to ${pkg.name}`);
 }
 
+function toggleHdrMenu(){
+  document.getElementById('hdr-menu-dd').classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  const dd=document.getElementById('hdr-menu-dd');
+  if(dd&&dd.classList.contains('open')&&!e.target.closest('.hdr-menu-wrap')) dd.classList.remove('open');
+});
 function toggleTheme(){
   const root=document.documentElement;
   const isDark=root.classList.contains('dark-mode');
@@ -2063,7 +2095,16 @@ function clearFilters(){
   applyFilters();
 }
 
+function updateClearBtn(){
+  const q=(document.getElementById('ref-search')?.value||'').trim();
+  const n=(activeFilters.zone?1:0)+(activeFilters.type?1:0)+activeFilters.cost.size+(activeFilters.mustdo?1:0)+(activeFilters.done?1:0)+(q?1:0);
+  const b=document.getElementById('clear-filters-btn');
+  if(b){ b.style.display=n?'inline-block':'none'; b.textContent='\u2715 Clear '+n+' filter'+(n>1?'s':''); }
+  const t=document.getElementById('ref-filters-toggle');
+  if(t) t.textContent=(document.getElementById('ref-filters')?.classList.contains('collapsed')?'Filters \u25be':'Filters \u25b4')+(n?' ('+n+' active)':'');
+}
 function applyFilters(){
+  updateClearBtn();
   const query=(document.getElementById('ref-search')?.value||'').toLowerCase().trim();
   const zoneFilter=activeFilters.zone;
   const typeFilter=activeFilters.type;
@@ -2115,8 +2156,8 @@ function toggleRefPaneDesktop(){
   // Clear any inline widths set by drag so CSS class takes control
   if(refPane){ refPane.style.width=''; refPane.style.flex=''; refPane.style.maxWidth=''; }
   if(plannerPane){ plannerPane.style.flex=''; plannerPane.style.maxWidth=''; }
-  btn.textContent = isWide ? '⇔ Expand' : '⇔ Collapse';
-  btn.title = isWide ? 'Expand reference panel' : 'Collapse reference panel';
+  btn.textContent = isWide ? '⇔ Wider' : '⇔ Narrower';
+  btn.title = isWide ? 'Widen guide panel' : 'Narrow guide panel';
 }
 
 function toggleRefPane(){
@@ -2140,7 +2181,16 @@ function toggleRefPane(){
   }
 }
 
+function toggleFiltersBlock(){
+  const f=document.getElementById('ref-filters');
+  if(f){ f.classList.toggle('collapsed'); updateClearBtn(); }
+}
 function initMobileRefToggle(){
+  if(window.innerWidth <= 960){
+    const f=document.getElementById('ref-filters');
+    if(f) f.classList.add('collapsed');
+    updateClearBtn();
+  }
   if(window.innerWidth <= 700){
     const btn = document.getElementById('ref-expand-btn');
     if(btn) btn.style.display = 'block';

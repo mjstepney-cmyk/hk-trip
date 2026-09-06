@@ -406,7 +406,8 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .item-card{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;padding:7px 8px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:5px;cursor:pointer;background:var(--bg)}
 .item-card[draggable]:hover{border-color:var(--border-strong)}
 .item-card.drag-over{border-color:var(--red);background:var(--red-light)}
-.card-drag-handle{color:var(--text-hint);cursor:grab;font-size:14px;flex-shrink:0;padding-top:1px}
+.card-drag-handle{color:var(--text-hint);cursor:grab;font-size:14px;flex-shrink:0;padding-top:1px;touch-action:none;padding-left:2px;padding-right:4px}
+.item-card.touch-dragging{opacity:.45;border-color:var(--red);box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .card-main{flex:1;min-width:0}
 .card-name-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .card-type-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
@@ -1339,6 +1340,9 @@ function renderItemCard(item,day,pkgId,idx,total){
       draggable="true"
       ondragstart="onItemDragStart(event,'${pkgId}','${item.id}')"
       ondragover="onItemDragOver(event)"
+      ondragleave="onItemDragLeave(event)"
+      ondragend="onItemDragEnd(event)"
+      data-day="${day}" data-pkg="${pkgId}" data-item="${item.id}"
       ondrop="onItemDrop(event,${day},'${pkgId}','${item.id}')">
     <div class="card-drag-handle" title="Drag to reorder">⋮</div>
     <div class="card-main" onclick="toggleCardDetail('detail-${item.id}')">
@@ -1583,24 +1587,87 @@ function onItemDragOver(e){
   e.dataTransfer.dropEffect='move';
   e.currentTarget.classList.add('drag-over');
 }
+function onItemDragLeave(e){e.currentTarget.classList.remove('drag-over');}
+function onItemDragEnd(e){
+  e.currentTarget.style.opacity='';
+  document.querySelectorAll('.item-card.drag-over').forEach(c=>c.classList.remove('drag-over'));
+}
+function _dropItemOn(day,srcPkgId,srcItemId,targetPkgId,targetItemId){
+  if(srcItemId===targetItemId) return false;
+  const srcPkg=tripData[day].packages.find(p=>p.id===srcPkgId);
+  const tgtPkg=tripData[day].packages.find(p=>p.id===targetPkgId);
+  if(!srcPkg||!tgtPkg) return false;
+  const srcIdx=srcPkg.items.findIndex(i=>i.id===srcItemId);
+  const tgtIdx=tgtPkg.items.findIndex(i=>i.id===targetItemId);
+  if(srcIdx===-1) return false;
+  const [item]=srcPkg.items.splice(srcIdx,1);
+  tgtIdx===-1?tgtPkg.items.push(item):tgtPkg.items.splice(tgtIdx,0,item);
+  save();
+  renderDay();
+  return true;
+}
 function onItemDrop(e,day,targetPkgId,targetItemId){
   e.preventDefault();
   e.currentTarget.classList.remove('drag-over');
   let data;
   try{data=JSON.parse(e.dataTransfer.getData('text/plain'));}catch(err){return;}
-  const {pkgId:srcPkgId,itemId:srcItemId}=data;
-  if(srcItemId===targetItemId) return;
-  const srcPkg=tripData[day].packages.find(p=>p.id===srcPkgId);
-  const tgtPkg=tripData[day].packages.find(p=>p.id===targetPkgId);
-  if(!srcPkg||!tgtPkg) return;
-  const srcIdx=srcPkg.items.findIndex(i=>i.id===srcItemId);
-  const tgtIdx=tgtPkg.items.findIndex(i=>i.id===targetItemId);
-  if(srcIdx===-1) return;
-  const [item]=srcPkg.items.splice(srcIdx,1);
-  tgtIdx===-1?tgtPkg.items.push(item):tgtPkg.items.splice(tgtIdx,0,item);
-  save();
-  renderDay();
+  _dropItemOn(day,data.pkgId,data.itemId,targetPkgId,targetItemId);
 }
+/* ── Touch drag-to-reorder (mobile; HTML5 DnD doesn't fire on touch) ── */
+(function(){
+  var src=null,srcCard=null,over=null,timer=null,active=false,sx=0,sy=0;
+  function clear(){
+    if(timer){clearTimeout(timer);timer=null;}
+    if(srcCard) srcCard.classList.remove('touch-dragging');
+    if(over) over.classList.remove('drag-over');
+    src=null;srcCard=null;over=null;active=false;
+  }
+  document.addEventListener('touchstart',function(e){
+    var h=e.target.closest&&e.target.closest('.card-drag-handle');
+    if(!h) return;
+    var card=h.closest('.item-card');
+    if(!card||!card.dataset.item) return;
+    var t=e.touches[0];sx=t.clientX;sy=t.clientY;
+    srcCard=card;
+    src={day:+card.dataset.day,pkgId:card.dataset.pkg,itemId:card.dataset.item};
+    timer=setTimeout(function(){
+      active=true;
+      srcCard.classList.add('touch-dragging');
+      if(navigator.vibrate) navigator.vibrate(15);
+    },300);
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    if(!src) return;
+    var t=e.touches[0];
+    if(!active){
+      if(Math.abs(t.clientY-sy)>10||Math.abs(t.clientX-sx)>10) clear();
+      return;
+    }
+    e.preventDefault();
+    if(t.clientY<90) window.scrollBy(0,-12);
+    else if(t.clientY>window.innerHeight-90) window.scrollBy(0,12);
+    var el=document.elementFromPoint(t.clientX,t.clientY);
+    var card=el&&el.closest?el.closest('.item-card'):null;
+    if(card===srcCard) card=null;
+    if(card!==over){
+      if(over) over.classList.remove('drag-over');
+      over=card;
+      if(over) over.classList.add('drag-over');
+    }
+  },{passive:false});
+  document.addEventListener('touchend',function(){
+    if(active&&src&&over&&over.dataset.item){
+      var tgt=over;clearHighlight(tgt);
+      var d=src;clear();
+      _dropItemOn(d.day,d.pkgId,d.itemId,tgt.dataset.pkg,tgt.dataset.item);
+      return;
+    }
+    clear();
+  });
+  document.addEventListener('touchcancel',clear);
+  function clearHighlight(c){c.classList.remove('drag-over');}
+})();
+
 function onPkgDragOver(e,pkgId){e.preventDefault();}
 function onPkgDrop(e,day,pkgId){
   e.preventDefault();

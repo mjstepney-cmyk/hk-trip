@@ -406,6 +406,10 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .item-card{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;padding:7px 8px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:5px;cursor:pointer;background:var(--bg)}
 .item-card[draggable]:hover{border-color:var(--border-strong)}
 .item-card.drag-over{border-color:var(--red);background:var(--red-light)}
+.tab-dow{font-size:10px;font-weight:400;color:var(--text-hint);white-space:nowrap}
+.tab.active .tab-dow{color:var(--red)}
+.day-dow{font-size:12px;font-weight:500;color:var(--text-hint);margin-left:8px;white-space:nowrap}
+.overview-day-dow{font-size:10px;font-weight:500;color:var(--text-hint);margin-left:5px}
 .card-drag-handle{color:var(--text-hint);cursor:grab;font-size:14px;flex-shrink:0;padding-top:1px;touch-action:none;padding-left:2px;padding-right:4px}
 .item-card.touch-dragging{opacity:.45;border-color:var(--red);box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .card-main{flex:1;min-width:0}
@@ -758,6 +762,17 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 const DAYS = 14;
 const PLANNING_DAY = 0;
 function dayLabel(d){return d===PLANNING_DAY?'Planning':'Day '+d;}
+function dayDate(d){
+  if(d===PLANNING_DAY) return null;
+  const s=getTripStart(); if(!s) return null;
+  const x=new Date(s); x.setDate(x.getDate()+(d-1)); return x;
+}
+function dayDow(d,style){
+  const x=dayDate(d); if(!x) return '';
+  if(style==='long') return x.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'});
+  if(style==='mid')  return x.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+  return x.toLocaleDateString('en-GB',{weekday:'short'})+' '+x.getDate();
+}
 const ONENOTE_SHOPPING = 'https://onedrive.live.com/view.aspx?resid=9B37FFCC30CA44D7%21s4bb30a6ba2c8464bacfc2a05b5ac6fec&id=documents&wd=target%28Shopping%20Notes.one%7C49957614-8BAA-486B-B831-4F6C20F29575%2F%29&wdsectionfileid=9B37FFCC30CA44D7!s2e2de1a8f639450caadea1455a6884e6&end';
 const ONENOTE_PLACES   = 'https://onedrive.live.com/view.aspx?resid=9B37FFCC30CA44D7%21s4bb30a6ba2c8464bacfc2a05b5ac6fec&id=documents&wd=target%28Places%20and%20Things%20Notes.one%7C9457C96C-61C0-423C-8100-BB901BB198A8%2F%29&wdsectionfileid=9B37FFCC30CA44D7!sb9e90d079b7440789d54209a874bb67e&end';
 const ONENOTE_SHOPPING_CATS = ['Markets','Shopping — Malls & Outlets','Shopping — Specialist & Streets'];
@@ -1188,8 +1203,9 @@ function renderTabs(){
     const dotLabel=count>0?String(count):'';
     const flagIcons=d===PLANNING_DAY?'':((day.loungeEvening?'🍷':'')+(day.dedicatedTrip?'🚌':''));
     const tabName=d===PLANNING_DAY?'📋 Ideas':'Day '+d;
+    const dow=dayDow(d);
     html+=`<div class="tab${d===currentDay?' active':''}${d===PLANNING_DAY?' tab-planning':''}" data-day="${d}" onclick="goToDay(${d})">
-      <div style="display:flex;align-items:center;gap:3px;font-weight:${d===currentDay?'600':'400'}">${tabName}<span class="${dotClass}">${dotLabel}</span>${flagIcons}</div>
+      <div style="display:flex;align-items:center;gap:3px;font-weight:${d===currentDay?'600':'400'}">${tabName}${dow?`<span class="tab-dow">${dow}</span>`:''}<span class="${dotClass}">${dotLabel}</span>${flagIcons}</div>
       <div style="font-size:10px;color:${d===currentDay?'var(--red)':'var(--text-hint)'}">${esc(day.title)||'–'}</div>
     </div>`;
   }
@@ -1218,7 +1234,7 @@ function renderDay(){
   let html=`<div class="day-view">
   <div class="day-header">
     <div class="day-title-row">
-      <h2 class="day-num">${currentDay===PLANNING_DAY?'📋 Planning':'Day '+currentDay}</h2>
+      <h2 class="day-num">${currentDay===PLANNING_DAY?'📋 Planning':'Day '+currentDay}${dayDow(currentDay,'long')?`<span class="day-dow">${dayDow(currentDay,'long')}</span>`:''}</h2>
       <input class="day-title-input" placeholder="Day title…" value="${esc(d.title||'')}" oninput="updateDayField(${currentDay},'title',this.value)">
     </div>
     <div class="day-meta-row">
@@ -2086,7 +2102,7 @@ function renderOverview(){
       return `<span style="font-size:9px;background:${zl};color:${zc};border-radius:8px;padding:1px 5px;font-weight:600">${zn}</span>`;
     }).join('');
     html+=`<div class="overview-day-card" onclick="goToDay(${d})">
-      <div class="overview-day-num">Day ${d}${tripData[d].loungeEvening?' 🍷':''}${tripData[d].dedicatedTrip?' 🚌':''}</div>
+      <div class="overview-day-num">Day ${d}${dayDow(d,'mid')?`<span class="overview-day-dow">${dayDow(d,'mid')}</span>`:''}${tripData[d].loungeEvening?' 🍷':''}${tripData[d].dedicatedTrip?' 🚌':''}</div>
       <div class="overview-day-title">${esc(day.title)||'<span style="color:var(--text-hint);font-style:italic;font-weight:400">Unplanned</span>'}</div>
       ${dayZones.length?`<div style="display:flex;flex-wrap:wrap;gap:2px;margin-bottom:4px">${zoneChips}</div>`:''}
       <div class="overview-pills">${all.length?all.slice(0,4).map(i=>`<span class="overview-pill" style="background:${typeColorLight(i.type)};color:${typeColor(i.type)}">${esc(i.name)}</span>`).join('')+(all.length>4?`<span class="overview-pill">+${all.length-4} more</span>`:''): `<span class="overview-empty">Nothing added yet</span>`}</div>
@@ -3299,6 +3315,7 @@ function clearTripStart(){
   localStorage.removeItem('hk_trip_start');
   document.getElementById('wx-start-date').value='';
   document.getElementById('wx-clear-date').classList.remove('visible');
+  renderTabs(); if(currentView==='day') renderDay(); else if(currentView==='overview') renderOverview();
   const cached = sessionStorage.getItem('hk_wx_cache');
   if(cached){ try{ renderWeather(JSON.parse(cached).data); }catch(e){} }
 }
@@ -3316,6 +3333,7 @@ function initTripStartInput(){
     } else {
       clearTripStart();
     }
+    renderTabs(); if(currentView==='day') renderDay(); else if(currentView==='overview') renderOverview();
     const cached = sessionStorage.getItem('hk_wx_cache');
     if(cached){ try{ renderWeather(JSON.parse(cached).data); }catch(e){} }
   });

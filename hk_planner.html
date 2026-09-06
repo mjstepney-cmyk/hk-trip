@@ -1536,8 +1536,15 @@ function movePkgToDay(fromDay,pkgId,toDayRaw){
   if(idx===-1) return;
   const [pkg]=pkgs.splice(idx,1);
   tripData[toDay].packages.push(pkg);
+  // Carry the day title/area across if the source day is now empty and the target has none of its own
+  let carried=false;
+  if(pkgs.length===0&&fromDay!==PLANNING_DAY&&toDay!==PLANNING_DAY){
+    if(tripData[fromDay].title&&!tripData[toDay].title){tripData[toDay].title=tripData[fromDay].title;carried=true;}
+    if(tripData[fromDay].area&&!tripData[toDay].area){tripData[toDay].area=tripData[fromDay].area;carried=true;}
+    if(carried){tripData[fromDay].title='';tripData[fromDay].area='';}
+  }
   save();renderTabs();renderDay();
-  showToast(`→ "${pkg.name}" moved to ${dayLabel(toDay)}`);
+  showToast(`→ "${pkg.name}" moved to ${dayLabel(toDay)}${carried?' (with day title)':''}`);
 }
 
 function movePkg(day,pkgId,dir){

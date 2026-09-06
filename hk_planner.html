@@ -388,6 +388,10 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .pkg-header-actions{display:flex;gap:3px;flex-shrink:0}
 .pkg-move-btn{background:none;border:1px solid var(--border);color:var(--text-hint);font-size:11px;padding:1px 5px;border-radius:var(--radius);cursor:pointer}
 .pkg-move-btn:hover{background:var(--bg-tertiary)}
+.pkg-route-btn{display:inline-flex;align-items:center;text-decoration:none;border:1px solid var(--border);color:var(--text-hint);font-size:11px;padding:1px 5px;border-radius:var(--radius)}
+.pkg-route-btn:hover{background:var(--bg-tertiary)}
+.pkg-route-chk{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--border);border-radius:var(--radius);padding:1px 4px;font-size:11px;color:var(--text-hint);cursor:pointer}
+.pkg-route-chk input{width:12px;height:12px;accent-color:var(--red);margin:0}
 .pkg-day-select{font-size:11px;padding:1px 3px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-secondary,#fff);color:var(--text-muted);max-width:96px;cursor:pointer}
 .tab-planning{background:#FFF8E1}
 .planning-banner{background:#FFF8E1;border:1px solid #F0D9A0;border-radius:var(--radius);padding:8px 10px;font-size:12px;color:var(--text-muted);margin-bottom:8px;line-height:1.4}
@@ -1189,7 +1193,9 @@ function zoomedMapUrl(url){
 }
 
 function renderDay(){
+  if(routeSelDay!==currentDay){ routeSel=new Set(); routeSelDay=currentDay; }
   setTimeout(alignWxPills,0);
+  setTimeout(updateSelectedRouteBtn,0);
   renderTabs();
   const d=tripData[currentDay];
   const otherDays=Array.from({length:DAYS+1},(_,i)=>i+PLANNING_DAY).filter(x=>x!==currentDay);
@@ -1224,6 +1230,7 @@ function renderDay(){
     html+=`<div class="empty-day"><strong>${currentDay===PLANNING_DAY?'No draft packages yet':'Nothing planned yet'}</strong><br>Use the quick-add panel on the right, or click <em>+ New package</em> below.</div>`;
   }
   pkgs.forEach((pkg,pkgIdx)=>{
+    const pkgRoute=buildRouteFromItems(pkg.items);
     const isTarget=(pkg.id===activePkgId)||(!tripData[currentDay].packages.some(p=>p.id===activePkgId)&&pkgIdx===pkgs.length-1);
     html+=`<div class="pkg-block" id="pkg-${pkg.id}">
       <div class="pkg-header" onclick="if(event.target.tagName!=='INPUT'&&event.target.tagName!=='BUTTON')setActivePkg('${pkg.id}')" style="cursor:pointer">
@@ -1231,6 +1238,8 @@ function renderDay(){
         <input class="pkg-name-input" value="${esc(pkg.name)}" placeholder="Package name…"
           oninput="renamePkg(${currentDay},'${pkg.id}',this.value)">
         <div class="pkg-header-actions">
+          ${pkgRoute?`<a class="pkg-route-btn" href="${pkgRoute}" target="_blank" onclick="event.stopPropagation()" title="Route this package in Google Maps">&#128506;</a>`:''}
+          <label class="pkg-route-chk" title="Include in combined route" onclick="event.stopPropagation()"><input type="checkbox" ${routeSel.has(pkg.id)?'checked':''} onchange="togglePkgRoute('${pkg.id}',this.checked)">&#8644;</label>
           <button class="pkg-move-btn" onclick="movePkg(${currentDay},'${pkg.id}',-1)" title="Move up" ${pkgIdx===0?'disabled':''}>&#8593;</button>
           <button class="pkg-move-btn" onclick="movePkg(${currentDay},'${pkg.id}',1)" title="Move down" ${pkgIdx===pkgs.length-1?'disabled':''}>&#8595;</button>
           <select class="pkg-day-select" title="Move this package to another day" onclick="event.stopPropagation()" onchange="movePkgToDay(${currentDay},'${pkg.id}',this.value);this.selectedIndex=0">
@@ -1300,6 +1309,7 @@ function renderDay(){
     <button class="btn-secondary" onclick="moveDayPlan(${currentDay},'swap')">&#8644; Swap</button>
     <button class="btn-secondary" onclick="moveDayPlan(${currentDay},'move')">&#8594; Move</button>
     <button class="btn-secondary" onclick="clearDay(${currentDay})">&#128465; Clear</button>
+    <button class="btn-secondary" id="btn-route-sel" onclick="openSelectedRoute()" style="display:none">&#128506; Route selected</button>
     ${routeUrl?`<a class="btn-route-day" href="${routeUrl}" target="_blank">&#128506; Full day route</a>`:''}
   </div>
   <div style="text-align:center;padding:12px 0 4px"><a class="guide-link" href="https://1drv.ms/x/c/9b37ffcc30ca44d7/IQBGvUcWk047QIwB1IP59bjNAasMv04g4rkI9JFI9yGw2mA">Full reference guide (xlsx) ↗</a></div>
@@ -1373,9 +1383,10 @@ function renderItemCard(item,day,pkgId,idx,total){
   </div>`;
 }
 
-function buildRouteUrl(day){
-  const d=tripData[day];
-  const allItems=(d.packages||[]).flatMap(p=>p.items);
+let routeSel=new Set();
+let routeSelDay=null;
+
+function buildRouteFromItems(allItems){
   const queries=allItems.map(i=>{
     if(!i.map) return i.name;
     try{ return new URL(i.map).searchParams.get('q')||i.name; }catch(e){ return i.name; }
@@ -1387,6 +1398,45 @@ function buildRouteUrl(day){
   let url=`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=walking`;
   if(waypoints) url+=`&waypoints=${waypoints}`;
   return url;
+}
+
+function buildRouteUrl(day){
+  const d=tripData[day];
+  if(!d) return null;
+  return buildRouteFromItems((d.packages||[]).flatMap(p=>p.items));
+}
+
+function buildPkgRouteUrl(day,pkgId){
+  const pkg=(tripData[day].packages||[]).find(p=>p.id===pkgId);
+  if(!pkg) return null;
+  return buildRouteFromItems(pkg.items);
+}
+
+function buildSelectedRouteUrl(day){
+  const pkgs=(tripData[day].packages||[]).filter(p=>routeSel.has(p.id));
+  return buildRouteFromItems(pkgs.flatMap(p=>p.items));
+}
+
+function togglePkgRoute(pkgId,checked){
+  if(checked) routeSel.add(pkgId); else routeSel.delete(pkgId);
+  updateSelectedRouteBtn();
+}
+
+function updateSelectedRouteBtn(){
+  const btn=document.getElementById('btn-route-sel');
+  if(!btn) return;
+  const n=routeSel.size;
+  const url=buildSelectedRouteUrl(currentDay);
+  btn.textContent=`🗺 Route ${n} selected`;
+  btn.style.display=n>0?'':'none';
+  btn.dataset.url=url||'';
+  btn.disabled=!url;
+}
+
+function openSelectedRoute(){
+  const url=buildSelectedRouteUrl(currentDay);
+  if(!url){showToast('Select packages with at least 2 mappable stops.');return;}
+  window.open(url,'_blank');
 }
 
 function toggleAddForm(key){

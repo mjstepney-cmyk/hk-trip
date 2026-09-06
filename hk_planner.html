@@ -388,6 +388,9 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 .pkg-header-actions{display:flex;gap:3px;flex-shrink:0}
 .pkg-move-btn{background:none;border:1px solid var(--border);color:var(--text-hint);font-size:11px;padding:1px 5px;border-radius:var(--radius);cursor:pointer}
 .pkg-move-btn:hover{background:var(--bg-tertiary)}
+.pkg-day-select{font-size:11px;padding:1px 3px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-secondary,#fff);color:var(--text-muted);max-width:96px;cursor:pointer}
+.tab-planning{background:#FFF8E1}
+.planning-banner{background:#FFF8E1;border:1px solid #F0D9A0;border-radius:var(--radius);padding:8px 10px;font-size:12px;color:var(--text-muted);margin-bottom:8px;line-height:1.4}
 .pkg-delete-btn{background:none;border:1px solid var(--border);color:var(--text-hint);font-size:11px;padding:1px 5px;border-radius:var(--radius);cursor:pointer}
 .pkg-delete-btn:hover{background:var(--red-light);color:var(--red)}
 .pkg-items{padding:6px 8px 0}
@@ -748,6 +751,8 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 
 <script>
 const DAYS = 14;
+const PLANNING_DAY = 0;
+function dayLabel(d){return d===PLANNING_DAY?'Planning':'Day '+d;}
 const ONENOTE_SHOPPING = 'https://onedrive.live.com/view.aspx?resid=9B37FFCC30CA44D7%21s4bb30a6ba2c8464bacfc2a05b5ac6fec&id=documents&wd=target%28Shopping%20Notes.one%7C49957614-8BAA-486B-B831-4F6C20F29575%2F%29&wdsectionfileid=9B37FFCC30CA44D7!s2e2de1a8f639450caadea1455a6884e6&end';
 const ONENOTE_PLACES   = 'https://onedrive.live.com/view.aspx?resid=9B37FFCC30CA44D7%21s4bb30a6ba2c8464bacfc2a05b5ac6fec&id=documents&wd=target%28Places%20and%20Things%20Notes.one%7C9457C96C-61C0-423C-8100-BB901BB198A8%2F%29&wdsectionfileid=9B37FFCC30CA44D7!sb9e90d079b7440789d54209a874bb67e&end';
 const ONENOTE_SHOPPING_CATS = ['Markets','Shopping — Malls & Outlets','Shopping — Specialist & Streets'];
@@ -1123,13 +1128,13 @@ function initData(){
     try{tripData=JSON.parse(saved);migrateData();return;}
     catch(e){console.warn('Could not load saved data',e);}
   }
-  for(let d=1;d<=DAYS;d++) tripData[d]=freshDay();
+  for(let d=PLANNING_DAY;d<=DAYS;d++) tripData[d]=freshDay();
   save();
 }
 
 function migrateData(){
   let changed=false;
-  for(let d=1;d<=DAYS;d++){
+  for(let d=PLANNING_DAY;d<=DAYS;d++){
     if(!tripData[d]){tripData[d]=freshDay();changed=true;continue;}
     const day=tripData[d];
     if(day.slots&&!day.packages){
@@ -1160,14 +1165,15 @@ function renderTabs(){
   const tabs=document.getElementById('day-tabs');
   if(!tabs) return;
   let html='';
-  for(let d=1;d<=DAYS;d++){
-    const day=tripData[d];
+  for(let d=PLANNING_DAY;d<=DAYS;d++){
+    const day=tripData[d]||freshDay();
     const count=(day.packages||[]).reduce((s,p)=>s+p.items.length,0);
     const dotClass=count>0?'tab-dot tab-dot-has':'tab-dot tab-dot-empty';
     const dotLabel=count>0?String(count):'';
-    const flagIcons=(day.loungeEvening?'🍷':'')+(day.dedicatedTrip?'🚌':'');
-    html+=`<div class="tab${d===currentDay?' active':''}" onclick="goToDay(${d})">
-      <div style="display:flex;align-items:center;gap:3px;font-weight:${d===currentDay?'600':'400'}">Day ${d}<span class="${dotClass}">${dotLabel}</span>${flagIcons}</div>
+    const flagIcons=d===PLANNING_DAY?'':((day.loungeEvening?'🍷':'')+(day.dedicatedTrip?'🚌':''));
+    const tabName=d===PLANNING_DAY?'📋 Ideas':'Day '+d;
+    html+=`<div class="tab${d===currentDay?' active':''}${d===PLANNING_DAY?' tab-planning':''}" data-day="${d}" onclick="goToDay(${d})">
+      <div style="display:flex;align-items:center;gap:3px;font-weight:${d===currentDay?'600':'400'}">${tabName}<span class="${dotClass}">${dotLabel}</span>${flagIcons}</div>
       <div style="font-size:10px;color:${d===currentDay?'var(--red)':'var(--text-hint)'}">${esc(day.title)||'–'}</div>
     </div>`;
   }
@@ -1186,32 +1192,36 @@ function renderDay(){
   setTimeout(alignWxPills,0);
   renderTabs();
   const d=tripData[currentDay];
-  const otherDays=Array.from({length:DAYS},(_,i)=>i+1).filter(x=>x!==currentDay);
-  const dayOpts=otherDays.map(n=>`<option value="${n}">Day ${n}${tripData[n].title?' — '+tripData[n].title.substring(0,20):''}</option>`).join('');
+  const otherDays=Array.from({length:DAYS+1},(_,i)=>i+PLANNING_DAY).filter(x=>x!==currentDay);
+  const dayOpts=otherDays.map(n=>`<option value="${n}">${dayLabel(n)}${tripData[n]&&tripData[n].title?' — '+tripData[n].title.substring(0,20):''}</option>`).join('');
   const root=document.getElementById('planner-pane');
   if(!root) return;
 
   let html=`<div class="day-view">
   <div class="day-header">
     <div class="day-title-row">
-      <h2 class="day-num">Day ${currentDay}</h2>
+      <h2 class="day-num">${currentDay===PLANNING_DAY?'📋 Planning':'Day '+currentDay}</h2>
       <input class="day-title-input" placeholder="Day title…" value="${esc(d.title||'')}" oninput="updateDayField(${currentDay},'title',this.value)">
     </div>
     <div class="day-meta-row">
       <input class="day-area-input" placeholder="Area / transport notes…" value="${esc(d.area||'')}" oninput="updateDayField(${currentDay},'area',this.value)">
       <div class="day-nav">
-        <button class="nav-btn" onclick="prevDay()" ${currentDay===1?'disabled':''}>&#8592;</button>
+        <button class="nav-btn" onclick="prevDay()" ${currentDay===PLANNING_DAY?'disabled':''}>&#8592;</button>
         <button class="nav-btn" onclick="nextDay()" ${currentDay===DAYS?'disabled':''}>&#8594;</button>
       </div>
     </div>
   </div>`;
+
+  if(currentDay===PLANNING_DAY){
+    html+=`<div class="planning-banner">Scratch space — build packages here, then send them to a real day with the <strong>→ day</strong> dropdown on each package. Nothing here counts towards trip stats.</div>`;
+  }
 
   // Conrad Start
 
   // Packages
   const pkgs=d.packages||[];
   if(pkgs.length===0){
-    html+=`<div class="empty-day"><strong>Nothing planned yet</strong><br>Use the quick-add panel on the right, or click <em>+ New package</em> below.</div>`;
+    html+=`<div class="empty-day"><strong>${currentDay===PLANNING_DAY?'No draft packages yet':'Nothing planned yet'}</strong><br>Use the quick-add panel on the right, or click <em>+ New package</em> below.</div>`;
   }
   pkgs.forEach((pkg,pkgIdx)=>{
     const isTarget=(pkg.id===activePkgId)||(!tripData[currentDay].packages.some(p=>p.id===activePkgId)&&pkgIdx===pkgs.length-1);
@@ -1223,6 +1233,10 @@ function renderDay(){
         <div class="pkg-header-actions">
           <button class="pkg-move-btn" onclick="movePkg(${currentDay},'${pkg.id}',-1)" title="Move up" ${pkgIdx===0?'disabled':''}>&#8593;</button>
           <button class="pkg-move-btn" onclick="movePkg(${currentDay},'${pkg.id}',1)" title="Move down" ${pkgIdx===pkgs.length-1?'disabled':''}>&#8595;</button>
+          <select class="pkg-day-select" title="Move this package to another day" onclick="event.stopPropagation()" onchange="movePkgToDay(${currentDay},'${pkg.id}',this.value);this.selectedIndex=0">
+            <option value="">→ day…</option>
+            ${Array.from({length:DAYS+1},(_,i)=>i+PLANNING_DAY).filter(n=>n!==currentDay).map(n=>`<option value="${n}">${dayLabel(n)}</option>`).join('')}
+          </select>
           <button class="pkg-delete-btn" onclick="deletePkg(${currentDay},'${pkg.id}')" title="Delete package">✕</button>
         </div>
       </div>
@@ -1431,6 +1445,20 @@ function renamePkg(day,pkgId,name){
   if(pkg){pkg.name=name;save();}
 }
 
+function movePkgToDay(fromDay,pkgId,toDayRaw){
+  const toDay=parseInt(toDayRaw);
+  if(isNaN(toDay)||toDay===fromDay) return;
+  if(!tripData[toDay]) tripData[toDay]=freshDay();
+  if(!tripData[toDay].packages) tripData[toDay].packages=[];
+  const pkgs=tripData[fromDay].packages;
+  const idx=pkgs.findIndex(p=>p.id===pkgId);
+  if(idx===-1) return;
+  const [pkg]=pkgs.splice(idx,1);
+  tripData[toDay].packages.push(pkg);
+  save();renderTabs();renderDay();
+  showToast(`→ "${pkg.name}" moved to ${dayLabel(toDay)}`);
+}
+
 function movePkg(day,pkgId,dir){
   const pkgs=tripData[day].packages;
   const idx=pkgs.findIndex(p=>p.id===pkgId);
@@ -1543,7 +1571,7 @@ function onPkgDrop(e,day,pkgId){
 function moveDayPlan(fromDay,mode){
   const sel=document.getElementById('move-day-target');
   const toDay=parseInt(sel?.value);
-  if(!toDay||isNaN(toDay)||toDay===fromDay){showToast('Please select a destination day first.');return;}
+  if(isNaN(toDay)||toDay===fromDay){showToast('Please select a destination day first.');return;}
   function cloneDay(d){
     const src=tripData[d];
     return JSON.parse(JSON.stringify({title:src.title||'',area:src.area||'',packages:src.packages||[],loungeEvening:src.loungeEvening||false,dedicatedTrip:src.dedicatedTrip||false}));
@@ -1554,18 +1582,18 @@ function moveDayPlan(fromDay,mode){
     tripData[toDay].title=fromSnap.title;tripData[toDay].area=fromSnap.area;tripData[toDay].packages=fromSnap.packages;tripData[toDay].loungeEvening=fromSnap.loungeEvening;tripData[toDay].dedicatedTrip=fromSnap.dedicatedTrip;
     tripData[fromDay].title=toSnap.title;tripData[fromDay].area=toSnap.area;tripData[fromDay].packages=toSnap.packages;tripData[fromDay].loungeEvening=toSnap.loungeEvening;tripData[fromDay].dedicatedTrip=toSnap.dedicatedTrip;
     save();renderTabs();renderDay();
-    showToast(`⇄ Day ${fromDay} and Day ${toDay} swapped`);
+    showToast(`⇄ ${dayLabel(fromDay)} and ${dayLabel(toDay)} swapped`);
   } else {
-    if(!confirm(`Copy Day ${fromDay} to Day ${toDay} and clear Day ${fromDay}?\nDay ${toDay}'s plan will be overwritten.`)) return;
+    if(!confirm(`Copy ${dayLabel(fromDay)} to ${dayLabel(toDay)} and clear ${dayLabel(fromDay)}?\n${dayLabel(toDay)}'s plan will be overwritten.`)) return;
     tripData[toDay].title=fromSnap.title;tripData[toDay].area=fromSnap.area;tripData[toDay].packages=fromSnap.packages;tripData[toDay].loungeEvening=fromSnap.loungeEvening;tripData[toDay].dedicatedTrip=fromSnap.dedicatedTrip;
     clearDay(fromDay,true);
     save();renderTabs();renderDay();
-    showToast(`→ Day ${fromDay} moved to Day ${toDay}`);
+    showToast(`→ ${dayLabel(fromDay)} moved to ${dayLabel(toDay)}`);
   }
 }
 
 function clearDay(day,silent){
-  if(!silent&&!confirm(`Clear all packages from Day ${day}?`)) return;
+  if(!silent&&!confirm(`Clear all packages from ${dayLabel(day)}?`)) return;
   tripData[day].packages=[];
   tripData[day].title='';
   tripData[day].area='';
@@ -1585,7 +1613,7 @@ function updateDayField(day,field,val){
 }
 
 
-function prevDay(){ activePkgId=null;if(currentDay>1){currentDay--;renderDay();renderTabs();scrollTabIntoView()}}
+function prevDay(){ activePkgId=null;if(currentDay>PLANNING_DAY){currentDay--;renderDay();renderTabs();scrollTabIntoView()}}
 function nextDay(){ activePkgId=null;if(currentDay<DAYS){currentDay++;renderDay();renderTabs();scrollTabIntoView()}}
 
 function scrollTabIntoView(){
@@ -1828,8 +1856,9 @@ function save(){
 function updateHeaderSubtitle(){
   const el=document.getElementById('header-subtitle');
   if(!el) return;
-  const loungeDays=Object.values(tripData).filter(d=>d&&d.loungeEvening).length;
-  const plannedDays=Object.values(tripData).filter(d=>d&&(d.packages||[]).some(p=>p.items.length>0)).length;
+  const realDays=Object.keys(tripData).filter(k=>Number(k)>=1).map(k=>tripData[k]);
+  const loungeDays=realDays.filter(d=>d&&d.loungeEvening).length;
+  const plannedDays=realDays.filter(d=>d&&(d.packages||[]).some(p=>p.items.length>0)).length;
   const parts=['14-day planner'];
   if(plannedDays>0) parts.push(`${plannedDays} planned`);
   if(loungeDays>0) parts.push(`🍷 ${loungeDays} lounge`);
@@ -2487,6 +2516,7 @@ function todayNextDay(){
 }
 
 function renderTodayMode(day){
+  if(day<1){ day=1; currentDay=1; }
   const d=tripData[day];
   const title=d.title||'Day '+day;
   const routeUrl=buildRouteUrl(day);
@@ -3074,7 +3104,13 @@ function alignWxPills(){
   fcEl.style.width = totalW + 'px';
   fcEl.style.height = '36px';
 
-  tabs.forEach((tab, i) => {
+  tabs.forEach((tab) => {
+    const dayNum = parseInt(tab.dataset.day);
+    const i = dayNum - 1;
+    if(i < 0){
+      html += `<div class="wx-day wx-day-empty" style="position:absolute;left:${tab.offsetLeft}px;width:${tab.offsetWidth}px;height:32px;top:2px"></div>`;
+      return;
+    }
     // Date for this day
     let dateStr = null;
     if(startDate){

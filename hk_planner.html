@@ -314,6 +314,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:va
 
 
 .ref-item-add:hover{background:var(--red-light);color:var(--red);border-color:var(--red-mid)}
+.walk-item{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;padding:7px 12px;border-bottom:1px solid var(--border);background:var(--bg-tertiary)}
+.walk-item .ref-item-name{font-weight:600}
 .ref-search{padding:8px 12px;border-bottom:1px solid var(--border);position:sticky;top:32px;background:var(--bg-secondary);z-index:4}
 .ref-search input{width:100%;border:1px solid var(--border);border-radius:var(--radius);padding:5px 8px;font-size:12px;background:var(--bg);color:var(--text)}
 
@@ -882,6 +884,7 @@ const GUIDE_ITEMS = [
     {name:'Stanley Market',zone:5,cost:1,type:'market',hours:'10am–6:30pm daily',tip:'Relaxed street market on Stanley New Street — good for Western-sized clothing, silk, original local artwork, jade and souvenirs. Far less frantic than Temple Street. Bus 6/6X/260 from Exchange Square; scenic 45-min ride.',map:'https://maps.google.com/maps?q=Stanley+Market+Stanley+New+Street+Hong+Kong&z=17'},
 
     {name:'Bird Market (Yuen Po Street)',zone:3,cost:1,type:'market',hours:'7am–8pm (daily; mornings best)',tip:'Local men bring prized songbirds in ornate bamboo cages for a morning social. Ornate carved cages also on sale. Near Flower Market.',map:'https://maps.google.com/?q=Yuen+Po+Street+Bird+Garden+Mong+Kok+Hong+Kong'},
+    {name:'Cross Street (Wan Chai)',zone:1,cost:1,type:'market',hours:'9am–7pm (daily)',tip:'Street stalls selling clothes, socks, household goods, fruit and veg, running off Tai Yuen St. Genuinely local, cash only, and cheap — good for haggling practice before the Kowloon markets.',map:'https://maps.google.com/?q=Cross+Street+Wan+Chai+Hong+Kong'},
   ]},
   {cat:'Shopping — Malls & Outlets',items:[
     {name:'Horizon Plaza',zone:2,cost:2,type:'shopping',hours:'10am–6pm (weekdays best)',tip:'28-floor designer outlet warehouse in Ap Lei Chau; ~30 mins from Central; HK\'s best-kept secret. Lane Crawford Warehouse (25/F) is the anchor outlet — start at the top and work down.',map:'https://maps.google.com/?q=Horizon+Plaza+Ap+Lei+Chau+Hong+Kong'},
@@ -903,7 +906,16 @@ const GUIDE_ITEMS = [
   
     {name:'Times Square (Causeway Bay)',zone:1,cost:2,type:'shopping',hours:'10am–10pm (daily)',tip:'12-floor mega-mall in the heart of Causeway Bay. Mix of high street and mid-range brands plus a large food court on upper floors. Direct MTR connection at Causeway Bay Exit A.',map:'https://maps.google.com/?q=Times+Square+Causeway+Bay+Hong+Kong'},
     {name:'Hysan Place (Causeway Bay)',zone:1,cost:2,type:'shopping',hours:'10am–10pm (daily)',tip:'17-floor contemporary mall next to Lee Gardens. Strong on fashion, beauty and lifestyle. Links directly to Lee Garden One. Good food options on upper floors. MTR Causeway Bay Exit F.',map:'https://maps.google.com/?q=Hysan+Place+Causeway+Bay+Hong+Kong'},
-    {name:'Lee Garden Two (Causeway Bay)',zone:1,cost:3,type:'shopping',hours:'10am–8pm (daily)',tip:'Companion tower to Lee Garden One with more luxury brands — Chloé, Paul Smith, Prada Sport, Marc Jacobs. Connects via bridge to Hysan Place. More boutique feel than the main Lee Garden One.',map:'https://maps.google.com/?q=Lee+Garden+Two+Causeway+Bay+Hong+Kong'}
+    {name:'Lee Garden Two (Causeway Bay)',zone:1,cost:3,type:'shopping',hours:'10am–8pm (daily)',tip:'Companion tower to Lee Garden One with more luxury brands — Chloé, Paul Smith, Prada Sport, Marc Jacobs. Connects via bridge to Hysan Place. More boutique feel than the main Lee Garden One.',map:'https://maps.google.com/?q=Lee+Garden+Two+Causeway+Bay+Hong+Kong'},
+    {name:'SOGO Causeway Bay',zone:1,cost:2,type:'shopping',hours:'10am–10pm (daily)',tip:'Japanese-style department store over 19 floors at the Hennessy/Yee Wo junction. Basement food hall and the cosmetics floor are the draws. Thrice-yearly Thankful Week sales are genuinely cheap — worth checking dates.',map:'https://maps.google.com/?q=SOGO+Causeway+Bay+Hong+Kong'},
+    {name:'Queensway Plaza',zone:1,cost:1,type:'shopping',hours:'11am–9pm (daily)',tip:'Scruffy low-rise mall on the Admiralty walkway — cheap clothing, phone accessories, watch repairs, tailors, luggage. The bargain counterpoint to Pacific Place, three minutes away. Very handy from the Conrad.',map:'https://maps.google.com/?q=Queensway+Plaza+Admiralty+Hong+Kong'},
+    {name:'Admiralty Centre',zone:1,cost:1,type:'shopping',hours:'10am–8pm (Mon–Sat)',tip:'Older office podium arcade with camera shops, opticians, tailors, printers and local cafés. Directly connected to Admiralty MTR — five minutes from the Conrad.',map:'https://maps.google.com/?q=Admiralty+Centre+Harcourt+Road+Hong+Kong'},
+    {name:'United Centre',zone:1,cost:1,type:'shopping',hours:'10am–8pm (daily)',tip:'Podium arcade at 95 Queensway with everyday shops — pharmacy, bakery, opticians and a supermarket. Useful for trip top-ups without leaving the Admiralty walkway network.',map:'https://maps.google.com/?q=United+Centre+95+Queensway+Admiralty+Hong+Kong'},
+    {name:'Star House (TST)',zone:3,cost:2,type:'shopping',hours:'10am–8pm (daily)',tip:'Directly above the Star Ferry TST pier. Chinese Arts & Crafts department store on the ground floor is the reason to go — jade, silk, tea, ceramics at fixed prices. First stop off the ferry.',map:'https://maps.google.com/?q=Star+House+Tsim+Sha+Tsui+Hong+Kong'},
+    {name:'Silvercord (TST)',zone:3,cost:2,type:'shopping',hours:'11am–9pm (daily)',tip:'Mid-range mall on Canton Rd — youth fashion, sportswear, cosmetics and a decent food court. Far cheaper than Harbour City next door.',map:'https://maps.google.com/?q=Silvercord+Canton+Road+Tsim+Sha+Tsui+Hong+Kong'},
+    {name:'iSquare (TST)',zone:3,cost:2,type:'shopping',hours:'11am–10pm (daily)',tip:'31-floor vertical mall at the Nathan Rd/Peking Rd corner, above TST MTR Exit H. High-street brands lower down, restaurants and Eyebar with harbour views on the upper floors.',map:'https://maps.google.com/?q=iSquare+63+Nathan+Road+Tsim+Sha+Tsui+Hong+Kong'},
+    {name:'Mira Place (TST)',zone:3,cost:2,type:'shopping',hours:'11am–9pm (daily)',tip:'Two linked malls on Nathan Rd at Kimberley Rd. Contemporary fashion, Japanese and Korean brands, good coffee. Quieter than iSquare or Harbour City.',map:'https://maps.google.com/?q=Mira+Place+118+Nathan+Road+Tsim+Sha+Tsui+Hong+Kong'},
+    {name:'The Peninsula Arcade',zone:3,cost:3,type:'shopping',hours:'10am–7pm (daily)',tip:'Small luxury arcade in the Peninsula hotel on Salisbury Rd. Browse-only unless splurging, but the building itself is worth walking through. Afternoon tea in the lobby if you book ahead.',map:'https://maps.google.com/?q=The+Peninsula+Hong+Kong+Salisbury+Road+Tsim+Sha+Tsui'}
   ]},
   {cat:'Shopping — Specialist & Streets',items:[
     {name:'PMQ Creative Hub',zone:1,cost:2,type:'shopping',hours:'Noon–8pm',tip:'35 Aberdeen St, Central; 100+ local designer boutiques across 8 floors of a historic building',map:'https://maps.google.com/?q=PMQ+35+Aberdeen+Street+Central+Hong+Kong'},
@@ -954,6 +966,17 @@ const GUIDE_ITEMS = [
     {name:'DJI | Hasselblad Store (TST)',zone:3,cost:3,type:'shopping',hours:'11am–9pm (daily)',tip:'Official DJI store — Shop G19-G20, Park Lane Shopper\'s Boulevard, 129 Nathan Rd, TST. Drones, Osmo gimbals, Action cams, Hasselblad. Genuine stock with warranty; hands-on demos. Compare against Golden Computer Arcade grey imports before buying.',map:'https://maps.google.com/?q=DJI+Hasselblad+Store+129+Nathan+Road+Tsim+Sha+Tsui+Hong+Kong'},
     {name:'DJI Authorised Store (Causeway Bay)',zone:1,cost:3,type:'shopping',hours:'11am–9pm (daily)',tip:'Shop B5, G/F, Lai Yuen Apartments, 59 Russell St, Causeway Bay — beside Times Square. Closest official DJI outlet to the Conrad. Authorised dealer, so warranty and after-sales are valid.',map:'https://maps.google.com/?q=DJI+Store+59+Russell+Street+Causeway+Bay+Hong+Kong'},
     {name:'Hong Kong Reader',zone:1,cost:1,type:'shopping',hours:'12pm–8pm (daily)',tip:'Independent bookshop in Causeway Bay. Good selection of HK-interest books, design books, zines and local publications.',map:'https://maps.google.com/maps?q=Hong+Kong+Reader+Causeway+Bay+Hong+Kong&z=17'},
+    {name:'Queen\'s Road Central',zone:1,cost:2,type:'shopping',hours:'10am–8pm (daily)',tip:'Central\'s main retail spine — jewellers (Chow Tai Fook, Luk Fook), watch dealers, tailors and pharmacies, with Landmark and Pedder St at the east end. Prices posted; jewellery and watches are negotiable. Central MTR Exit D.',map:'https://maps.google.com/?q=Queen+s+Road+Central+Hong+Kong'},
+    {name:'Wyndham Street',zone:1,cost:2,type:'shopping',hours:'11am–7pm shops; bars late',tip:'Antique dealers, art galleries and the flower shops at the lower end near Queen\'s Rd; bars and restaurants further up the hill. Runs straight into Hollywood Rd — the natural link between LKF and the antiques strip.',map:'https://maps.google.com/?q=Wyndham+Street+Central+Hong+Kong'},
+    {name:'Lyndhurst Terrace',zone:1,cost:1,type:'shopping',hours:'11am–7pm (Mon–Sat)',tip:'Short, steep street of independent shops, cafés and old-school fabric and haberdashery dealers. Links Wellington St up to the Mid-Levels Escalator. Good for buttons, trimmings and ribbon at local prices.',map:'https://maps.google.com/?q=Lyndhurst+Terrace+Central+Hong+Kong'},
+    {name:'Wellington Street',zone:1,cost:1,type:'shopping',hours:'8am–8pm (daily)',tip:'Old Central at street level — Lin Heung Tea House, Mak\'s Noodle, Kau Kee and Tsim Chai Kee all sit here, alongside seal carvers, chop makers and dried goods shops. Best lunch stop on a Central walk.',map:'https://maps.google.com/?q=Wellington+Street+Central+Hong+Kong'},
+    {name:'Queen\'s Road East (Furniture & Rattan)',zone:1,cost:1,type:'shopping',hours:'10am–7pm (Mon–Sat)',tip:'Rattan and blackwood furniture makers, paper lantern shops, birdcage sellers and mahjong tile carvers. Runs from Pacific Place down into Wan Chai — walkable straight out of the Conrad.',map:'https://maps.google.com/?q=Queen+s+Road+East+Wan+Chai+Hong+Kong'},
+    {name:'Spring Garden Lane',zone:1,cost:1,type:'shopping',hours:'10am–7pm (Mon–Sat)',tip:'Quieter parallel to Johnston Rd — old shopfronts, hardware stores, tailors and cheap local eats. Good for a wander between the toy market and Wan Chai Market.',map:'https://maps.google.com/?q=Spring+Garden+Lane+Wan+Chai+Hong+Kong'},
+    {name:'Haiphong Road (TST)',zone:3,cost:1,type:'shopping',hours:'11am–9pm (daily)',tip:'Runs along the south edge of Kowloon Park off Nathan Rd. Street-level stalls and small shops selling luggage, watches, souvenirs and electronics accessories. Haggle; check goods before paying.',map:'https://maps.google.com/?q=Haiphong+Road+Tsim+Sha+Tsui+Hong+Kong'},
+    {name:'Hart Avenue (TST)',zone:3,cost:1,type:'shopping',hours:'12pm–9pm shops; bars late',tip:'Small streets east of Nathan Rd — independent boutiques, vintage clothing, tattoo studios and bars. Much more local than the Nathan Rd frontage a block away.',map:'https://maps.google.com/?q=Hart+Avenue+Tsim+Sha+Tsui+Hong+Kong'},
+    {name:'Kimberley Road (TST)',zone:3,cost:2,type:'shopping',hours:'11am–9pm (daily)',tip:'Tailors, Korean restaurants and grocery shops, plus watch and camera dealers at the Nathan Rd end. Kimberley St behind it is the Korean quarter — good for cheap cosmetics and snacks.',map:'https://maps.google.com/?q=Kimberley+Road+Tsim+Sha+Tsui+Hong+Kong'},
+    {name:'Knutsford Terrace (TST)',zone:3,cost:2,type:'bar',hours:'5pm–late (daily)',tip:'Pedestrianised terrace of bars and restaurants up steps off Kimberley Rd. Kowloon\'s answer to Lan Kwai Fong — smaller, cheaper and less frantic. Good end point for a TST streets walk.',map:'https://maps.google.com/?q=Knutsford+Terrace+Tsim+Sha+Tsui+Hong+Kong'},
+    {name:'Bowring Street (Jordan)',zone:3,cost:1,type:'shopping',hours:'10am–8pm (daily)',tip:'Cheap clothing, luggage, household goods and hardware between Nathan Rd and the Jade Market. Very local, cash preferred. Jordan MTR Exit C2.',map:'https://maps.google.com/?q=Bowring+Street+Jordan+Hong+Kong'},
   ]},
   {cat:'Shopping — Districts',items:[
     {name:'Central (Queen\'s Rd / The Lanes)',zone:1,cost:2,type:'shopping',hours:'10am–8pm; quieter Sundays',tip:'Landmark and Prince\'s Building for high-end browsing; Queen\'s Rd Central for jewellers and watch shops; Li Yuen St E & W (The Lanes) for cheap fashion and accessories; Pottinger St for stalls. Walk up to PMQ and SoHo via the Mid-Levels Escalator.',map:'https://maps.google.com/?q=Queen+s+Road+Central+Hong+Kong'},
@@ -1139,6 +1162,46 @@ const GUIDE_ITEMS = [
   ]},
 
 ];
+const GUIDE_INDEX={};
+GUIDE_ITEMS.forEach(c=>c.items.forEach(i=>{if(!GUIDE_INDEX[i.name])GUIDE_INDEX[i.name]=i;}));
+function W(name){ return GUIDE_INDEX[name]||{name,zone:1,cost:1,type:'shopping',hours:'',tip:'',map:'https://maps.google.com/?q='+encodeURIComponent(name+' Hong Kong')}; }
+function N(name,zone,cost,type,hours,tip,q){ return {name,zone,cost,type,hours,tip,map:'https://maps.google.com/?q='+encodeURIComponent(q)}; }
+
+const AREA_WALKS = [
+  {name:'Central — Streets & Antiques', area:'Central → Sheung Wan', walk:'~2.5km, 3–4 hrs', note:'East to west, uphill through Lan Kwai Fong then down Hollywood Rd into Sheung Wan. Weekday morning is best — much of Sheung Wan shuts on Sunday.', stops:[
+    "Queen's Road Central",'Domi Luxury Secondhand','Wyndham Street','Lyndhurst Terrace','Wellington Street',
+    'Central Market','Hollywood Road (Antiques)','Cat Street Flea Market','Des Voeux Rd West (Dried Seafood)','Western Market',
+  ]},
+  {name:'Causeway Bay — Malls & Bargains', area:'Causeway Bay', walk:'~1.5km, 3–4 hrs', note:'Malls first, street bargains second, cooked food centre to finish. Weekday afternoon — evenings are shoulder-to-shoulder.', stops:[
+    'Times Square (Causeway Bay)','Yiu Wa Street (Boutiques & Vintage)','Hysan Place (Causeway Bay)','Lee Gardens (Causeway Bay)',
+    'Lee Garden Two (Causeway Bay)','Fashion Walk (Causeway Bay)','SOGO Causeway Bay',"Jardine's Bazaar / Crescent",'Bowrington Rd Cooked Food Ctr',
+  ]},
+  {name:'Wan Chai — Local Streets', area:'Wan Chai', walk:'~2km, 2–3 hrs', note:'Two tram stops from the Conrad, or walk it. Low-tourist, high-bargain. Market streets liveliest 11am–4pm.', stops:[
+    "Queen's Road East (Furniture & Rattan)",'Wan Chai Computer Centre','Johnston Road Antique Shops','Tai Yuen Street Toy Market',
+    'Cross Street (Wan Chai)','Wan Chai Market','Spring Garden Lane','Blue House (Wan Chai)',
+  ]},
+  {name:'Admiralty — Doorstep Loop', area:'Admiralty', walk:'~1km, 1–2 hrs', note:'Everything within ten minutes of the Conrad, all linked by covered walkway. Good rainy-hour or arrival-day filler.', stops:[
+    'Pacific Place','Queensway Plaza','Admiralty Centre','United Centre','Hong Kong Park',
+  ]},
+  {name:'TST — Harbourfront & Malls', area:'TST west of Nathan Rd', walk:'~2.5km, 3–4 hrs', note:'Arrive by Star Ferry from Central. Malls and Canton Rd first, then Kowloon Park, finishing on the waterfront — time the end for sunset and the 8pm Symphony of Lights.', stops:[
+    'Star Ferry — TST Pier (Arrive here)','Star House (TST)','Harbour City','Canton Road (Luxury)','Silvercord (TST)',
+    'Haiphong Road (TST)','Kowloon Park','The Peninsula Arcade','HK Space Museum','Avenue of Stars',
+  ]},
+  {name:'TST — Streets East of Nathan Rd', area:'TST east & north', walk:'~2km, 3 hrs', note:'The gritty half of TST — tailors, camera shops, boutiques and side streets, ending on Knutsford Terrace for a drink. Afternoon into evening works best.', stops:[
+    'iSquare (TST)','Granville Road / Carnarvon Rd','Hart Avenue (TST)','K11 Musea','The ONE','Brand Off (The ONE)',
+    "Sam's Tailors",'Mira Place (TST)','Kimberley Road (TST)','Knutsford Terrace (TST)',
+  ]},
+  {name:'Jordan & Yau Ma Tei — Markets & Old Streets', area:'Jordan → Yau Ma Tei', walk:'~2km, 3 hrs', note:'South to north up the old streets. Start late afternoon so Temple St is warming up by the time you reach it; the fruit market only comes alive after dark.', stops:[
+    'Yue Hwa Chinese Products (Jordan)','Bowring Street (Jordan)','Jade Market','Temple Street Night Market','Reclamation Street Day Market',
+    'Yau Ma Tei Market','Shanghai Street (Kitchenware)','Tin Hau Temple (Yau Ma Tei)','Yau Ma Tei Wholesale Fruit Market',
+  ]},
+  {name:'Mong Kok & Prince Edward — Markets & Sneakers', area:'Mong Kok → Prince Edward', walk:'~2.5km, 3–4 hrs', note:'Malls and sneaker streets first, then north up Tung Choi St to the goldfish, flower and bird markets. Markets are best before 5pm; Ladies\u2019 Market after 6pm.', stops:[
+    'Langham Place','Argyle Centre (Mong Kok)','Sai Yeung Choi St S (Electronics)',"Ladies' Market",'Fa Yuen Street (Sneaker Street)',
+    'MOKO Mall (Mong Kok)','Goldfish Market','Flower Market Road (Artificial & Silk)','Mong Kok Flower Market','Bird Market (Yuen Po Street)',
+  ]},
+].map(w=>({...w,stops:w.stops.map(n=>W(n))}));
+
+
 
 
 let tripData={};
@@ -2147,10 +2210,56 @@ function typeColorLight(t){
   return m[t]||'#f5f5f5';
 }
 
+function renderAreaWalks(){
+  const key='ref-Area Walks';
+  const open=expandedRefCats[key]!==false;
+  let html=`<div class="ref-category walk-category">
+    <div class="ref-cat-header" onclick="toggleRefCat('${key}')"><span>&#128694; Area Walks</span><span>${open?'&#9650;':'&#9660;'}</span></div>
+    <div class="ref-cat-body" id="${key}-body" style="display:${open?'':'none'}">`;
+  AREA_WALKS.forEach((w,i)=>{
+    html+=`<div class="walk-item">
+      <div class="ref-item-text">
+        <div class="ref-item-name" onclick="toggleRefInfo('walkinfo-${i}')">${esc(w.name)}</div>
+        <div class="ref-item-sub">${w.stops.length} stops &nbsp;&middot;&nbsp; ${esc(w.walk)}</div>
+        <div class="ref-info-popup" id="walkinfo-${i}">
+          <div class="ref-info-title">${esc(w.name)}</div>
+          <div class="ref-info-hours">${esc(w.area)} &middot; ${esc(w.walk)}</div>
+          <div class="ref-info-tip">${esc(w.note)}</div>
+          <div class="ref-info-tip"><strong>Route order:</strong> ${w.stops.map(s=>esc(s.name)).join(' &rarr; ')}</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:row;align-items:center;gap:3px;flex-shrink:0;flex-wrap:nowrap">
+        <button class="ref-item-add" onclick="openWalkRoute(${i})" title="Preview walking route in Google Maps">&#128506;</button>
+        <button class="ref-item-add" onclick="addWalkToDay(${i})">Add</button>
+      </div>
+    </div>`;
+  });
+  return html+`</div></div>`;
+}
+
+function addWalkToDay(i){
+  const w=AREA_WALKS[i];
+  const day=tripData[currentDay];
+  if(!day.packages) day.packages=[];
+  const pkg=freshPkg(w.name);
+  pkg.items=w.stops.map(s=>({...s,id:uid(),notes:''}));
+  day.packages.push(pkg);
+  activePkgId=pkg.id;
+  save();
+  renderDay();
+  showToast(`Added "${w.name}" (${w.stops.length} stops) to ${dayLabel(currentDay)}`);
+}
+
+function openWalkRoute(i){
+  const url=buildRouteFromItems(AREA_WALKS[i].stops);
+  if(!url){showToast('Route unavailable.');return;}
+  window.open(url,'_blank');
+}
+
 function renderRefPanel(){
   const el=document.getElementById('ref-list');
   if(!el) return;
-  let html='';
+  let html=renderAreaWalks();
   let itemIndex=0;
   window._refItems=[];
   for(const cat of GUIDE_ITEMS){
@@ -2324,7 +2433,7 @@ function applyFilters(){
     if(show) visibleItems++;
   });
   // Show/hide category headers based on whether they have visible items
-  document.querySelectorAll('.ref-category').forEach(cat=>{
+  document.querySelectorAll('.ref-category:not(.walk-category)').forEach(cat=>{
     const visibleInCat=[...cat.querySelectorAll('.ref-item')].some(el=>el.style.display!=='none');
     cat.style.display=visibleInCat?'':'none';
   });

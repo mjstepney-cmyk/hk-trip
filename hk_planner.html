@@ -647,6 +647,7 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
       <label class="wx-start-label" for="wx-start-date">From</label>
       <input type="date" id="wx-start-date" class="wx-start-input" title="Set trip start date to align forecast to days">
       <button class="wx-clear-date" id="wx-clear-date" onclick="clearTripStart()" title="Clear date">✕</button>
+      <select id="trip-len-select" class="wx-start-input" style="width:auto;padding:2px 3px" title="Trip length (days)"></select>
     </div>
     <a href="https://www.hko.gov.hk/en/wxinfo/currwx/fnd.htm" target="_blank" style="font-size:11px;color:#1a4a7a;text-decoration:none;border:1px solid #7aafd4;border-radius:10px;padding:2px 8px;background:#fff;white-space:nowrap;flex-shrink:0" title="Full forecast on HKO website">HKO ↗</a>
     <button class="wx-refresh" onclick="fetchWeather(true)" title="Refresh weather">↺</button>
@@ -761,7 +762,40 @@ input::placeholder,textarea::placeholder{color:var(--text-hint)}
 </div>
 
 <script>
-const DAYS = 14;
+let DAYS = 14;
+const MAX_DAYS = 30;
+// Trip length derived from highest day key in tripData (syncs via cloud with no new field)
+function syncDaysFromData(){
+  const ks=Object.keys(tripData).map(Number).filter(n=>Number.isInteger(n)&&n>=1);
+  DAYS=ks.length?Math.min(MAX_DAYS,Math.max(...ks)):14;
+  const sel=document.getElementById('trip-len-select'); if(sel) sel.value=String(DAYS);
+  const pdfAll=document.querySelector('#pdf-day-select option[value="all"]'); if(pdfAll) pdfAll.textContent=`All ${DAYS} days`;
+}
+function setTripLength(n){
+  n=Math.max(1,Math.min(MAX_DAYS,parseInt(n,10)||DAYS));
+  if(n===DAYS) return;
+  if(n<DAYS){
+    const lost=[];
+    for(let d=n+1;d<=DAYS;d++){const day=tripData[d];if(day&&((day.packages||[]).some(p=>p.items.length)||day.title||day.loungeEvening||day.dedicatedTrip)) lost.push(d);}
+    if(lost.length&&!confirm(`Shortening to ${n} days will delete plans on Day ${lost.join(', Day ')}.\n\nMove anything you want to keep first (e.g. to 📋 Ideas).\n\nDelete and continue?`)){syncDaysFromData();return;}
+    for(let d=n+1;d<=DAYS;d++) delete tripData[d];
+  } else {
+    for(let d=DAYS+1;d<=n;d++) if(!tripData[d]) tripData[d]=freshDay();
+  }
+  DAYS=n;
+  if(currentDay>DAYS) currentDay=DAYS;
+  save(); syncDaysFromData(); renderTabs();
+  if(currentView==='day') renderDay(); else if(currentView==='overview') renderOverview();
+  const cached=sessionStorage.getItem('hk_wx_cache');
+  if(cached){ try{ renderWeather(JSON.parse(cached).data); }catch(e){} }
+  showToast(`✅ Trip length: ${DAYS} days`);
+}
+function initTripLengthSelect(){
+  const sel=document.getElementById('trip-len-select'); if(!sel) return;
+  for(let n=1;n<=MAX_DAYS;n++){const o=document.createElement('option');o.value=n;o.textContent=n+'d';sel.appendChild(o);}
+  sel.value=String(DAYS);
+  sel.addEventListener('change',function(){setTripLength(this.value);});
+}
 const PLANNING_DAY = 0;
 function dayLabel(d){return d===PLANNING_DAY?'Planning':'Day '+d;}
 function dayDate(d){
@@ -1230,6 +1264,7 @@ function initData(){
 }
 
 function migrateData(){
+  syncDaysFromData();
   let changed=false;
   for(let d=PLANNING_DAY;d<=DAYS;d++){
     if(!tripData[d]){tripData[d]=freshDay();changed=true;continue;}
@@ -2076,7 +2111,7 @@ function updateHeaderSubtitle(){
   const realDays=Object.keys(tripData).filter(k=>Number(k)>=1).map(k=>tripData[k]);
   const loungeDays=realDays.filter(d=>d&&d.loungeEvening).length;
   const plannedDays=realDays.filter(d=>d&&(d.packages||[]).some(p=>p.items.length>0)).length;
-  const parts=['14-day planner'];
+  const parts=[`${DAYS}-day planner`];
   if(plannedDays>0) parts.push(`${plannedDays} planned`);
   if(loungeDays>0) parts.push(`🍷 ${loungeDays} lounge`);
   el.textContent=parts.join(' · ');
@@ -3472,6 +3507,8 @@ renderTabs();
 renderDay();
 fetchWeather();
 initTripStartInput();
+initTripLengthSelect();
+syncDaysFromData();
 initWxScrollSync();
 initSync();
 renderRefPanel();
